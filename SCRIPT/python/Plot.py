@@ -11,12 +11,37 @@ from matplotlib import cm
 import numpy as np 
 import seaborn as sns
 import os
-#STAT_DT_ALL_2017_PRA
+
+
+
+#Create fonction plotenbarre
+def plotenbar(x,y):
+    y_pos= np.arange(len(list(x)))
+    pal=sns.set_palette("RdYlBu",len(y_pos))
+    plt.figure(figsize=(10,15))
+    sns.barplot(x,y,palette=pal)
+    name_axe_x=input("Name axe X :")
+    name_axe_y=input("Name axe Y :")
+    plt.xlabel(name_axe_x)
+    plt.ylabel(name_axe_y)
+    plt.xticks(y_pos, list(x),rotation=45)
+    plt.text(x=x.shape[0]-2,y=max(y/sum(y)),s=round(float(sum(y)),2))
+    plt.text(x=x.shape[0]-4.5,y=max(y/sum(y)),s="superfice totale (ha):")
+    #label=round(y,2)
+    #for j in range(len(df["sum"])):
+        #plt.text(x = y_pos[j] , y = y[j] +0.01, s = list(label)[j], size = 11)
+
+
+
+
+
+if __name__ == '__main__':
 # =============================================================================
-# boucle barplot stat
+# Ajoute de la fonction add avec ponderation
 # =============================================================================
 list_csv=os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/CSV")
-names_crop=["Maize_Nirr","Soybean_Nirr","Peas_Nirr","Sunflow_Nirr","Maize_Irr","Sorghum_Nirr","Sorghum_Irr","Soybean_Irr","Peas_Irr","Sunflow_Irr","Others"]
+#names_crop=["Maize_Nirr","Soybean_Nirr","Peas_Nirr","Sunflow_Nirr","Maize_Irr","Sorghum_Nirr","Sorghum_Irr","Soybean_Irr","Peas_Irr","Sunflower_Irr","Others"]
+names_crop=["Maize_Irr","Soybean_Irr","Sorghum_Irr","Sunflower_Irr","Peas_Irr","Others","Maize_Nirr","Soybean_Nirr","Sorghum_Nirr","Sunflower_Nirr","Peas_Nirr"]
 names_RPG=["Maize","Soybean","Sorghum","Sunflower","Peas"]
 code_crops_RPG=[1,2,3,4,5]
 code_crops=[1,2,3,4,5,6,11,22,33,44,55]
@@ -25,133 +50,188 @@ for i in list_csv:
     zone=i[8:-4]
     if df.shape[0] != len(code_crops_RPG):
         print ("Error dimension")
+        result=set(list(df.category)).union(set(code_crops_RPG)) - set(list(df.category)).intersection(set(code_crops_RPG))
+        miss=pd.DataFrame(result)
+        val=pd.DataFrame(np.repeat(0,miss.shape[0])).values
+        add=pd.DataFrame({"category":list(miss.values),"min":list(val),"max":list(val),"mean":list(val),
+                                  "stddev":list(val),"sum":list(val),"count":list(val)})
+        df2=pd.concat([df,add],ignore_index=True)
+        df2=df2.sort_values(by='category',asending=True)
+        df2["name"]=names_RPG
+        df3=df2.sort_values(by='sum', ascending=False)
+        df3=df3.reset_index()
+        y_pos = np.arange(len(list(df3.name)))
+        fig = plt.figure(figsize=(10,15))
+        pal=sns.set_palette("RdYlBu",len(y_pos))
+        #sns.barplot(df1.name,df1["mean"],palette=pal,yerr = df1["stddev"]) # permet d'ajoute les ecart types
+        sns.barplot(df3.name,(df3["sum"]/sum(df3["sum"])),palette=pal)
+        plt.xticks(y_pos, list(df3.name),rotation=45)
+        plt.xlabel("crops")
+        plt.ylabel("répartitions des OS")
+        plt.title(zone)
+        plt.text(x=df3.shape[0]-1,y=max(df3["sum"]/sum(df3["sum"])),s=round(float(sum(df3["sum"])),2))
+        plt.text(x=df3.shape[0]-2.5,y=max(df3["sum"]/sum(df3["sum"])),s="superfice totale (ha):")
+#        label=round(df3["sum"]/sum(df3["sum"]),2)
+#        # Tet on the top of each barplot
+#        for j in range(len(df3["sum"])):
+#            plt.text(x = y_pos[j] , y = (df3["sum"]/sum(df3["sum"]))[j] +0.01, s = list(label)[j], size = 11)
+#        # Show graphic
+        plt.show()
+        fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/PLOT/PLOT_SUM_POND/%s.png"%(zone))
     else:
+        print ("Create plot")
+        df=df.sort_values(by="category",ascending=True)
         df["name"]=names_RPG
         df1=df.sort_values(by='sum', ascending=False)
         df1=df1.reset_index()
         y_pos = np.arange(len(list(df1.name)))
         fig = plt.figure(figsize=(10,15))
-        #pal=sns.set_palette("RdYlBu",len(y_pos))
+        pal=sns.set_palette("RdYlBu",len(y_pos))
         #sns.barplot(df1.name,df1["mean"],palette=pal,yerr = df1["stddev"]) # permet d'ajoute les ecart types
-        sns.barplot(df1.name,(df1["sum"]/sum(df["sum"])),palette=pal)
+        sns.barplot(df1.name,(df1["sum"]/sum(df1["sum"])),palette=pal)
         plt.xticks(y_pos, list(df1.name),rotation=45)
         plt.xlabel("crops")
-        plt.ylabel("Superficie en ha")
+        plt.ylabel("Répartitions des OS")
         plt.title(zone)
-        plt.text(x=4,y=max(df["sum"]/sum(df["sum"])),s=round(sum(df["sum"]),2))
-        plt.text(x=3,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
-        label=round(df1["sum"]/sum(df["sum"]),2)
+        plt.text(x=df1.shape[0]-1,y=max(df["sum"]/sum(df1["sum"])),s=round(sum(df["sum"]),2))
+        plt.text(x=df1.shape[0]-2.5,y=max(df["sum"]/sum(df1["sum"])),s="superfice totale (ha):")
+        label=round(df1["sum"]/sum(df1["sum"]),2)
         # Tet on the top of each barplot
-        for j in range(len(df1["sum"])):
-            plt.text(x = y_pos[j] , y = (df1["sum"]/sum(df["sum"]))[j] +0.01, s = list(label)[j], size = 11)
+        for j in range(len(df1["sum"]/sum(df1["sum"]))):
+            plt.text(x = y_pos[j] , y = (df1["sum"]/sum(df1["sum"]))[j] +0.01, s = list(label)[j], size = 11)
         # Show graphic
         plt.show()
         fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/PLOT/PLOT_SUM_POND/%s.png"%(zone))
+        
+        
 # =============================================================================
-# Ajoute de la fonction add
+#    barpot_non_pond  
 # =============================================================================
+        
 list_csv=os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/CSV")
-names_crop=["Maize_Nirr","Soybean_Nirr","Peas_Nirr","Sunflow_Nirr","Maize_Irr","Sorghum_Nirr","Sorghum_Irr","Soybean_Irr","Peas_Irr","Sunflow_Irr","Others"]
-names_RPG=["Maize","Soybean","Sorghum","Sunflower","Peas"]
-code_crops_RPG=[1,2,3,4,5]
-code_crops=[1,2,3,4,5,6,11,22,33,44,55]
 for i in list_csv:
     df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/CSV/"+ i)
     zone=i[8:-4]
     if df.shape[0] != len(code_crops_RPG):
         print ("Error dimension")
+        result=set(list(df.category)).union(set(code_crops_RPG)) - set(list(df.category)).intersection(set(code_crops_RPG))
+        miss=pd.DataFrame(result)
+        val=pd.DataFrame(np.repeat(0,miss.shape[0])).values
+        add=pd.DataFrame({"category":list(miss.values),"min":list(val),"max":list(val),"mean":list(val),
+                                  "stddev":list(val),"sum":list(val),"count":list(val)})
+        df2=pd.concat([df,add],ignore_index=True)
+        df2["name"]=names_RPG
+        df3=df2.sort_values(by='sum', ascending=False)
+        df3=df3.reset_index()
+        y_pos = np.arange(len(list(df3.name)))
+        fig = plt.figure(figsize=(10,15))
+        pal=sns.set_palette("RdYlBu",len(y_pos))
+        #sns.barplot(df1.name,df1["mean"],palette=pal,yerr = df1["stddev"]) # permet d'ajoute les ecart types
+        sns.barplot(df3.name,(df3["sum"]),palette=pal)
+        plt.xticks(y_pos, list(df3.name),rotation=45)
+        plt.xlabel("crops")
+        plt.ylabel("répartitions des OS")
+        plt.title(zone)
+        plt.text(x=df3.shape[0]-1,y=max(df3["sum"]),s=round(float(sum(df3["sum"])),2))
+        plt.text(x=df3.shape[0]-2.5,y=max(df3["sum"]),s="superfice totale (ha):")
+#        label=round(df3["sum"]/sum(df3["sum"]),2)
+#        # Tet on the top of each barplot
+#        for j in range(len(df3["sum"])):
+#            plt.text(x = y_pos[j] , y = (df3["sum"]/sum(df3["sum"]))[j] +0.01, s = list(label)[j], size = 11)
+#        # Show graphic
+        plt.show()
+        fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/PLOT/%s.png"%(zone))
     else:
+        print ("Create plot")
         df["name"]=names_RPG
         df1=df.sort_values(by='sum', ascending=False)
         df1=df1.reset_index()
         y_pos = np.arange(len(list(df1.name)))
         fig = plt.figure(figsize=(10,15))
-        #pal=sns.set_palette("RdYlBu",len(y_pos))
+        pal=sns.set_palette("RdYlBu",len(y_pos))
         #sns.barplot(df1.name,df1["mean"],palette=pal,yerr = df1["stddev"]) # permet d'ajoute les ecart types
-        sns.barplot(df1.name,(df1["sum"]/sum(df["sum"])),palette=pal)
+        sns.barplot(df1.name,(df1["sum"]),palette=pal)
         plt.xticks(y_pos, list(df1.name),rotation=45)
         plt.xlabel("crops")
-        plt.ylabel("Superficie en ha")
+        plt.ylabel("Répartitions des OS")
         plt.title(zone)
-        plt.text(x=4,y=max(df["sum"]/sum(df["sum"])),s=round(sum(df["sum"]),2))
-        plt.text(x=3,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
-        label=round(df1["sum"]/sum(df["sum"]),2)
+        plt.text(x=df1.shape[0]-1,y=max(df["sum"]),s=round(sum(df["sum"]),2))
+        plt.text(x=df1.shape[0]-2.5,y=max(df["sum"]),s="superfice totale (ha):")
+        label=round(df1["sum"],2)
         # Tet on the top of each barplot
         for j in range(len(df1["sum"])):
-            plt.text(x = y_pos[j] , y = (df1["sum"]/sum(df["sum"]))[j] +0.01, s = list(label)[j], size = 11)
+            plt.text(x = y_pos[j] , y = (df1["sum"])[j] +0.01, s = list(label)[j], size = 11)
         # Show graphic
         plt.show()
-        fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/PLOT/PLOT_SUM_POND/%s.png"%(zone))
+        fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/PLOT/%s.png"%(zone))
+
 # =============================================================================
-# Ensemble sur même graphique 
+# plot diapo rapide 
 # =============================================================================
-#list_csv=os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/CSV")
-#names_crop=["Maize_Nirr","Soybean_Nirr","Peas_Nirr","Sunflow_Nirr","Maize_Irr","Sorghum_Nirr","Sorghum_Irr","Soybean_Irr","Peas_Irr","Sunflow_Irr","Others"]
-#names_RPG=["Maize","Soybean","Sorghum","Sunflower","Peas"]
-#code_crops_RPG=[1,2,3,4,5]
-#code_crops=[1,2,3,4,5,6,11,22,33,44,55]
-#df_f=pd.DataFrame()
-#for i in list_csv:
-#    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/CSV/"+ i)
-#    zone=i[8:-4]
-#    print(df)
-#    df_f.append(df)
+df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_9TILES_RPG.csv")
+name_tr=["Maize","Sorghum","Soybean","Peas","Sunflower"]
+
+df["name"]=name_tr
+df=df.sort_values(by='sum', ascending=False)
+df=df.reset_index()
+plotenbar(df.name,df["sum"]/sum(df["sum"]))
+pal=sns.set_palette("RdYlBu",len(y_pos))
+plt.title("9tiles")
+plt.text(x=df.shape[0]-1,y=max(df["sum"]/sum(df["sum"])),s=round(sum(df["sum"]),2))
+plt.text(x=df.shape[0]-2.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
+
+df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_9TILES_DT.csv")
+name_tr=["Maize","Sorghum","Soybean","Peas","Sunflower"]
+df["name"]=names_crop
+df=df.sort_values(by='sum', ascending=False)
+df=df.reset_index()
+plotenbar(df.name,df["sum"]/sum(df["sum"]))
+plt.title("9tiles")
+plt.text(x=df.shape[0]-1.5,y=max(df["sum"]/sum(df["sum"])),s=round(sum(df["sum"]),2))
+plt.text(x=df.shape[0]-5.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
+
+df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_9TILES_DT_crop.csv")
+name_tr=["Maize","Sorghum","Soybean","Peas","Sunflower","Others"]
+df["name"]=name_tr
+df=df.sort_values(by='sum', ascending=False)
+df=df.reset_index()
+plotenbar(df.name,df["sum"]/sum(df["sum"]))
+plt.title("9tiles")
+plt.text(x=df.shape[0]-1,y=max(df["sum"]/sum(df["sum"])),s=round(sum(df["sum"]),2))
+plt.text(x=df.shape[0]-2.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
+
 # =============================================================================
-# TEST plot seaborn
+# Plot ECO_REG
 # =============================================================================
-#df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_2017_Pixel_cate_label_CrIrr.csv")
-#name=["Maize_Nirr","Soybean_Nirr","Peas_Nirr","Sunflow_Nirr","Maize_Irr","Sorghum_Nirr","Sorghum_Irr","Soybean_Irr","Peas_Irr","Sunflow_Irr","Others"]
-#
-#df["name"]=name
-#df1=df.sort_values(by='count', ascending=False)
-#df1=df1.reset_index()
-#y_pos = np.arange(len(list(df1.name)))
-#
-#df2=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_2017_Pixel_cate_label_CrIrr_tcj.csv")
-#df2
-##add=pd.DataFrame({"category":[3,5],"min":[0,0],"max":[0,0],"mean":[0,0],"stddev":[0,0],"sum":[0,0],"count":[0,0],"name":['Sorghum_Irr',"Peas_Irr"]},index=[6,8])
-#add=pd.DataFrame({"category":[3,5],"min":[0,0],"max":[0,0],"mean":[0,0],
-#                  "stddev":[0,0],"sum":[0,0],"count":[0,0]},index=[6,8])
-#
-##name2=["Maize_Nirr","Soybean_Nirr","Peas_Nirr","Sunflow_Nirr","Maize_Irr","Sorghum_Nirr","Soybean_Irr","Sunflow_Irr","Others"]
-##name3=["Maize_Nirr","Soybean_Nirr","Peas_Nirr","Sunflow_Nirr","Maize_Irr","Sorghum_Nirr","Soybean_Irr","Sunflow_Irr","Others","Sorghum_Irr","Peas_Irr"]
-#
-#
-#
-#df3=pd.concat([df2,add],ignore_index=True)
-#df3["name"]=name
-#df4=df3.sort_values(by='count', ascending=False)
-#df4=df4.reset_index()
-##name4=list(df3.name)
-#y_pos4 = np.arange(len(list(df4.name)))
-#
-#plt.figure(figsize=(10,15))
-#plt.subplot(1,2,1)
-#pal=sns.set_palette("RdYlBu",len(y_pos))
-#
-#
-#sns.barplot(df1.name,df1["count"],palette= pal)
-#plt.xticks(y_pos, name,rotation=45)
-#plt.xlabel("crops")
-#plt.ylabel("Nombre de polygon")
-#plt.title("Ensemble des 9 tiles")
-#label=list(df1["count"])
-## Tet on the top of each barplot
-#for i in range(len(df1["count"])):
-#    plt.text(x = y_pos[i] -0.5 , y = df1["count"][i]+10, s = label[i], size = 11)
-## Show graphic
-#
-#
-#plt.subplot(1,2,2)
-#pal=sns.set_palette("RdYlBu",len(y_pos))
-#sns.barplot(df4.name,df4["count"],palette=pal)
-#plt.xticks(y_pos4, list(df4.name),rotation=45)
-#plt.xlabel("crops")
-#plt.ylabel("Nombre de polygon")
-#plt.title("tile TCJ")
-#label2=list(df4["count"])
-## Tet on the top of each barplot
-#for i in range(len(df4["count"])):
-#    plt.text(x = y_pos4[i]-0.5 , y = df4["count"][i] +10, s = label2[i], size = 11)
-## Show graphic
-#plt.show()
+list_csv=os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_ECOREG/CSV")
+for i in list_csv:
+    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_ECOREG/CSV/" +i)
+    zone=i[16:-3]
+    if df.shape[0] != len(code_crops):
+        print ("Error dimension")
+        result=set(list(df.category)).union(set(code_crops)) - set(list(df.category)).intersection(set(code_crops))
+        miss=pd.DataFrame(result)
+        val=pd.DataFrame(np.repeat(0,miss.shape[0])).values
+        add=pd.DataFrame({"category":list(miss.values),"min":list(val),"max":list(val),"mean":list(val),
+                                  "stddev":list(val),"sum":list(val),"count":list(val)})
+        df=pd.concat([df,add],ignore_index=True)
+        df1=df.sort_values(by='category',ascending=True)
+        df1["name"]=names_crop
+        df2=df1.sort_values(by='sum', ascending=False)
+        df2=df2.reset_index()
+        plotenbar(df2.name,df2["sum"]/sum(df2["sum"]))
+        plt.title(zone)
+        plt.show()
+        fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_ECOREG/PLOT/%s.png"%(zone))
+    else:
+        print ("Create plot")
+        df=df.sort_values(by='category',ascending=True)
+        df["name"]=names_crop
+        df=df.sort_values(by='sum', ascending=False)
+        df=df.reset_index()
+        plotenbar(df.name,df["sum"]/sum(df["sum"]))
+        plt.title(zone)
+        plt.show()
+        fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_ECOREG/PLOT/%s.png"%(zone))
+
+        
