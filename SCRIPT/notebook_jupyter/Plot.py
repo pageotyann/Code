@@ -32,6 +32,8 @@ df2["name"]=name2
 df2=df2.reset_index()
 
 plt.figure(figsize=(15,15))
+sns.set(style="darkgrid")
+sns.set_context('paper')
 plt.subplot(2,2,1)
 pal=sns.set_palette("RdYlBu",len(y_pos))
 sns.barplot(df1.name,df1["count"])
@@ -39,13 +41,13 @@ plt.xticks(y_pos, names_crop,rotation=45)
 plt.xlabel("crops")
 plt.ylabel("Nombre de polygon")
 plt.title("Ensemble des 9 tiles")
-
+plt.text(x=df.shape[0]-2,y=max(df["count"]),s=int(sum(df["count"])))
+plt.text(x=df.shape[0]-7,y=max(df["count"]),s="Nombre total d'entitées :")
 label=round(df1["count"],2)
 # Tet on the top of each barplot
 for i in range(len(df1["count"])):
     plt.text(x = y_pos[i] -0.3 , y = df1["count"][i] +10, s = label[i], size = 11)
-# Show graphic
-#plt.show()
+
 
 
 plt.subplot(2,2,2)
@@ -56,14 +58,14 @@ plt.xticks(y_pos2, name2,rotation=45)
 plt.xlabel("crops")
 plt.ylabel("Nombre de polygon")
 plt.title("Tile TCJ")
-
+plt.text(x=df2.shape[0]-2,y=max(df2["count"]),s=int(sum(df2["count"])))
+plt.text(x=df2.shape[0]-6,y=max(df2["count"]),s="Nombre total d'entitées :")
 label=round(df2["count"],2)
 # Tet on the top of each barplot
 for i in range(len(df2["count"])):
     plt.text(x = y_pos2[i] -0.3 , y = df2["count"][i] +10, s = label[i], size = 11)
 
-# Show graphic
-#plt.show()
+
 
 
 df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_TCJ_LabCrirr.csv")
@@ -73,20 +75,17 @@ df["name"]=names_crop_tcj
 df=df.reset_index()
 y_pos= np.arange(len(list(df.name)))
 plt.subplot(2,2,4)
-
+sns.barplot(df.name,df["sum"]/sum(df["sum"]),palette=pal)
 plt.xticks(y_pos, names_crop,rotation=45)
 plt.xlabel("OS")
 plt.ylabel("Réparition")
-plt.title("Tile TCJ")
-sns.barplot(df.name,df["sum"]/sum(df["sum"]),palette=pal)
-plt.text(x=df.shape[0]-2,y=max(df["sum"]/sum(df["sum"])),s=round(float(sum(df["sum"])),2))
-plt.text(x=df.shape[0]-4.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
+plt.text(x=df.shape[0]-2,y=max(df["sum"]/sum(df["sum"]))+0.005,s=round(float(sum(df["sum"])),2))
+plt.text(x=df.shape[0]-6,y=max(df["sum"]/sum(df["sum"]))+0.005,s="superfice totale (ha):")
 label=round(df["sum"]/sum(df["sum"]),2)
         # Tet on the top of each barplot
 for j in range(len(df["sum"]/sum(df["sum"]))):
-    plt.text(x = y_pos[j] , y = (df["sum"]/sum(df["sum"]))[j], s = list(label)[j], size = 11)
+    plt.text(x = y_pos[j] -0.3 , y = (df["sum"]/sum(df["sum"]))[j], s = list(label)[j], size = 11)
 
-#plt.show()
 
 df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_ALL_lab_Crirr.csv")
 df=df.sort_values(by='category', ascending=True)
@@ -94,14 +93,12 @@ df["name"]=names_crop
 df=df.reset_index()
 y_pos= np.arange(len(list(df.name)))
 plt.subplot(2,2,3)
-
+sns.barplot(df.name,df["sum"]/sum(df["sum"]),palette=pal)
 plt.xticks(y_pos, names_crop,rotation=45)
 plt.xlabel("OS")
-plt.ylabel("Réparition")
-plt.title("9 tiles")
-sns.barplot(df.name,df["sum"]/sum(df["sum"]),palette=pal)
-plt.text(x=df.shape[0]-2,y=max(df["sum"]/sum(df["sum"])),s=round(float(sum(df["sum"])),2))
-plt.text(x=df.shape[0]-4.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
+plt.ylabel("Reparition")
+plt.text(x=df.shape[0]-7.5,y=max(df["sum"]/sum(df["sum"]))+0.005,s=round(float(sum(df["sum"])),2))
+plt.text(x=df.shape[0]-11.5,y=max(df["sum"]/sum(df["sum"]))+0.005,s="superfice totale (ha):")
 label=round(df["sum"]/sum(df["sum"]),3)
         # Tet on the top of each barplot
 for j in range(len(df["sum"]/sum(df["sum"]))):
