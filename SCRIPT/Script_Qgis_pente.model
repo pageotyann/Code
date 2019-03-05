@@ -1,0 +1,128 @@
+{
+    "values": {
+        "inputs": {
+            "srtm": {
+                "values": {
+                    "pos": {
+                        "values": {
+                            "y": 60.0, 
+                            "x": 120.0
+                        }, 
+                        "class": "point"
+                    }, 
+                    "param": {
+                        "values": {
+                            "isAdvanced": false, 
+                            "name": "srtm", 
+                            "showSublayersDialog": true, 
+                            "default": null, 
+                            "value": null, 
+                            "exported": null, 
+                            "hidden": false, 
+                            "optional": false, 
+                            "description": "SRTM"
+                        }, 
+                        "class": "processing.core.parameters.ParameterRaster"
+                    }
+                }, 
+                "class": "processing.modeler.ModelerAlgorithm.ModelerParameter"
+            }
+        }, 
+        "helpContent": {}, 
+        "group": "script_Qgis", 
+        "name": "Conver_eleve_pente", 
+        "algs": {
+            "GDALOGRWARPREPROJECT_1": {
+                "values": {
+                    "name": "GDALOGRWARPREPROJECT_1", 
+                    "paramsFolded": true, 
+                    "outputs": {}, 
+                    "outputsFolded": true, 
+                    "pos": {
+                        "values": {
+                            "y": 205.0, 
+                            "x": 269.0
+                        }, 
+                        "class": "point"
+                    }, 
+                    "dependencies": [], 
+                    "params": {
+                        "ZLEVEL": 6.0, 
+                        "DEST_SRS": "EPSG:2154", 
+                        "BIGTIFF": 0, 
+                        "COMPRESS": 4, 
+                        "RTYPE": 5, 
+                        "TR": 0.0, 
+                        "NO_DATA": null, 
+                        "TILED": false, 
+                        "SOURCE_SRS": "", 
+                        "JPEGCOMPRESSION": 75.0, 
+                        "INPUT": {
+                            "values": {
+                                "name": "srtm"
+                            }, 
+                            "class": "processing.modeler.ModelerAlgorithm.ValueFromInput"
+                        }, 
+                        "TFW": false, 
+                        "METHOD": 0, 
+                        "PREDICTOR": 1.0, 
+                        "EXTRA": null
+                    }, 
+                    "active": true, 
+                    "consoleName": "gdalogr:warpreproject", 
+                    "description": "Warp (reproject)_L93"
+                }, 
+                "class": "processing.modeler.ModelerAlgorithm.Algorithm"
+            }, 
+            "GDALOGRSLOPE_1": {
+                "values": {
+                    "name": "GDALOGRSLOPE_1", 
+                    "paramsFolded": true, 
+                    "outputs": {
+                        "OUTPUT": {
+                            "values": {
+                                "description": "PENTE_SRTM_L93", 
+                                "pos": {
+                                    "values": {
+                                        "y": 350.0, 
+                                        "x": 689.0
+                                    }, 
+                                    "class": "point"
+                                }
+                            }, 
+                            "class": "processing.modeler.ModelerAlgorithm.ModelerOutput"
+                        }
+                    }, 
+                    "outputsFolded": true, 
+                    "pos": {
+                        "values": {
+                            "y": 305.0, 
+                            "x": 489.0
+                        }, 
+                        "class": "point"
+                    }, 
+                    "dependencies": [], 
+                    "params": {
+                        "SCALE": 1.0, 
+                        "BAND": 1.0, 
+                        "ZEVENBERGEN": false, 
+                        "COMPUTE_EDGES": true, 
+                        "INPUT": {
+                            "values": {
+                                "alg": "GDALOGRWARPREPROJECT_1", 
+                                "output": "OUTPUT"
+                            }, 
+                            "class": "processing.modeler.ModelerAlgorithm.ValueFromOutput"
+                        }, 
+                        "AS_PERCENT": true
+                    }, 
+                    "active": true, 
+                    "consoleName": "gdalogr:slope", 
+                    "description": "Slope"
+                }, 
+                "class": "processing.modeler.ModelerAlgorithm.Algorithm"
+            }
+        }
+    }, 
+    "class": "processing.modeler.ModelerAlgorithm.ModelerAlgorithm"
+}

@@ -1,0 +1,218 @@
+{
+    "values": {
+        "inputs": {
+            "srtmbase": {
+                "values": {
+                    "pos": {
+                        "values": {
+                            "y": 160.0, 
+                            "x": 123.0
+                        }, 
+                        "class": "point"
+                    }, 
+                    "param": {
+                        "values": {
+                            "isAdvanced": false, 
+                            "name": "srtmbase", 
+                            "showSublayersDialog": true, 
+                            "default": null, 
+                            "value": null, 
+                            "exported": null, 
+                            "hidden": false, 
+                            "optional": false, 
+                            "description": "SRTM_BASE"
+                        }, 
+                        "class": "processing.core.parameters.ParameterRaster"
+                    }
+                }, 
+                "class": "processing.modeler.ModelerAlgorithm.ModelerParameter"
+            }, 
+            "pente": {
+                "values": {
+                    "pos": {
+                        "values": {
+                            "y": 60.0, 
+                            "x": 120.0
+                        }, 
+                        "class": "point"
+                    }, 
+                    "param": {
+                        "values": {
+                            "isAdvanced": false, 
+                            "name": "pente", 
+                            "showSublayersDialog": true, 
+                            "default": null, 
+                            "value": null, 
+                            "exported": null, 
+                            "hidden": false, 
+                            "optional": false, 
+                            "description": "PENTE"
+                        }, 
+                        "class": "processing.core.parameters.ParameterRaster"
+                    }
+                }, 
+                "class": "processing.modeler.ModelerAlgorithm.ModelerParameter"
+            }
+        }, 
+        "helpContent": {}, 
+        "group": "SCRIPT_QGIS_MASK_PENTE", 
+        "name": "MASK_pente_SRTM", 
+        "algs": {
+            "OTBBANDMATH_2": {
+                "values": {
+                    "name": "OTBBANDMATH_2", 
+                    "paramsFolded": true, 
+                    "outputs": {
+                        "-out": {
+                            "values": {
+                                "description": "SRTM_MASK", 
+                                "pos": {
+                                    "values": {
+                                        "y": 373.0, 
+                                        "x": 1074.0
+                                    }, 
+                                    "class": "point"
+                                }
+                            }, 
+                            "class": "processing.modeler.ModelerAlgorithm.ModelerOutput"
+                        }
+                    }, 
+                    "outputsFolded": true, 
+                    "pos": {
+                        "values": {
+                            "y": 328.0, 
+                            "x": 874.0
+                        }, 
+                        "class": "point"
+                    }, 
+                    "dependencies": [], 
+                    "params": {
+                        "-ram": 128.0, 
+                        "-il": [
+                            {
+                                "values": {
+                                    "name": "srtmbase"
+                                }, 
+                                "class": "processing.modeler.ModelerAlgorithm.ValueFromInput"
+                            }, 
+                            {
+                                "values": {
+                                    "alg": "OTBBANDMATH_1", 
+                                    "output": "-out"
+                                }, 
+                                "class": "processing.modeler.ModelerAlgorithm.ValueFromOutput"
+                            }
+                        ], 
+                        "-exp": "im1b1*im2b1"
+                    }, 
+                    "active": true, 
+                    "consoleName": "otb:bandmath", 
+                    "description": "Band Math"
+                }, 
+                "class": "processing.modeler.ModelerAlgorithm.Algorithm"
+            }, 
+            "OTBSUPERIMPOSESENSOR_1": {
+                "values": {
+                    "name": "OTBSUPERIMPOSESENSOR_1", 
+                    "paramsFolded": true, 
+                    "outputs": {
+                        "-out": {
+                            "values": {
+                                "description": "PENTE_WARP", 
+                                "pos": {
+                                    "values": {
+                                        "y": 216.0, 
+                                        "x": 413.0
+                                    }, 
+                                    "class": "point"
+                                }
+                            }, 
+                            "class": "processing.modeler.ModelerAlgorithm.ModelerOutput"
+                        }
+                    }, 
+                    "outputsFolded": true, 
+                    "pos": {
+                        "values": {
+                            "y": 128.0, 
+                            "x": 434.0
+                        }, 
+                        "class": "point"
+                    }, 
+                    "dependencies": [], 
+                    "params": {
+                        "-interpolator": 1, 
+                        "-inm": {
+                            "values": {
+                                "name": "pente"
+                            }, 
+                            "class": "processing.modeler.ModelerAlgorithm.ValueFromInput"
+                        }, 
+                        "-ram": 128.0, 
+                        "-interpolator.bco.radius": 2.0, 
+                        "-lms": 0.0, 
+                        "-inr": {
+                            "values": {
+                                "name": "srtmbase"
+                            }, 
+                            "class": "processing.modeler.ModelerAlgorithm.ValueFromInput"
+                        }, 
+                        "-elev.default": 0.0, 
+                        "-mode": 0
+                    }, 
+                    "active": true, 
+                    "consoleName": "otb:superimposesensor", 
+                    "description": "Superimpose sensor"
+                }, 
+                "class": "processing.modeler.ModelerAlgorithm.Algorithm"
+            }, 
+            "OTBBANDMATH_1": {
+                "values": {
+                    "name": "OTBBANDMATH_1", 
+                    "paramsFolded": true, 
+                    "outputs": {
+                        "-out": {
+                            "values": {
+                                "description": "MASK_PENTE", 
+                                "pos": {
+                                    "values": {
+                                        "y": 273.0, 
+                                        "x": 854.0
+                                    }, 
+                                    "class": "point"
+                                }
+                            }, 
+                            "class": "processing.modeler.ModelerAlgorithm.ModelerOutput"
+                        }
+                    }, 
+                    "outputsFolded": true, 
+                    "pos": {
+                        "values": {
+                            "y": 228.0, 
+                            "x": 654.0
+                        }, 
+                        "class": "point"
+                    }, 
+                    "dependencies": [], 
+                    "params": {
+                        "-ram": 128.0, 
+                        "-il": [
+                            {
+                                "values": {
+                                    "alg": "OTBSUPERIMPOSESENSOR_1", 
+                                    "output": "-out"
+                                }, 
+                                "class": "processing.modeler.ModelerAlgorithm.ValueFromOutput"
+                            }
+                        ], 
+                        "-exp": "im1b1 <= 5 ? im1b1= 0 : im1b1=1"
+                    }, 
+                    "active": true, 
+                    "consoleName": "otb:bandmath", 
+                    "description": "Band Math"
+                }, 
+                "class": "processing.modeler.ModelerAlgorithm.Algorithm"
+            }
+        }
+    }, 
+    "class": "processing.modeler.ModelerAlgorithm.ModelerAlgorithm"
+}

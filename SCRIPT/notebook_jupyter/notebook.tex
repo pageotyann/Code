@@ -1,0 +1,978 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{Journal-de-These}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{journal-de-bord}{%
+\subsection{\# Journal de bord}\label{journal-de-bord}}
+
+Journal de THESE avec un détail du travail effectué chaque semaine
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k}{import} \PY{n}{Image}
+        \PY{n}{Image}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{/datalocal/vboxshare/THESE/CLASSIFICATION/CARTE/CARTE\PYZus{}LOCALISATION\PYZus{}BV.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{width}\PY{o}{=}\PY{l+m+mi}{700}\PY{p}{)}
+\end{Verbatim}
+
+\texttt{\color{outcolor}Out[{\color{outcolor}1}]:}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_1_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    Octobre 2018
+
+\hypertarget{OCT2017}{}
+Semaine 1
+
+Semaine 2
+
+Semaine 3
+
+Semaine 4
+
+Semaine 5
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S1">
+  <div class="card card-body">
+    
+\end{verbatim}
+
+\textbf{Work} * Objectif: Identifier les manques de la litterature sur
+le sujet * Bibliographie sur les ascpect classification RF
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S2">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{Work} * Objectif : Identifier les manques de la litterature sur
+le sujet * Bibliographie sur les ascpect irrigation, cartograhpie
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S3">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{Work} * Objectif: Continuer Bibliographie, et Commencer la
+rédation d'une synthèse bibliographie * Rédaction de la synthèse
+bibliographie ==\textgreater{} lien dropbox ou cloud apple
+PATH\_DISK\_EX+``Synthèse bibliographique\_VD.doc''
+
+\textbf{Réunion} * Seminaire THEIA : Montpellier
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S4">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{Work} * Rédaction abstract Living plant + corrections
+==\textgreater{} PATH\_DISK\_EX +``Submission abstract Living
+planet.doc'' * Bibliographie RADAR
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S5">
+  <div class="card card-body">
+     
+\end{verbatim}
+
+\textbf{Work} * Bibliographie + synthèse final avec corrections * PPT
+stratégie thèse ==\textgreater{} PATH\_DISK\_EX
++``THESE/BIBLIOGRAPHIE/Strategie\_These.ppt'' * Abstract living plant
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+    Novembre 2018
+
+\hypertarget{NOV2017}{}
+Semaine 6
+
+Semaine 7
+
+Semaine 8
+
+Semaine 9
+
+Semaine 10
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S6n">
+  <div class="card card-body">
+    
+\end{verbatim}
+
+\textbf{Work} * Bibliographie evapotranspiration + indice radar *
+Abstract living planet soumission * Rédaction des conventions pour les
+données.
+
+\textbf{Réunion} * VD - Validation des approches Soil Moisture et
+phenologies. Approche ETR spatilisation trop ambiscieux * Acteurs -
+Finalsiation des objectifs pour la these, discussion sur les données et
+le périmétre d'étude ==\textgreater{} Reunion\_these\_acteur.txt *
+Mirelle HUC (MH)- A propos de la chaine d'extraction codée en Python \{
+Explication de Git\} * Reunion extraction Mireille * Principe de la
+chaine: code sur Git, extrait les données météo et les données images *
+Sorie en CSV ou python.\\
+* apprendre a utliser GIT - coder module grahique avec Python - git hub
+-compte crée pageoty - installer GIt sur la pc en local - git comtrole
+de version en deux type décentraler - gitlab - adresse tully puis clone
+du git - git.commit valider les modif en local - copier dans dossier =
+git.clone du tully. - Git.statue permet de voir ce qui a été modifier -
+git.dif permet de voir mes mofi - git.chekout annule les modif non
+commit. - git. add du fichier modifier puis git commit - git init pour
+crée un depot git.
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S7n">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{Work} * Bibliographie sur l'approche NDVI/kc. * \emph{Glenn et
+al, Choulhury et al} : sur l'approche indirect estimation Kc avec des VI
+--\textgreater{} relation NDVI/Kc permet pour un NDVI donné d'estimer un
+Kc et et donc l'évapotranspiration réele par simple division avec ET0. *
+Modèle FAO-56, avec deux configuration possible (single ou dual coeff) *
+Bibliograghie sur les indices de vegetation = estiamtion de l'eau *
+\emph{Ceccato et al, 2002} , \emph{Huete et al, 2002} : *
+\href{www.europe-fluxdata.eu}{BD ICOS} --\textgreater{} Information ETR
+non disponible dans la BD ,difficulté avec le pas de temps
+semi\_horaires et la BD ne permet par d'identifier le type de culture.
+NOUS N'ALLONS PAS UTILISER CETTE BD CAR PAS DISPO POUR LES ANNEES
+2016,2017,2018. * Pour NDVI-Kc, utilisation des deux méthodes Dual
+Coefficient * Probleme du KCB, il n'est pas affecter par une stress
+court, donc diffcile d'estimer le stress en zone tempérer avec cette
+indicateur. Si détection stress avec KCB, plante déja stressé donc
+irrigation trop tard. M.I. \emph{Ferreira et al, 2012}.
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S8n">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{Work} * Récupération de la méthode de calcul de la RU max sur la
+carte des sols (MAISEO)(Equation: Profondeur racinaire * la réserve
+utile de l'horizon) * Bibliographie sur les différents codes de la
+couches SOLS. * Fin de téléchargement des donnéees L8 * Production des
+cartes (localisation des données et de la zone d'étude.)
+
+\textbf{Réunion} * Jeudi Matin réunion VD sur diapo présentation thèse
+afin de préparer la réunion équipe modélisation et celle de Jordi. *
+Bilan de la réunion avec VD: * Modifier le diagramme du slide avec la
+production du mask apres les étapes de préporcessing: * Réalisation des
+stats tounée terrain par rapport au RPG (proporation de MAIS irriguées,
+sur mais total RPG, en plsu vis à vis de la pente) * Envoyer mail CACG
+(Mathieur et Mamadou)= récupération des données terrain + eventuelle
+problème avec l'utilisation du Mask (Amélioration avec du S1 ?) * Idée
+amélioration des tournée terrain ( Identification des partiqus
+culturales (type d'iirgation pivot, enrouleur); date de semis et ou
+lever) * Détection des ronds d'irrigation (morphologies des parcelles)
+avec du S2 et et du L8 = méthode comparer temp\&rature de surfaces L8
+entre mais irrigées et mais non irriguées sur plusieurs parcelles
+(donénes terrains en 2017).\\
+* Participation à la réunion d'équipe OCS (CR mail)--\textgreater{}
+question abordé : OneSoil, Poursuite de recherche
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S9n">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{Work} * Probleme librairie GDAL et SAGA * Fusion de l'ensemble
+des donénes terrain pour l'année 2017 et transmettre à CMS *
+Méthodologie pour extraction données CA en format POINT. - Intersection
+vec RGP = donne couche point avec ensemble des donnes (ID\_parcelle et
+OBS terrain) - Selection entitées selon localisation avec RPG et couche
+point - Donne 1 ficher par sortie terrain - Fusion les couches SHP
+enytre elle - regroupe des ID\_Parcelles * ATTENTION les parcelles de la
+CACG en 2017 sont déja érodé de 10 m * Ensemble des jeux de données sont
+reprojeter, et passer en mode polygone. Reste plus cas vérfier avec le
+RPG et supprimer les artéfacts. * Création d'un script calcule de NDVI
+avec application du mask de nuage
+\href{https://github.com/pageotyann/code_python-/blob/master/Scrpit_NDVI2.py}{SCRIPT}
+* Vérifier validité du jeux de données des CA + refaire STAT sur
+l'ensemble des parcelles * Données MAIS 2018 de la CACG sont tous des
+mais IRR
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S10n">
+  <div class="card card-body">
+     
+\end{verbatim}
+
+\textbf{Work} * Comparaison des données SM avec les ground data sur
+l'ADOUR. tracer les séries temporelle (évolution des sols moiture) *
+Ecarte entre irri et non irriguée observable (ATTENTION les données de
+SM sont en mv multiplier par 5, pour les utilisez de façon réaliste il
+faut diviser la valeurs du pixels par 5)\\
+* PRoduction SRTM en pente (degres) * Photo interprétation fini = donne
+200 parcelles de plus * STAT\_ZONAL sur SRTM pente fait pour les DT
+terrain CA.
+
+\textbf{Réunion} * REU avec jordi * Ordre deu jour : Utilisation de IOTA
+2 vis la cluster et le serveur SIE. Compilsation des applications OTB
+(stat zonal). * Pour le cours de saison : utlisation des donénes
+anterieurs pour avoir un jeu de référence: avec le dévellopement du
+model stat basé sur une analyse statistique des primitives (régréssion
+\ldots{}.. utilisation des librairies Python (PANDAS)). Ce model
+permettrait eventuellement de fitter la croissance d'une plante. * Pour
+le fin de saison: Utlisaion de IOTA 2 avec ensemble de primitives en
+suppriment les autocorrélations
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+    Décembre 2018
+
+\hypertarget{DEC2017}{}
+Semaine 11
+
+Semaine 12
+
+Semaine 13
+
+Semaine 14
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S11">
+  <div class="card card-body">
+    
+\end{verbatim}
+
+\textbf{Work} * Script merge soil moisture sur Adour Amont (A tester) et
+srtm en mode
+exposition.\href{https://github.com/pageotyann/Code/blob/master/SCRIPT/python/MERGE_SM.py}{SCRIPT\_merge\_sm}
+* Fusion de l'ensemble des données terrain 2017 avec même colonne (ID
+Parcelle, OS rpg, Irrigation, CODE\_culture, OS\_DT,Surface) * Création
+du .sh pour lancer ls code python avec les args parser
+
+\textbf{Réunion} * Equipe modélisation et equipe observation
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S12">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{Work} * Avancer sur l'etat de l'art * Bibliographie sur les
+modèles statistiques * Avancer sur le script BUILD\_ARRAY.PY- merge des
+datframe ensemble fonction * Le modèle utilisé pour la thèse, dervait
+étre un modèle statistique bases sur des régression multiple: modele
+permettant d'expliquer un phéomène en fonction fonct de variable
+explicative dans mon cas : météo, données de télédétection.
+
+\textbf{Réunion} * Auncune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S13">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{Work} * DIAPO présenation OSR 22 janvier =\textgreater{}
+modification de la conclusion avec ajoute ( Poursuite de la campagne
+terrain sur une culture d'été (MAIS), dans l'espoir que les analyses
+concordes sur les mêmes conclusions que pour les cultures d'étés) *
+Abstarct JDD 14 janvier * Organisation de la JDD : Planning-Vendredi *
+Extaction des SM with python
+/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SCRIPT/framework-spatialisation/main/spatialisation\_main.py
+-x rep\_humidite.xml (modifier XML des PATH SHP) * code for open file
+extaction resul
+``pickle.load(open(''./out\_humidite/DT\_2017\_TARN\_ER10\_W84/hum\_None\_3149778.p``))''
+* Début de la construction du TAB.csv avec les données de SM et les
+données de SRTM * Refaire extraction mais attention au donénes MS qui se
+chauvauche car création de doublons dans mes id parcelles.
+
+\textbf{Réunion} * VD \& Mireille pour l'extraction des données (
+Framework\_spatialisation)
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S14">
+  <div class="card card-body">
+\end{verbatim}
+
+\textbf{Work} * JDD CESBio, présentation * Script SM\_DATA= extraction
+SM + SRTM data * Début script METEO\_DATA= extraction des données météo
+sur station d'intéret. * Téléchagement des données METEO = Synop
+essentiel sur ensemble des années
+\href{https://donneespubliques.meteofrance.fr/}{Météo\_France}
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+    Janvier 2019
+
+\hypertarget{JAN19}{}
+Semaine 15
+
+Semaine 16
+
+Semaine 17
+
+Semaine 18
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S15">
+  <div class="card card-body">
+\end{verbatim}
+
+\textbf{Work} * Labelisation du champ irrigation: if(``IRRIGATION'' =
+`NIRR' , 0,1) * Script CLIMAT\_DATA en cours de construction: boucle sur
+les csv, puis ajoute des stations et concaténartion de l'ensemeble des
+datas * Récupération données classes pérennes ajouter au DT\_IRRIGATION
+* Réfléchir à l'extraction à l'utlisation des données métérologiques
+pour le modèle (spatialisé, quel point de mesure pour quelle parcelle
+??) * Finalisation des DF data Météo\_france. Conversion T°K en T°C *
+Mail Michel pour les data météo, validation de l'approche plus proche
+voisin, mais data pluvio probleme car résolution spatiale trop basse/
+Utlisation de data ERA 5 ou MERRA-2
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S16">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{WORK} * Finalisation des DF data Météo\_france. Convertir les
+données tri\_horaires en données journalières * prépare l'ensemble des
+données pour classif sur SIECAL * SM 1 = reapmle + extract ROI * L8 * S1
+mais avoir pour correction * carte sol (RRP) =GOOD * Création d'un
+masque des culture d'été = comparer les DATA OSO et les DATA RPG afin de
+connaitre les OS dans classes cultures d'été. * DATA\_SAFRAN voir avec
+Mireille (good)
+
+\textbf{Réunion} * Mireille pour les cartes des SOL 29 janvier 2019
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S17">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{WORK} * Telechargement des data S1 avec la chaine de CESBIO *
+Finalisation du R1 bin et R1 crops pour lancement SIEcalc * Récupération
+DATA ASA * EMail ppur récupération data CA TARN.\\
+* Envoyer DT\_2018 a vincent pour extraction RPG * L8\_TST sont masquées
+avec le Script MASK\_L8, il faut encore que les reprojeter et es resampl
+avec le script resample data
+\href{https://github.com/pageotyann/Code/blob/master/SCRIPT/python/MASK_L8_LST.py}{SCRIPT}
+
+\textbf{Réunion} * Sylvain modele chaos= plusieur psite a explorer,
+(construire deix modéles chaos mono varié en dérivant le NDVI (modele
+irrigé et non irriguée) définir distance entre les deux au moment de
+l'état initial = test avec modéle de ROSSELER sur R. Pour construire els
+série temporelle de NDVI coller bout a bout les spectre de NDVI en
+supprimant les zone de sol nu et début de cycles. Faire cela pour
+ensemble des crops irrigées et non irrigées '(binaire) puis par
+cultures)
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S18">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{Work} * integration des daa ASA dans le jeux de onnées 2017 *
+Calcule des Statistiques par type de crops/ Irr * Comprehension des
+modèles Chaotiques sous R * Création des graphiques
+(STAT)\href{https://github.com/pageotyann/Code/blob/master/SCRIPT/python/Plot.py}{script}
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k}{import} \PY{n}{Image}
+        \PY{n}{Image}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{/datalocal/vboxshare/THESE/CLASSIFICATION/CARTE/CARTE\PYZus{}DATA\PYZus{}ALL.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{width}\PY{o}{=}\PY{l+m+mi}{700}\PY{p}{)}
+\end{Verbatim}
+
+\texttt{\color{outcolor}Out[{\color{outcolor}2}]:}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_6_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    Février 2019
+
+\hypertarget{FEV19}{}
+Semaine 19
+
+Semaine 20
+
+Semaine 21
+
+Semaine 22
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S19">
+  <div class="card card-body">
+\end{verbatim}
+
+\textbf{Work} * Foramtion python toute la semaine
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S20">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\textbf{Work} * Finalisation du ppt réunion avec jordi sur choix du
+partage des échantillons * Création du jupyter notebook * Etude des
+statistiques RPG et DT pour chque eco\_reg et chaque petit régions
+agricoles * Conclusion: On conserve les zones Ecoclimatiques avec
+potentiellement Ajoute data RPG pour zone avec déséquilibre entre DT et
+RPG (cf Graphique)
+
+\textbf{Réunion} * Réu avec les chambres d'agricultures Nouvelle
+aquitaine, Gers et Charantes * Conclusion--\textgreater{} pas des
+données a fournir mais très interesser pat le projet de la thèse
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S21">
+  <div class="card card-body">
+\end{verbatim}
+
+\textbf{Work} * Calcule des pente et expo des SRTM * Pente doivent être
+caluler dans un systme de projection métrique et ensuite reporjeter avec
+superimpose (paramétre NN) pour créer le mask des pentes. * mask des
+pentes (formule bands\_math: im1b1 \textless{}= 5 ? im1b1= 0 : im1b1=1)
+* Application mask sur les SRTM évélvation (im1b1\emph{im2b1) } pas
+besion de Crée une mosaique (Iota² gérer dalle par dalleau format
+S2)\href{https://github.com/pageotyann/Code/blob/master/SCRIPT/python/SuperImpose_TILE_S2.py}{Script
+Resample+decoup+Interpo} * Création
+\href{https://github.com/pageotyann/Code/blob/master/SCRIPT/python/SRTM_PENTE_MASK.py}{Script}
+* Utilisation reclass sous Qgis * Est= 0,45 et 316,360 * Nord= 46, 135 *
+Ouest = 136,225 * Sud = 226, 315 * Utilisation de band\_math pour
+converir les -99999 en 0 (formule = im1b1 \textless{}= 0 ? im1b1 =0 :
+im1b1 = im1b1) * Lancement de la permière classification * Creer jeu de
+données avec classes others Irrigated avec os polygon \textless{} 100
+entitées * LABCROIRR = code 7 pour others crops irrigated (conditions
+inferieur a 100 polygones)
+
+\textbf{Réunion} * Aucune
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+\begin{verbatim}
+<div class="collapse multi-collapse" id="S22">
+  <div class="card card-body">
+      
+\end{verbatim}
+
+\begin{verbatim}
+</div>
+\end{verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}31}]:} \PY{c+c1}{\PYZsh{} Plot echantillons classification }
+         \PY{o}{\PYZpc{}}\PY{k}{run} Plot.py 
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_8_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{a-faire}{%
+\section{A faire}\label{a-faire}}
+
+\begin{itemize}
+\item
+  SRTM
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Croiser pente et elévation /RPG
+  \item
+    Croiser pente et elevation / DT\_ALL
+  \end{itemize}
+\item
+  Plot Mettre plot Zoneage écoclimatique propres avec sur chaque zone,
+  le plot RPG et plot DT
+\item
+  DATA\_DT
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ajoute data RPG pour requilibre classe (Sunflower) sur zone
+    écolomatique.
+  \end{itemize}
+\item
+  Lire publication Indice red\_edge (ludovic)
+\item
+  GSM concacter pour info unite( voir PM)
+\item
+  IOTA
+
+  \begin{itemize}
+  \tightlist
+  \item
+    PAS gestion des NODATA par la chaine (sinon resampling tout)
+  \end{itemize}
+\end{itemize}
+
+    \hypertarget{classification}{%
+\subsection{Classification}\label{classification}}
+
+\begin{itemize}
+\tightlist
+\item
+  step 1:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    S2,TCJ,50/50,2017, binary
+  \end{itemize}
+\item
+  step 2:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    S2,TCJ,50/50,2017, crops
+  \end{itemize}
+\item
+  step 3:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    S2,TCJ,50/50,2017, crops\_reclass \#\# A lancer
+  \end{itemize}
+\item
+  Step 2
+
+  \begin{itemize}
+  \tightlist
+  \item
+    S2,TCJ,requilibre\_echant,2017,crops
+  \end{itemize}
+\item
+  Step 3
+
+  \begin{itemize}
+  \tightlist
+  \item
+    S2, TCJ, \ldots{}, 2017,crops, Indices (NDRE,PSRI)
+  \end{itemize}
+\item
+  Step 4
+
+  \begin{itemize}
+  \tightlist
+  \item
+    S2, TCJ, \ldots{}, 2017, crops, Indices, SRTM
+  \end{itemize}
+\item
+  Step 5
+
+  \begin{itemize}
+  \tightlist
+  \item
+    S2, TCJ, \ldots{}, 2017, crops, Indices, SRTM, Soil moisture
+  \end{itemize}
+\item
+  Step 6
+
+  \begin{itemize}
+  \tightlist
+  \item
+    S2, TCJ, \ldots{}, 2017, crops, Indices, SRTM, Soil moisture, S1
+  \end{itemize}
+\item
+  Step 6
+
+  \begin{itemize}
+  \tightlist
+  \item
+    S2, TCJ, \ldots{}, 2017, crops, Indices, SRTM, Soil moisture, S1,
+    SAFRAN
+  \end{itemize}
+\end{itemize}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
