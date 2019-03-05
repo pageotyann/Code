@@ -120,11 +120,11 @@ def zonal_stats(vector_path, raster_path, nodata_value=None, global_src_extent=F
         )
 
         feature_stats = {
-            'min': float(masked.min()),
+            #'min': float(masked.min()),
             'mean': float(masked.mean()),
-            'max': float(masked.max()),
-            'std': float(masked.std()),
-            'sum': float(masked.sum()),
+            #'max': float(masked.max()),
+            #'std': float(masked.std()),
+            #'sum': float(masked.sum()),
             'count': int(masked.count()),
             'fid': int(feat.GetFID())}
 

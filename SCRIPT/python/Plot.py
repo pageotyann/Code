@@ -25,17 +25,21 @@ def plotenbar(x,y):
     plt.xlabel(name_axe_x)
     plt.ylabel(name_axe_y)
     plt.xticks(y_pos, list(x),rotation=45)
-    plt.text(x=x.shape[0]-2,y=max(y/sum(y)),s=round(float(sum(y)),2))
-    plt.text(x=x.shape[0]-4.5,y=max(y/sum(y)),s="superfice totale (ha):")
-    #label=round(y,2)
-    #for j in range(len(df["sum"])):
-        #plt.text(x = y_pos[j] , y = y[j] +0.01, s = list(label)[j], size = 11)
+#    plt.text(x=x.shape[0]-2,y=max(y/sum(y)),s=round(float(sum(y)),2))
+#    plt.text(x=x.shape[0]-4.5,y=max(y/sum(y)),s="superfice totale (ha):")
+#    #label=round(y,2)
+#    #for j in range(len(df["sum"])):
+#        #plt.text(x = y_pos[j] , y = y[j] +0.01, s = list(label)[j], size = 11)
 
 
 
 
 
-if __name__ == '__main__':
+#
+#if __name__ == '__main__':
+d = {}
+d["PATH_DT"]="/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_ECOREG/CSV/"
+d["PATH_RPG"]="/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_ECO_REG/CSV/"
 # =============================================================================
 # Ajoute de la fonction add avec ponderation
 # =============================================================================
@@ -166,40 +170,63 @@ for i in list_csv:
         fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAY_PRAGRI/PLOT/%s.png"%(zone))
 
 # =============================================================================
-# plot diapo rapide 
+# plot RPG_9TILES
 # =============================================================================
-df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_9TILES_RPG.csv")
-name_tr=["Maize","Sorghum","Soybean","Peas","Sunflower"]
 
-df["name"]=name_tr
-df=df.sort_values(by='sum', ascending=False)
+df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_9TILES.csv")
+df=df.sort_values(by='category', ascending=True)
+df["name"]=names_RPG
 df=df.reset_index()
-plotenbar(df.name,df["sum"]/sum(df["sum"]))
+plotenbar(df.name,df["count"])
 pal=sns.set_palette("RdYlBu",len(y_pos))
 plt.title("9tiles")
-plt.text(x=df.shape[0]-1,y=max(df["sum"]/sum(df["sum"])),s=round(sum(df["sum"]),2))
-plt.text(x=df.shape[0]-2.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
 
-df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_9TILES_DT.csv")
-name_tr=["Maize","Sorghum","Soybean","Peas","Sunflower"]
+df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_9TILES.csv")
+df=df.sort_values(by='category', ascending=True)
+df["name"]=names_RPG
+df=df.reset_index()
+plotenbar(df.name,df["sum"]/sum(df["sum"]))
+plt.title("9 tiles")
+plt.text(x=df.shape[0]-2,y=max(df["sum"]/sum(df["sum"])),s=round(float(sum(df["sum"])),2))
+plt.text(x=df.shape[0]-4.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
+label=round(df["sum"]/sum(df["sum"]),2)
+        # Tet on the top of each barplot
+for j in range(len(df["sum"]/sum(df["sum"]))):
+    plt.text(x = y_pos[j] , y = (df["sum"]/sum(df["sum"]))[j] +0.01, s = list(label)[j], size = 11)
+
+
+# =============================================================================
+# PLOT_DT
+# =============================================================================
+
+df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_TCJ_LabCrirr.csv")
+df=df.sort_values(by='category', ascending=True)
+names_crop_tcj=["Maize_Irr","Soybean_Irr","Sunflower_Irr","Others","Maize_Nirr","Soybean_Nirr","Sorghum_Nirr","Sunflower_Nirr","Peas_Nirr"]
+df["name"]=names_crop_tcj
+df=df.reset_index()
+plotenbar(df.name,df["sum"]/sum(df["sum"]))
+plt.title("9 tiles")
+plt.text(x=df.shape[0]-2,y=max(df["sum"]/sum(df["sum"])),s=round(float(sum(df["sum"])),2))
+plt.text(x=df.shape[0]-4.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
+label=round(df["sum"]/sum(df["sum"]),2)
+        # Tet on the top of each barplot
+for j in range(len(df["sum"]/sum(df["sum"]))):
+    plt.text(x = y_pos[j] , y = (df["sum"]/sum(df["sum"]))[j], s = list(label)[j], size = 11)
+
+
+df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_ALL_lab_Crirr.csv")
+df=df.sort_values(by='category', ascending=True)
 df["name"]=names_crop
-df=df.sort_values(by='sum', ascending=False)
 df=df.reset_index()
 plotenbar(df.name,df["sum"]/sum(df["sum"]))
-plt.title("9tiles")
-plt.text(x=df.shape[0]-1.5,y=max(df["sum"]/sum(df["sum"])),s=round(sum(df["sum"]),2))
-plt.text(x=df.shape[0]-5.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
-
-df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_9TILES_DT_crop.csv")
-name_tr=["Maize","Sorghum","Soybean","Peas","Sunflower","Others"]
-df["name"]=name_tr
-df=df.sort_values(by='sum', ascending=False)
-df=df.reset_index()
-plotenbar(df.name,df["sum"]/sum(df["sum"]))
-plt.title("9tiles")
-plt.text(x=df.shape[0]-1,y=max(df["sum"]/sum(df["sum"])),s=round(sum(df["sum"]),2))
-plt.text(x=df.shape[0]-2.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
-
+plt.title("9 tiles")
+plt.text(x=df.shape[0]-2,y=max(df["sum"]/sum(df["sum"])),s=round(float(sum(df["sum"])),2))
+plt.text(x=df.shape[0]-4.5,y=max(df["sum"]/sum(df["sum"])),s="superfice totale (ha):")
+label=round(df["sum"]/sum(df["sum"]),3)
+        # Tet on the top of each barplot
+for j in range(len(df["sum"]/sum(df["sum"]))):
+    plt.text(x = y_pos[j] -0.4 , y = (df["sum"]/sum(df["sum"]))[j], s = list(label)[j], size = 11)
+    
 # =============================================================================
 # Plot ECO_REG
 # =============================================================================
@@ -234,4 +261,59 @@ for i in list_csv:
         plt.show()
         fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_ECOREG/PLOT/%s.png"%(zone))
 
-        
+# =============================================================================
+# Catplot with concat_data        
+# =============================================================================
+list_RPG=os.listdir(d["PATH_RPG"])
+list_DT=os.listdir(d["PATH_DT"])
+dfall=pd.DataFrame()
+for i in list_RPG:
+    df=pd.read_csv(d["PATH_RPG"] +i)
+    add=pd.DataFrame({'zone':i[17:-4],'source':'RPG'},index=[0,1])
+    df[["source","zone"]]=add 
+    df.sort_values(by='category',ascending=True)
+    df["name"]=names_RPG
+    dfall=dfall.append(df)
+    
+dfdt=pd.DataFrame()
+for j in list_DT:
+    df=pd.read_csv(d["PATH_DT"] +j)
+    if df.shape[0] != len(code_crops):
+        print ("Error dimension")
+        result=set(list(df.category)).union(set(code_crops)) - set(list(df.category)).intersection(set(code_crops))
+        miss=pd.DataFrame(result)
+        val=pd.DataFrame(np.repeat(0,miss.shape[0])).values
+        add=pd.DataFrame({"category":list(miss.values),"min":list(val),"max":list(val),"mean":list(val),
+                                  "stddev":list(val),"sum":list(val),"count":list(val)})
+        df=pd.concat([df,add],ignore_index=True)
+        add2=pd.DataFrame({'zone':j[16:-4],'source':'DT'},index=[0])
+        df[["source","zone"]]=add2 
+        df.sort_values(by='category',ascending=True)
+        df["name"]=names_crop
+        dfdt=dfdt.append(df)
+
+
+# =============================================================================
+# regoupement des classes faiblement représenter
+# =============================================================================
+df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_9TILES_NEW_CLASSE.csv")
+df=df.sort_values(by='category', ascending=True)
+names_regroupe=["Maize_Irr","Soybean_Irr","Others","Others_Crops_Irr","Maize_Nirr","Soybean_Nirr","Sorghum_Nirr","Sunflower_Nirr","Peas_Nirr"]
+df["name"]=names_regroupe
+df=df.reset_index()
+plotenbar(df.name,df["count"])
+plt.title("9tiles")
+y_pos= np.arange(len(list(df["count"])))
+label=round(df["count"])
+        # Tet on the top of each barplot
+for j in range(len(df["count"])):
+    plt.text(x = y_pos[j] , y = df["count"][j] +0.01, s = list(label)[j], size = 11)
+    
+plotenbar(df.name,df["sum"]/sum(df["sum"]))
+plt.title("9tiles")
+y_pos= np.arange(len(list(df["count"])))
+label=round(df["sum"]/sum(df["sum"]),2)
+        # Tet on the top of each barplot
+for j in range(len(df["sum"]/sum(df["sum"]))):
+    plt.text(x = y_pos[j] , y = (df["sum"]/sum(df["sum"]))[j] +0.01, s = list(label)[j], size = 11)
+    

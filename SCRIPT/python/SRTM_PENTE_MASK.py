@@ -15,15 +15,21 @@ import otbApplication
 
 
 
-#application1 = otbApplication.Registry.CreateApplication("BandMath")
-#application2 = otbApplication.Registry.CreateApplication("BandMath")
-#App = otbApplication.Registry.CreateApplication("ConcatenateImages")
-#App1= otbApplication.Registry.CreateApplication("ConcatenateImages")
+
 d={}
-b=[]
-a=[]
 d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/SRTM/SRTM/SRTM_TILE/"
 list_img=os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/SRTM/SRTM/TILE/")
+
+for j in os.listdir(d["data_file"]):   
+    path_img=os.path.basename(j)[0:-7]
+    tile=path_img[20:26]
+    print(tile)
+    d["image_name"]=path_img[0:-9]
+    d["ELEV"]=d["image_name"]+ "_0001_ALT_R1.TIF"
+    os.system("gdaldem aspect -trigonometric -zero_for_flat /datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/SRTM/SRTM/SRTM_TILE/%s %s_exposition.tif "%(d["ELEV"],path_img))
+    os.system("rm /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SCRIPT/python/S2__TEST_AUX_REFDE2_%s_0001_SLP_exposition.tif"%(tile))
+os.system(" mv *exposition.tif /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SRTM/EXPO_TILE_SRTM/")
+
 for i in list_img:
     path_img=os.path.basename(i)[0:-11]
     tile=path_img[20:26]
@@ -31,7 +37,9 @@ for i in list_img:
     d["image_name"]=path_img
     d["ELEV"]=d["image_name"]+ "_ALT_R1.TIF"
     d["PENTE"]=d["image_name"]+"_SLP_R1.TIF"
-   
+    d["EXPO"]=d["image_name"]+ "_ALT_exposition.tif"
+    
+    
     App = otbApplication.Registry.CreateApplication("ConcatenateImages")
     App.SetParameterStringList("il",[str(d["data_file"]+d["ELEV"])])
     App.SetParameterString("out","STRM.tif")
@@ -42,6 +50,11 @@ for i in list_img:
     App1.SetParameterString("out","PENTE.tif")
     App1.Execute()
     
+    App2= otbApplication.Registry.CreateApplication("ConcatenateImages")
+    App2.SetParameterStringList("il",[str("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SRTM/EXPO_TILE_SRTM/"+d["EXPO"])])
+    App2.SetParameterString("out","EXPO.tif")
+    App2.Execute()
+    
     application1 = otbApplication.Registry.CreateApplication("BandMath")
     application1.AddImageToParameterInputImageList("il",App1.GetParameterOutputImage("out"))
     application1.SetParameterString("out", "Mask_pente_%s.tif"%(tile))
@@ -51,21 +64,21 @@ for i in list_img:
     
     application2 = otbApplication.Registry.CreateApplication("BandMath")
     application2.AddImageToParameterInputImageList("il",application1.GetParameterOutputImage("out"))
-    application2.AddImageToParameterInputImageList("il",App.GetParameterOutputImage("out"))
-    application2.SetParameterString("out", "SRTM_MASK_%s.tif"%(tile))
+    application2.AddImageToParameterInputImageList("il",App2.GetParameterOutputImage("out"))
+    application2.SetParameterString("out", "EXPO_MASK_%s.tif"%(tile))
     application2.SetParameterString("exp", 'im1b1*im2b1')
     print("Application of Mask\n")
     application2.ExecuteAndWriteOutput()
 
 #
-    os.system ("mv SRTM_MASK* /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SRTM/MASK_SRTM_TILE/")
+    os.system ("mv EXPO_MASK* /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SRTM/MASK_SRTM_TILE/")
     
-for j in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SRTM/MASK_SRTM_TILE/"):   
-    print (j)
-    tile=os.path.basename(j)[10:-4]
-    print (tile)
-    os.system("gdaldem aspect -trigonometric -zero_for_flat /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SRTM/MASK_SRTM_TILE/SRTM_MASK_%s.tif exposition_%s.tif "%(tile,j))
-
-os.system(" mv exposition* /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SRTM/EXPO_TILE_SRTM/")
+#for j in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SRTM/MASK_SRTM_TILE/"):   
+#    print (j)
+#    tile=os.path.basename(j)[10:-4]
+#    print (tile)
+#    os.system("gdaldem aspect -trigonometric -zero_for_flat /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SRTM/MASK_SRTM_TILE/SRTM_MASK_%s.tif exposition_%s.tif "%(tile,j))
+#
+#os.system(" mv exposition* /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SRTM/EXPO_TILE_SRTM/")
 ##
 
