@@ -31,30 +31,64 @@ def plt_classif(df,var1,var2,var3):
     plt.bar(y_pos+df.shape[0]*2.25,df["mean_"+var3],yerr=df["std_"+var3],capsize=3,width = 1,label=var3)
     plt.xticks(y_pos, tuple(df.index),rotation=90)
     plt.legend()
+    
+def plt_classif_kappa(df,var1,var2):
+    plt.figure(figsize=(10,10))
+    y_pos=np.arange(df.shape[0])
+    sns.set(style="darkgrid")
+    sns.set_context('paper')
+    plt.bar(y_pos,df["mean_"+var1],yerr=df["std_"+var1],capsize=3,width = 1,label=var1)
+    plt.bar(y_pos+df.shape[0]+0.5,df["mean_"+var2],yerr=df["std_"+var2],capsize=3,width = 1,label=var2)
+    plt.xticks(y_pos, tuple(df.index),rotation=90)
+    plt.legend()
 #    plt.show()
+def errplot(x, y, yerr, **kwargs):
+    ax = plt.gca()
+    data = kwargs.pop("data")
+    data.plot(x=x, y=y, yerr=yerr, kind="bar", ax=ax, **kwargs)
+
 
 d={}
-d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/"
+d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/RUN/"
+d["SAVE"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/"
 # =============================================================================
 # Recuperation KAPPA & OA 
 # =============================================================================
 KAPPA=pd.DataFrame()
+run=pd.DataFrame()
 for j in os.listdir(d["data_file"]):
+    run=run.append([j],ignore_index=True)
     for i in os.listdir(d["data_file"] +j):
         with open(d["data_file"]+j+"/"+i+"/"+"RESULTS.txt", "r") as res_file:
             for line in res_file:
                 if "KAPPA" in line.rstrip():
-                    print (line.rstrip())
-                    KAPPA=KAPPA.append([j,line.rstrip()],ignore_index=True)
-
+                    print (line.rstrip()[7:])
+                    KAPPA=KAPPA.append([line.rstrip()[7:]],ignore_index=True)
+                    
 OA=pd.DataFrame()
 for j in os.listdir(d["data_file"]):
     for i in os.listdir(d["data_file"] +j):
         with open(d["data_file"]+j+"/"+i+"/"+"RESULTS.txt", "r") as res_file:
             for line in res_file:
                 if "OA" in line.rstrip():
-                    print (line.rstrip())
-                    OA=OA.append([j,line.rstrip()],ignore_index=True)
+                    print (line.rstrip()[4:])
+                    OA=OA.append([line.rstrip()[4:]],ignore_index=True)
+dfindice=pd.concat([run,KAPPA,OA],axis=1)
+names_indice=["step","kappa",'OA']
+dfindice.columns=names_indice
+kappa=dfindice["kappa"].str.split(expand=True)
+kappa.drop([1],axis=1,inplace=True)
+kappa=kappa.astype(float)
+oa=dfindice["OA"].str.split(expand=True)
+oa.drop([1],axis=1,inplace=True)
+oa=oa.astype(float)
+dfindice=pd.concat([dfindice,kappa,oa],axis=1,ignore_index=True)
+names_indice=["step","kappa",'OverA',"mean_Kappa","std_Kappa","mean_OA","std_OA"]
+dfindice.columns=names_indice
+dfindice.set_index("step",inplace=True)
+
+
+
 # =============================================================================
 #RECUPERATION DATA_MATRIX 
 # ===========================================================================
@@ -91,6 +125,7 @@ for j in os.listdir(d["data_file"]):
 
 data=pd.concat([dfall,dfaccu,dfrapp,dffsc],axis=1)
 data.columns=names_dfs
+data.sort_index(by=["step","Classe"],ascending=True,inplace=True)
 data.reset_index(inplace=True)
 dfstep=data.groupby('step').mean()
 dfstep.drop(['level_0','index'],axis=1,inplace=True)
@@ -122,23 +157,46 @@ sns.set(style="darkgrid")
 sns.set_context('paper')
 g=sns.catplot(x="Classe", y="mean_Precision", col="step",data=data, kind="bar",ci=None)
 g.set_axis_labels("", "Accurecy")
-g.set_xticklabels(df1.Classe,rotation=45)
+g.set_xticklabels(df1.Classe,rotation=45)# probleme nom de classes
 #g.set_titles("{col_name} {col_var}")
 g.despine(left=True)
 plt.show()
-g.savefig(d["data_file"]+"plot.png")
+g.savefig(+"plot.png")
+
+# =============================================================================
+# PLOT Compare les esulats des run à la classe
+# =============================================================================
+for i in data[["mean_Fscore","mean_Precision","mean_rappel"]]:
+    print(i)
+    var=i[5:]
+    plt.figure(figsize=(20,20))
+    sns.set(style="darkgrid")
+    sns.set_context('paper')
+    g = sns.FacetGrid(data, col="Classe", col_wrap=dfstep.shape[0]+3, palette="Set1")# Gerer la color par run et +3 a modifier en focntion du nb de run 
+    g.map_dataframe(errplot, "step", "mean_"+var, "std_"+var)
+    g.savefig(d["SAVE"]+var+"_plot_classe_run.png")
+
+
+# =============================================================================
+# Test 3 variable par classes
+# =============================================================================
+plt.figure(figsize=(20,20))
+sns.set(style="darkgrid")
+sns.set_context('paper')
+g=sns.catplot(x="step", y="mean_Fscore", col="Classe",data=data, kind="bar",ci="sd")## Add ecart_type
+g.set_axis_labels("", "Fscore")
+g.set_xticklabels(dfstep.index,rotation=90)
+#g.set_titles("{col_name} {col_var}")
+g.despine(left=True)
+plt.show()
 
 
 
-
-
-
-
-
-
-
-
-
-
+plt.figure(figsize=(20,20))
+sns.set(style="darkgrid")
+sns.set_context('paper')
+g = sns.FacetGrid(data, col="Classe", col_wrap=dfstep.shape[0]+1, palette="Set1")# Gerer la color par run
+g.map_dataframe(errplot, "step", "mean_Fscore", "std_Fscore")
+g.savefig(d["SAVE"]+"plot_classe_run.png")
 
 
