@@ -28,16 +28,16 @@ if __name__ == "__main__":
     print (args.image)
     print(args.pixel)  
 
-
+    Alldata=pd.DataFrame()   
 # Ajoute une fonction if si tu veux les statistiques au polygones
     for i in os.listdir("{}".format(str(args.image).strip("['']"))):
         print (i)
         os.system("otbcli_PolygonClassStatistics -in %s%s -vec %s -field %s -out stat.xml"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.vector).strip("['']")),"{}".format(str(args.label).strip("['']"))))
         os.system("otbcli_SampleSelection -in %s%s -vec %s -field %s -instats stat.xml -strategy all -out SampleSelection.sqlite"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.vector).strip("['']")),"{}".format(str(args.label).strip("['']"))))
         os.system("otbcli_SampleExtraction -in %s%s -vec SampleSelection.sqlite -field %s -out %s/SampleExtraction%s.sqlite"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.label).strip("['']")).lower(),"{}".format(str(args.outstat).strip("['']")),i))
-#        os.system("rm stat.xml")
-#        os.system("rm SampleSelection.sqlite")
-        
+        os.system("rm stat.xml")
+        os.system("rm SampleSelection.sqlite")
+    
     if args.pixel==True:
         for j in os.listdir("{}".format(str(args.outstat).strip("['']"))):
             if ".sqlite" in j:
@@ -46,7 +46,5 @@ if __name__ == "__main__":
                 df=pd.read_sql_query("SELECT * FROM output", conn)
                 globals()["dfpar%s"%j[:-7]]=df.groupby("originfid").mean()
                 globals()["dfpar%s"%j[:-7]].to_csv("{}".format(str(args.outstat).strip("['']"))+"%s.csv"%(j[:-7]))
-            
-            
-            
-            
+                Alldata=Alldata.append(globals()["dfpar%s"%j[:-7]])
+        Alldata.to_csv("{}".format(str(args.outstat).strip("['']"))+"Alldata.csv")

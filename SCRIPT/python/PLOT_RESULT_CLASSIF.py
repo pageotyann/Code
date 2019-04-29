@@ -20,15 +20,14 @@ import os
 import matplotlib.patches as patches
 import csv
 
-
 def plt_classif(df,var1,var2,var3):
     plt.figure(figsize=(10,10))
     y_pos=np.arange(df.shape[0])
     sns.set(style="darkgrid")
     sns.set_context('paper')
     plt.bar(y_pos,df["mean_"+var1],yerr=df["std_"+var1],capsize=3,width = 1,label=var1)
-    plt.bar(y_pos+df.shape[0]+0.5,df["mean_"+var2],yerr=df["std_"+var2],capsize=3,width = 1,label=var2)
-    plt.bar(y_pos+df.shape[0]*2.25,df["mean_"+var3],yerr=df["std_"+var3],capsize=3,width = 1,label=var3)
+    plt.bar(y_pos+df.shape[0]+1,df["mean_"+var2],yerr=df["std_"+var2],capsize=3,width = 1,label=var2)
+    plt.bar(y_pos+df.shape[0]*2+2,df["mean_"+var3],yerr=df["std_"+var3],capsize=3,width = 1,label=var3)
     plt.xticks(y_pos, tuple(df.index),rotation=90)
     plt.legend()
     
@@ -41,7 +40,7 @@ def plt_classif_kappa(df,var1,var2):
     plt.bar(y_pos+df.shape[0]+0.5,df["mean_"+var2],yerr=df["std_"+var2],capsize=3,width = 1,label=var2)
     plt.xticks(y_pos, tuple(df.index),rotation=90)
     plt.legend()
-#    plt.show()
+
 def errplot(x, y, yerr, **kwargs):
     ax = plt.gca()
     data = kwargs.pop("data")
@@ -165,9 +164,10 @@ if __name__ == "__main__":
         plt.figure(figsize=(20,20))
         sns.set(style="darkgrid")
         sns.set_context('paper')
-        g = sns.FacetGrid(data, col="Classe", col_wrap=dfstep.shape[0]+4, palette="Set1")# Gerer la color par run et +3 a modifier en focntion du nb de run 
+        g = sns.FacetGrid(data, col="Classe", col_wrap=9, palette="Set1",height=3)# Gerer la color par run et +3 a modifier en focntion du nb de run 
+        #g.map_dataframe(plt.bar,"step","mean_"+var,yerr="std_"+var)
         g.map_dataframe(errplot, "step", "mean_"+var, "std_"+var)
         g.savefig(d["SAVE"]+var+"_plot_classe_run.png")
 
     
-    pltax2(dfindice.index,dfindice.mean_Kappa,dfindice.mean_OA)
+    #pltax2(dfindice.index,dfindice.mean_Kappa,dfindice.mean_OA)

@@ -16,7 +16,8 @@ import seaborn as sns
 import csv
 from scipy import *
 from pylab import *
-
+import Scatter_plot
+import re
 
 def pltemp(x):
     plt.figure(figsize=(15,10))
@@ -36,15 +37,18 @@ def pltemplui(y,x1,x2):
 def pltSAR4(x,y1,y2,y3,y4):
     plt.figure(figsize=(15,15))
     ax1 = plt.subplot(411)
+    plt.plot(y1.T.mean(),marker="o")
     plt.errorbar(x,y1.interpolate().T.mean(),yerr=y1.interpolate().T.std())
     plt.ylabel("db ascVV_VH")
     plt.title("CODE_CULTURE_"+str(i))
     plt.setp(ax1.get_xticklabels(), visible=False)
     ax2 = plt.subplot(412)
+    plt.plot(y2.T.mean(),marker="o")
     plt.errorbar(x,y2.interpolate().T.mean(),yerr=y2.interpolate().T.std())
     plt.ylabel("db ascVV")
     plt.setp(ax2.get_xticklabels(), visible=False)
     ax3 = plt.subplot(413)
+    plt.plot(y3.T.mean(),marker="o")
     plt.errorbar(x, y3.interpolate().T.mean(),yerr=y3.interpolate().T.std())
     plt.ylabel("db ascVH")
     plt.setp(ax3.get_xticklabels(), visible=False)    
@@ -55,31 +59,42 @@ def pltSAR4(x,y1,y2,y3,y4):
 def intersectlist(x,y):
     set(x).intersection(set(y))
     
+    
+def SAR_process_db(list_lab,data,variable_resarch): # Attention variable_resarch
+     for i in list_lab:
+        print(i)
+        globals()['cropslab%s' % i] = pd.DataFrame(data[data.labcroirr==i]).T
+        globals()['%s%s' % (variable_resarch,i)]=[]
+        for index,row in globals()['cropslab%s' % i].iterrows():
+            if variable_resarch in index:
+                globals()['%s%s' % (variable_resarch,i)].append (row)
+                globals()['df%s%s' %(variable_resarch,i)]=pd.DataFrame(globals()['%s%s' % (variable_resarch,i)])
+                globals()["dbdf%s%s" %(variable_resarch ,i)]=10*np.log10(globals()['df%s%s' % (variable_resarch,i)])
+                
+def sqlite_df(path,x):
+    sql=sqlite3.connect(path)
+    df=pd.read_sql_query("SELECT * FROM output", sql)
+    globals()["%s"%x]=df.groupby("originfid").mean()
+    
+
 if __name__ == "__main__":
-# =============================================================================
-# Optique
-# =============================================================================
+    # =============================================================================
+    # Optique
+    # =============================================================================
     # Lectuer des files
         
-    d={}
-    conn = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/Samples_region_1_seed4_learn.sqlite')
-    conn1 = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R15_GAP30j/learningSamples/Samples_region_1_seed4_learn.sqlite')
-
-    df=pd.read_sql_query("SELECT * FROM output", conn1)
-    dfpar=df.groupby("originfid").mean()
-    
-    # Recuperation des names de cultures
-    #names_crops=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/RUN/r9_crops_tcj_const_PSRI_ERR/final/nomenclature_V2_crops.txt",sep=":",names=["name","code"])
+#   
+    sqlite_df('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/Samples_region_1_seed4_learn.sqlite','dfr14')
     
     #lister les labels dans le file sqlite 
-    lab=dfpar.labcroirr.astype(int)
+    lab=dfr14.labcroirr.astype(int)
     lab=list(set(lab))
     
     #loop sur les label 
     
     for i in lab:
         print(i)
-        globals()['cropslab%s' % i] = pd.DataFrame(dfpar[dfpar.labcroirr==i]).T
+        globals()['cropslab%s' % i] = pd.DataFrame(dfr14[dfr14.labcroirr==i]).T
         globals()['NDVI30j%s' % i]=[]
         for index,row in globals()['cropslab%s' % i].iterrows():
             if "ndvi" in index:
@@ -95,29 +110,13 @@ if __name__ == "__main__":
         plt.xticks(rotation=90)
         plt.title("CODE_CULTURE"+"_"+str(i))
         plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_TEMPOREL/NDVI_2017/plot_NDWI_TEMPOREL_%s.png"%(i))
-    
-    
-    
-    
-    conn = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/Samples_region_1_seed4_learn.sqlite')
-#    conn = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R13_S1_S2/learningSamples/Samples_region_1_seed4_learn.sqlite')
-    df=pd.read_sql_query("SELECT * FROM output", conn)
-    dfpar=df.groupby("originfid").mean()
-    
-    # Recuperation des names de cultures
-    #names_crops=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/RUN/r9_crops_tcj_const_PSRI_ERR/final/nomenclature_V2_crops.txt",sep=":",names=["name","code"])
+
     # =============================================================================
     # RADAR
     # =============================================================================
-    #lister les labels dans le file sqlite 
-    lab=dfpar.labcroirr.astype(int)
-    lab=list(set(lab))
-    
-    #loop sur les label 
-    
     for i in lab:
         print(i)
-        globals()['cropslab%s' % i] = pd.DataFrame(dfpar[dfpar.labcroirr==i]).T
+        globals()['cropslab%s' % i] = pd.DataFrame(dfr14[dfr14.labcroirr==i]).T
         globals()['VHdes%s' % i]=[]
         globals()['VVdes%s' % i]=[]
         globals()['VHasc%s' % i]=[]
@@ -191,11 +190,9 @@ if __name__ == "__main__":
     for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_SM_DT/"):
         print (i)
         date=i[3:11]
-        STASMD = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_SM_DT/'+i)
-        dfSM=pd.read_sql_query("SELECT * FROM output", STASMD)
-        dfpar=dfSM.groupby("originfid").mean()
-        lab=dfpar.labcroirr.astype(int)
-        globals()["meansm%s"%date]=dfpar.value_0
+        sqlite_df("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_SM_DT/"+i,"dfSM")
+        lab=dfSM.labcroirr.astype(int)
+        globals()["meansm%s"%date]=dfSM.value_0
         globals()["meansm%s"%date].rename("SM_"+date,inplace=True)
         timeSM=timeSM.append(globals()["meansm%s"%date])
         
@@ -208,7 +205,6 @@ if __name__ == "__main__":
         globals()['SMcropslab%s' % j] = pd.DataFrame(timesm[timesm.label==j]).T
         plt.figure(figsize=(15,10))
         plt.errorbar(globals()['SMcropslab%s' % j].index,globals()['SMcropslab%s' % j].T.mean(),yerr=globals()['SMcropslab%s' % j].T.std())
-        #pltemp(globals()['SMcropslab%s' % j].iloc[:-1,:10])
         plt.title("CODE_CULTURE"+"_"+str(j))
         plt.ylabel("soil moisture en mv")
         plt.xticks(rotation=90)
@@ -217,15 +213,15 @@ if __name__ == "__main__":
         
     
     # =============================================================================
-    # Gestion des datas SAFRAN et digramme ombrothermqiue
+    # Gestion des datas SAFRAN 
     # =============================================================================
-    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/preliq2017.csv")
+    #df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/preliq2017.csv")
     
-    LAMBX=df.LAMBX*100
-    LAMBY=df.LAMBY*100
-    df["lambX"]=LAMBX
-    df['lambY']=LAMBY
-    df.to_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/preliq2017_v2.csv")
+    #LAMBX=df.LAMBX*100
+    #LAMBY=df.LAMBY*100
+    #df["lambX"]=LAMBX
+    #df['lambY']=LAMBY
+    #df.to_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/preliq2017_v2.csv")
     
     df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/SAFRAN_TCJ.csv")
     df1=df.drop([0])
@@ -235,7 +231,7 @@ if __name__ == "__main__":
     meandate=preliq2.groupby("DATE").mean()
     
     # =============================================================================
-    # Groupe en fonctiondes date S1
+    # Groupe en fonction des date S1
     # =============================================================================
     
     images=[]
@@ -266,7 +262,7 @@ if __name__ == "__main__":
             result2=set(list(date_safran)).union(set(images_S1_des)) - set(list(date_safran)).intersection(set(images_S1_des))
             miss2=np.array(list(result2))
             val2=np.repeat(pd.NaT,miss2.shape[0])
-     ## 4 fois plus rapide        
+     
     polarisation=["ascVV",'desVV','ascVH','desVH',"desVV_VH","ascVV_VH"]       
     for p in polarisation:
         print (p)     
@@ -403,9 +399,10 @@ if __name__ == "__main__":
     # =============================================================================
     for p in polarisation:
         for i in lab:
-            if p in "asc":
+            if "asc" in p:
                 plt.figure(figsize=(15,15))
                 ax1 = plt.subplot(411)
+                plt.plot(globals()["dbdfascVV_VH%s"%(i)].T.mean(),marker="o")
                 plt.errorbar(meandate.index[:-4],globals()["dbdf%sNA%s"%("ascVV_VH",i)].interpolate().T.mean(),yerr=globals()["dbdf%sNA%s"%("ascVV_VH",i)].interpolate().T.std())
                 plt.ylabel("db ascVV_VH")
                 plt.title("CODE_CULTURE_"+str(i))
@@ -413,6 +410,7 @@ if __name__ == "__main__":
                 
                 # share x only
                 ax2 = plt.subplot(412)
+                plt.plot(globals()["dbdfascVV%s"%(i)].T.mean(),marker="o")
                 plt.errorbar(meandate.index[:-4],globals()["dbdf%sNA%s"%("ascVV",i)].interpolate().T.mean(),yerr=globals()["dbdf%sNA%s"%("ascVV",i)].interpolate().T.std())
                 plt.ylabel("db ascVV")
                 # make these tick labels invisible
@@ -420,6 +418,7 @@ if __name__ == "__main__":
                 
                 # share x and y
                 ax3 = plt.subplot(413)
+                plt.plot(globals()["dbdfascVH%s"%(i)].T.mean(),marker="o")
                 plt.errorbar(meandate.index[:-4], globals()["dbdf%sNA%s"%("ascVH",i)].interpolate().T.mean(),yerr=globals()["dbdf%sNA%s"%("ascVH",i)].interpolate().T.std())
                 plt.ylabel("db ascVH")
                 plt.setp(ax3.get_xticklabels(), visible=False)
@@ -431,6 +430,7 @@ if __name__ == "__main__":
             else:
                 plt.figure(figsize=(15,15))
                 ax1 = plt.subplot(411)
+                plt.plot(globals()["dbdfdesVV_VH%s"%(i)].T.mean(),marker="o")
                 plt.errorbar(meandate.index[5:-9],globals()["dbdf%sNA%s"%("desVV_VH",i)].interpolate().T.mean(),yerr=globals()["dbdf%sNA%s"%("desVV_VH",i)].interpolate().T.std())
                 plt.ylabel("db desVV_VH")
                 plt.title("CODE_CULTURE_"+str(i))
@@ -438,6 +438,7 @@ if __name__ == "__main__":
                 
                 # share x only
                 ax2 = plt.subplot(412)
+                plt.plot(globals()["dbdfdesVV%s"%(i)].T.mean(),marker="o")
                 plt.errorbar(meandate.index[5:-9],globals()["dbdf%sNA%s"%("desVV",i)].interpolate().T.mean(),yerr=globals()["dbdf%sNA%s"%("desVV",i)].interpolate().T.std())
                 plt.ylabel("db desVV")
                 # make these tick labels invisible
@@ -445,6 +446,7 @@ if __name__ == "__main__":
                 
                 # share x and y
                 ax3 = plt.subplot(413)
+                plt.plot(globals()["dbdfdesVH%s"%(i)].T.mean(),marker="o")
                 plt.errorbar(meandate.index[5:-9], globals()["dbdf%sNA%s"%("desVH",i)].interpolate().T.mean(),yerr=globals()["dbdf%sNA%s"%("desVH",i)].interpolate().T.std())
                 plt.ylabel("db desVH")
                 plt.setp(ax3.get_xticklabels(), visible=False)
@@ -453,7 +455,7 @@ if __name__ == "__main__":
                 plt.bar(meandate.index[5:-9], meandate.PRELIQ_Q[5:-9],width=1)
                 plt.ylabel("Precipitation en mm")
                 plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_TEMPOREL/SAR_2017/plot_SAR_%s_%s_SAFRAN_mean.png"%("orbitedes",i))
-
+    
     # =============================================================================
     # PLOT_SM_PLUVIO
     # =============================================================================
@@ -468,7 +470,6 @@ if __name__ == "__main__":
         plt.figure(figsize=(15,10))
         ax1 = plt.subplot(411)
         plt.errorbar(meandate.loc[dateSM].index,globals()['SMcropslab%s' % j][:-1].T.mean(),yerr=globals()['SMcropslab%s' % j][:-1].T.std())
-        #pltemp(globals()['SMcropslab%s' % j].iloc[:-1,:10])
         plt.title("CODE_CULTURE"+"_"+str(j))
         plt.ylabel("soil moisture en mv vol %")
         plt.setp(ax1.get_xticklabels(), visible=False)
@@ -491,37 +492,107 @@ if __name__ == "__main__":
         date.append(i[17:25])
             
     
-    images_S1_asc=list(map(int,date))
-    images_S1_asc=list(set(images_S1_asc))
-    images_S1_asc =images_S1_asc.sort()
-    conn = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/SampleExtractionSAR_vvASC.tif.sqlite')
-    df=pd.read_sql_query("SELECT * FROM output", conn)
-    dfpar=df.groupby("originfid").mean()
-    dfpar=dfpar.drop([458])
+    images_S1_asc132 = list(map(int,date))
+    images_S1_asc132 = list(set(images_S1_asc132))
+    images_S1_asc132 = sorted(images_S1_asc132)
     
-    lab=dfpar.labcroirr.astype(int)
+    sqlite_df('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/SampleExtractionSAR_vvASC.tif.sqlite','dfVVASC')
+    dfVVASC=dfVVASC.drop([458])
+    
+    lab=dfVVASC.labcroirr.astype(int)
     lab=list(set(lab))
     
     #loop sur les label 
-    
+    SAR_process_db(lab,dfVVASC,'value')
     for i in lab:
-        print(i)
-        globals()['cropslab%s' % i] = pd.DataFrame(dfpar[dfpar.labcroirr==i]).T
-        globals()['VVasc%s' % i]=[]
-        for index,row in globals()['cropslab%s' % i].iterrows():
-            globals()['VVasc%s' % i].append (row)
-            globals()['dfVV%s' % i]=pd.DataFrame(globals()['VVasc%s' % i])
-            globals()["dbdfVV%s" % i]=10*np.log10(globals()['dfVV%s' % i])
-            globals()["dbdfVV%s" % i]=globals()["dbdfVV%s" % i][8:]
-        globals()["dbdfVV%s" % i]["date"]=images_S1_asc
-        globals()["dbdfVV%s" %i].date=pd.to_datetime(globals()["dbdfVV%s" % i].date,format="%Y%m%d")
-        globals()["dbdfVV%s"%(i)]=globals()["dbdfVV%s"%(i)].set_index("date")
+        globals()["dbdfvalue%s" % i]["date"]=images_S1_asc132
+        globals()["dbdfvalue%s" %i].date=pd.to_datetime(globals()["dbdfvalue%s" % i].date,format="%Y%m%d")
+        globals()["dbdfVV%s"%(i)]=globals()["dbdfvalue%s"%(i)].set_index("date")
         for j in list(globals()["dbdfVV%s" %(i)].columns): 
             globals()["dbdfVVNA%s"%(i)]=globals()["dbdfVV%s" %(i)].resample('D').asfreq()
 
-        plt.figure(figsize=(15,15))
-        plt.errorbar(meandate.index[:-4],globals()["dbdfVVNA%s"%(i)].interpolate().T.mean(),yerr=globals()["dbdfVVNA%s"%(i)].interpolate().T.std())
+        plt.figure(figsize=(15,15)) 
+        ax1=plt.subplot(211)
+        plt.plot(globals()["dbdfVVNA%s"%(i)].T.mean(),marker="o")
+        plt.errorbar(meandate.index[156:-4],globals()["dbdfVVNA%s"%(i)].interpolate().T.mean(),yerr=globals()["dbdfVVNA%s"%(i)].interpolate().T.std(),linewidth=1,linestyle='-')
         plt.ylabel("db ascVV_VH")
         plt.title("CODE_CULTURE_"+str(i))
         plt.setp(ax1.get_xticklabels(), visible=False)
+        ax5 = plt.subplot(212)
+        plt.bar(meandate.index[156:-4], meandate.PRELIQ_Q[156:-4],width=1)
+        plt.ylabel("Precipitation en mm")
+        
+    # =============================================================================
+    # TEST effet interpolation IOTA 
+    # =============================================================================
+    b=set(dbdfVV1.index).intersection(set(dbdfascVV1.index))
+    a=set(dbdfVV1.columns).intersection(set(dbdfascVV1.columns))
     
+    plt.figure(figsize=(15,10))
+    plt.scatter(dbdfascVV1.loc[b][a],dbdfVV1.loc[b][a])
+    plt.xlabel("polarisation VV gapfillée ")
+    plt.ylabel("polarisation VV non gapfillée")
+    rms = sqrt(mean_squared_error(dbdfascVV1.loc[b][a],dbdfVV1.loc[b][a]))
+    plt.text(-12,-1,"RMSE = "+str(round(rms,2)))
+    R2=r2_score(dbdfascVV1.loc[b][a],dbdfVV1.loc[b][a])
+    plt.text(-12,-1.5,"R² = "+str(round(R2,2)))
+    plt.ylim(-12,1)
+    plt.xlim(-12,1)
+    plt.plot([-12,1],[-12,1],'r-', lw=2)
+    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/scatter_gap_VV.png")
+
+    # =============================================================================
+    # Profil TST 
+    # =============================================================================
+    a=set(meandate.index).intersection(set(TimeTSTNIRR.index))
+    
+    timeTST=pd.DataFrame()
+    Years=[]
+    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_TST/"):
+        print (i)
+        tile=i[35:41]
+        print (tile)
+        date=i[42:50]
+        print (date)
+        sqlite_df("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_TST/" +i,"dfTST")
+        lab=dfTST.labcroirr.astype(int)
+        globals()["meanTST%s"%(date)]=round(dfTST.value_0/100-273.15,2)
+        globals()["meanTST%s"%date].rename("TST_"+date,inplace=True)
+        timeTST=timeTST.append(globals()["meanTST%s"%date])
+        Years.append(date)
+    timeTST.sort_index(inplace=True)
+    timeTST[timeTST<= -1]=pd.NaT
+    timeTST["date"]=sorted(Years)
+    timeTST.date=pd.to_datetime(timeTST.date,format="%Y%m%d")
+    TimeTST=timeTST.groupby(timeTST.date).mean()
+    plt.figure(figsize=(10,10))
+    plt.subplot(211)
+    plt.plot(meandate.loc[a].index,TimeTST.loc[a],marker='o')
+    plt.subplot(212)
+    plt.bar(meandate.loc[a].index,meandate.loc[a].PRELIQ_Q,width=5)
+
+    timeTSTNIRR=pd.DataFrame()
+    Years=[]
+    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_TST/STAT_NIRR/"):
+        print (i)
+        tile=i[35:41]
+        print (tile)
+        date=i[42:50]
+        print (date)
+        sqlite_df("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_TST/STAT_NIRR/" +i,"dfTST")
+        lab=dfTST.labcroirr.astype(int)
+        globals()["meanTST%s"%(date)]=round(dfTST.value_0/100-273.15,2)
+        globals()["meanTST%s"%date].rename("TST_"+date,inplace=True)
+        timeTSTNIRR=timeTSTNIRR.append(globals()["meanTST%s"%date])
+        Years.append(date)
+    timeTSTNIRR.sort_index(inplace=True)
+    timeTSTNIRR[timeTSTNIRR<= -1]=pd.NaT
+    timeTSTNIRR["date"]=sorted(Years)
+    timeTSTNIRR.date=pd.to_datetime(timeTSTNIRR.date,format="%Y%m%d")
+    TimeTSTNIRR=timeTSTNIRR.groupby(timeTSTNIRR.date).mean()
+    plt.figure(figsize=(10,10))
+    plt.subplot(211)
+    plt.plot(meandate.loc[a].index,TimeTSTNIRR.loc[a],marker='o')
+    plt.subplot(212)
+    plt.bar(meandate.loc[a].index,meandate.loc[a].PRELIQ_Q,width=5)
+

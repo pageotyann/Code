@@ -19,8 +19,6 @@ from pylab import *
 from sklearn.metrics import *
 
 
-def intersectlist(x,y):
-    set(x).intersection(set(y))
     
 def pltbox(x,y,data):
     plt.figure(figsize=(10,10))
@@ -137,3 +135,62 @@ if __name__ == "__main__":
             for index,row in allss.T.iterrows():
                 if "asc" in index:
                     allasc=allasc.append(row)
+
+    # =============================================================================
+    # Boxplot_TST NIrr/IR    
+    # =============================================================================
+
+   
+    
+    timeTST=pd.DataFrame()
+    Years=[]
+    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_TST/STAT_IRR/"):
+        print (i)
+        tile=i[35:41]
+        print (tile)
+        date=i[42:50]
+        print (date)
+        sqlite_df("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_TST/STAT_IRR/" +i,"dfTST")
+        lab=dfTST.labcroirr.astype(int)
+        globals()["meanTST%s"%(date)]=round(dfTST.value_0/100-273.15,2)
+        globals()["meanTST%s"%date].rename("TST_"+date,inplace=True)
+        timeTST=timeTST.append(globals()["meanTST%s"%date])
+        Years.append(date)
+    timeTST.sort_index(inplace=True)
+    timeTST[timeTST<= -1]=pd.NaT
+    timeTST["date"]=sorted(Years)
+    timeTST.date=pd.to_datetime(timeTST.date,format="%Y%m%d")
+    TimeTST=timeTST.groupby(timeTST.date).mean()
+
+
+    timeTSTNIRR=pd.DataFrame()
+    Years=[]
+    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_TST/STAT_NIRR/"):
+        print (i)
+        tile=i[35:41]
+        print (tile)
+        date=i[42:50]
+        print (date)
+        sqlite_df("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_TST/STAT_NIRR/" +i,"dfTST")
+        lab=dfTST.labcroirr.astype(int)
+        globals()["meanTST%s"%(date)]=round(dfTST.value_0/100-273.15,2)
+        globals()["meanTST%s"%date].rename("TST_"+date,inplace=True)
+        timeTSTNIRR=timeTSTNIRR.append(globals()["meanTST%s"%date])
+        Years.append(date)
+    timeTSTNIRR.sort_index(inplace=True)
+    timeTSTNIRR[timeTSTNIRR<= -1]=pd.NaT
+    timeTSTNIRR["date"]=sorted(Years)
+    timeTSTNIRR.date=pd.to_datetime(timeTSTNIRR.date,format="%Y%m%d")
+    TimeTSTNIRR=timeTSTNIRR.groupby(timeTSTNIRR.date).mean()
+    TimeTSTNIRR=TimeTSTNIRR.iloc[11:]
+
+    # Fusion data 
+    a= list(set(TimeTST.index).intersection(set(TimeTSTNIRR.index)))
+    a=sorted(a)
+    ti=a[3:7]
+    IR=pd.DataFrame(TimeTST.loc[ti].mean())
+    IR['lab']=1
+    NIR=pd.DataFrame(TimeTSTNIRR.loc[ti].mean())
+    NIR['lab']=2
+    TSTdata=pd.concat([IR,NIR])
+    pltbox('lab',0,TSTdata)
