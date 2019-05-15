@@ -16,7 +16,7 @@ import seaborn as sns
 import csv
 from scipy import *
 from pylab import *
-import Scatter_plot
+#import Scatter_plot
 import re
 
 def pltemp(x):
@@ -75,6 +75,17 @@ def sqlite_df(path,x):
     sql=sqlite3.connect(path)
     df=pd.read_sql_query("SELECT * FROM output", sql)
     globals()["%s"%x]=df.groupby("originfid").mean()
+    
+
+def Optique_Process(list_lab,data,variable_resarch):
+    for i in list_lab:
+        print(i)
+        globals()['cropslab%s' % i] = pd.DataFrame(data[data.labcroirr==i]).T
+        globals()['%s%s' %(variable_resarch,i)]=[]
+        for index,row in globals()['cropslab%s' % i].iterrows():
+            if variable_resarch in index:
+                globals()['%s%s' % (variable_resarch,i)].append (row)
+                globals()['df%s%s' %(variable_resarch,i)]=pd.DataFrame(globals()['%s%s' %(variable_resarch,i)])
     
 
 if __name__ == "__main__":

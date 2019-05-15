@@ -14,9 +14,9 @@ import STAT_ZONAL_SPECRTE
 # In[2]:
 
 
-path = "/home/dahingerv/Documents/Iota/2017_S2/Loiret_2803/Results/learningSamples/Samples_region_1_seed0_learn.sqlite"
+path = "/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R24_TCJ_CUMUL_NDVI/learningSamples/Samples_region_1_seed4_learn.sqlite"
 #path = "/home/dahingerv/Documents/Iota/2018_S2_MaiNov/1504_Loiret/Results/learningSamples/Samples_region_1_seed0_learn.sqlite"
-indice = 'ndwi'#en minuscule
+indice = 'ndvi'#en minuscule
 
 
 # In[3]:
@@ -36,8 +36,8 @@ dfpar.head()
 
 
 # Garder la colonne irigation, puis la supprimer
-irrig = dfpar['irrigation']
-dfpar.drop(['irrigation'], axis='columns', inplace=True)
+irrig = dfpar['labcroirr']
+dfpar.drop(['labcroirr'], axis='columns', inplace=True)
 
 
 # In[6]:
@@ -60,17 +60,17 @@ df_cumul.head()
 
 
 # Ajouter la colonne irrigation
-df_cumul['irrigation']=irrig
+df_cumul['labcroirr']=irrig
 
 
 # In[9]:
 
 
 # Calculer les moyennes et les écarts-types
-df_cumul_mean= df_cumul.groupby("irrigation").mean().T
-df_cumul_std= df_cumul.groupby("irrigation").std().T
-df_cumul_mean.columns = ["Maïs non irrigué","Maïs irrigué"]
-df_cumul_std.columns = ["Maïs non irrigué","Maïs irrigué"]
+df_cumul_mean= df_cumul.groupby("labcroirr").mean().T
+df_cumul_std= df_cumul.groupby("labcroirr").std().T
+df_cumul_mean.columns = ["Maïs irrigué","Soybean_Irr","Others","Maize_Nirr","Soybean_Nirr","Sorghum_Nirr","Sunflower_Nirr","Peas"]
+df_cumul_std.columns = ["Maïs irrigué","Soybean_Irr","Others","Maize_Nirr","Soybean_Nirr","Sorghum_Nirr","Sunflower_Nirr","Peas"]
 
 
 # In[10]:
@@ -84,10 +84,10 @@ df_cumul_std.columns = ["Maïs non irrigué","Maïs irrigué"]
 
 t = df_cumul_mean.index.values
 
-X1 = df_cumul_mean["Maïs non irrigué"]
+X1 = df_cumul_mean["Maize_Nirr"]
 X2 = df_cumul_mean["Maïs irrigué"]
 
-sigma1 = df_cumul_std["Maïs non irrigué"]
+sigma1 = df_cumul_std["Maize_Nirr"]
 sigma2 = df_cumul_std["Maïs irrigué"]
 
 fig, ax = plt.subplots(figsize=(20, 7))
@@ -99,11 +99,27 @@ ax.set_title(r'Cumul des '+ indice+' et intervalle $\pm \sigma$ en 2017')
 ax.legend(loc='upper left')
 ax.set_xlabel('Dates interpollees')
 ax.set_ylabel('Cumul '+ indice+' moyen')
-#plt.savefig("CUMUL_"+ indice+"ecartType_2017.png")
+fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/CUMUL_Maize"+ indice+"ecartType_2017.png")
 
 
 # In[ ]:
+t = df_cumul_mean.index.values
 
+X2 = df_cumul_mean["Soybean_Irr"]
+X1 = df_cumul_mean["Soybean_Nirr"]
 
+sigma1 = df_cumul_std["Soybean_Irr"]
+sigma2 = df_cumul_std["Soybean_Nirr"]
+
+fig, ax = plt.subplots(figsize=(20, 7))
+ax.plot(t, X1,  label="Soja non irrigue", color='orange')
+ax.plot(t, X2, label="Soja irrigue", color='blue')
+ax.fill_between(t, X1+sigma1, X1-sigma1, facecolor='orange', alpha=0.2)
+ax.fill_between(t, X2+sigma2, X2-sigma2, facecolor='blue', alpha=0.2)
+ax.set_title(r'Cumul des '+ indice+' et intervalle $\pm \sigma$ en 2017')
+ax.legend(loc='upper left')
+ax.set_xlabel('Dates interpollees')
+ax.set_ylabel('Cumul '+ indice+' moyen')
+fig.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/CUMUL_soybean"+ indice+"ecartType_2017.png")
 
 

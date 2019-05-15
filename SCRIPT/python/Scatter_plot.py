@@ -17,7 +17,7 @@ import csv
 from scipy import *
 from pylab import *
 from sklearn.metrics import *
-
+import STAT_ZONAL_SPECRTE
 
     
 def pltbox(x,y,data):
@@ -35,20 +35,22 @@ if __name__ == "__main__":
     for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/"):
         if "T31TCJ" not in i:
             print (i)
-            STATR14 = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R10_FIXE_DATE/learningSamples/'+i)
+            STATR14 = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/'+i)
             df=pd.read_sql_query("SELECT * FROM output", STATR14)
             dfpar=df.groupby("originfid").mean()
             label=dfpar.labcroirr.astype(int)
             lab=list(set(label))
             alldf=alldf.append(dfpar,ignore_index=True)
-    for j in lab:
-        globals()['cropslab%s' % j] = pd.DataFrame(alldf[alldf.labcroirr==j]).T
-        globals()['NDVI%s' % j]=[]
-        allndvi=pd.DataFrame()
-        for index,row in globals()['cropslab%s' % j].iterrows():
-            if "ndvi" in index:
-                globals()['NDVI%s' % j].append (row)
-                globals()['dfndvi%s' % j]=pd.DataFrame(globals()['NDVI%s' % j]) 
+    SAR_process_db(lab,alldf,"vv")
+    
+#    for j in lab:
+#        globals()['cropslab%s' % j] = pd.DataFrame(alldf[alldf.labcroirr==j]).T
+#        globals()['NDVI%s' % j]=[]
+#        allndvi=pd.DataFrame()
+#        for index,row in globals()['cropslab%s' % j].iterrows():
+#            if "ndvi" in index:
+#                globals()['NDVI%s' % j].append (row)
+#                globals()['dfndvi%s' % j]=pd.DataFrame(globals()['NDVI%s' % j]) 
 #    alldf30=pd.DataFrame()
  
 #    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R15_GAP30j/learningSamples"):
@@ -99,13 +101,13 @@ if __name__ == "__main__":
     # boxplot cumul     
     # =============================================================================
     
-    Alldf=alldf.T
+    Alldf=dbdfvv1
     allndvi=pd.DataFrame()
     allndwi=pd.DataFrame()
     for index,row in Alldf.iterrows():
-           if "ndvi" in index:
+           if "asc_vv" in index:
                allndvi=allndvi.append(row)
-           if "ndwi" in index:
+           if "des_vv" in index:
                allndwi = allndwi.append(row)
     sumallndwi=allndwi.sum()           
     sumallndvi=allndvi.sum()   
@@ -114,11 +116,11 @@ if __name__ == "__main__":
     sumallndvi["lab"]=label.astype(str)
     sumallndwi["lab"]=label.astype(str)
     pltbox('lab',0,sumallndvi) 
-    plt.ylabel("Cumul NDVI")
-    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/BOXPLOT_CUMUL/BOXPLOT_CUMUL_NDVI.png")
+    plt.ylabel("Cumul VV")
+#    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/BOXPLOT_CUMUL/BOXPLOT_CUMUL_NDVI.png")
     pltbox('lab',0,sumallndwi)
-    plt.ylabel("Cumul NDWI")
-    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/BOXPLOT_CUMUL/BOXPLOT_CUMUL_NDWI.png")
+    plt.ylabel("Cumul VH")
+#    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/BOXPLOT_CUMUL/BOXPLOT_CUMUL_NDWI.png")
     
     
     allss=pd.DataFrame()

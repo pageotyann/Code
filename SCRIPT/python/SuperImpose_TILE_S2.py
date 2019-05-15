@@ -58,6 +58,6 @@ if __name__ == "__main__":
             Superimpose = otbApplication.Registry.CreateApplication("Superimpose")
             Superimpose.SetParameterString('inm',"{}".format(str(args.path).strip("['']"))+i)
             Superimpose.SetParameterString('inr',"{}".format(str(args.pathref).strip("['']"))+j)
-            Superimpose.SetParameterInt('interpolator.bco.radius',2)
-            Superimpose.SetParameterString("out","{}".format(str(args.out).strip("['']"))+"SM_TILES/%s_%s"%(tile,i))
+            Superimpose.SetParameterString('interpolator','nn')
+            Superimpose.SetParameterString("out","{}".format(str(args.out).strip("['']"))+"/%s_%s"%(tile,i))
             Superimpose.ExecuteAndWriteOutput()
