@@ -57,8 +57,8 @@ def pltSAR4(x,y1,y2,y3,y4):
     plt.ylabel("Precipitation en mm")
     
 def intersectlist(x,y):
-    set(x).intersection(set(y))
-    
+    a=set(x).intersection(set(y))
+    return a
     
 def SAR_process_db(list_lab,data,variable_resarch): # Attention variable_resarch
      for i in list_lab:

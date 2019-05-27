@@ -7,11 +7,11 @@ Created on Tue Apr 16 15:45:03 2019
 """
 
 
-from osgeo import gdal
-import otbApplication
+
 import numpy as np
 import pandas as pd
 import os
+import otbApplication
 import argparse
 
 if __name__ == "__main__":

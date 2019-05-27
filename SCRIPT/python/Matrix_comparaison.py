@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt
 from matplotlib import cm
 import csv
 import collections
-from ResultsUtils import get_coeff, get_conf_max
+from ResultsUtils import get_coeff, get_conf_max 
 
 
 def parse_csv(path_csv):
@@ -117,21 +117,31 @@ def get_coeff_modif(matrix,list_lab):
             kappa = nan
     
         return kappa, oacc, p_dic, r_dic, f_dic
-   
-        
+    
+
 if __name__ == "__main__":
-    d={}
-    d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/RUN/"
-    lab=[1,11]
-    all=[]
-    for j in os.listdir(d["data_file"]):
-        for i in os.listdir(d["data_file"] +j):
-            for k in os.listdir(d["data_file"] +j+"/"+i+"/TMP"):
-                if "Classif_Seed" in k:
-                    globals()["matrix_%s_%s"% (j,k[:-4])] = parse_csv(d["data_file"] +j+"/"+i+"/TMP/"+k)                 
-                    kappa, oacc, p_dic, r_dic, f_dic=get_coeff_modif(globals()["matrix_%s_%s"% (j,k[:-4])],lab)
-                    
-                    all.append(kappa)       
+#    d={}
+#    d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/RUN/"
+#    lab=[1,11]
+#    all=[]
+#    for j in os.listdir(d["data_file"]):
+#        for i in os.listdir(d["data_file"] +j):
+#            for k in os.listdir(d["data_file"] +j+"/"+i+"/TMP"):
+#                if "Classif_Seed" in k:
+#                    globals()["matrix_%s_%s"% (j,k[:-4])] = parse_csv(d["data_file"] +j+"/"+i+"/TMP/"+k)                 
+#                    kappa, oacc, p_dic, r_dic, f_dic=get_coeff_modif(globals()["matrix_%s_%s"% (j,k[:-4])],lab)
+#                    
+#                    all.append(kappa)  
+    lab=[1,2,3,4,5]
+    Fscore=[]
+    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/"):
+        print (i)                
+        globals()["matrix_%s"% (i[:-4])]=parse_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/%s" %i)
+
+        kappa, oacc, p_dic, r_dic, f_dic=get_coeff_modif(globals()["matrix_%s"% (i[:-4])],lab)
+        Fscore.append(f_dic)
+        
+#        gen_confusion_matrix_fig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/%s" %i,"/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/", "/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/Nomenclature_RPG.txt" )
 ## Récuparation des labels pour recalculer les get coeff
 #    ref1_1=matrix[1][1]
 #    ref11_11=matrix[11][11]

@@ -7,11 +7,12 @@ Created on Tue Apr 16 15:45:03 2019
 """
 
 
-from osgeo import gdal
-import otbApplication
+
+
 import numpy as np
 import pandas as pd
 import os
+import otbApplication
 import argparse
 
 if __name__ == "__main__":
@@ -41,7 +42,8 @@ if __name__ == "__main__":
 
     path_folder = "{}".format(str(args.path).strip("['']"))
     expres = []
-    frequence=3 # interpolation tous les 10 jours -> cumul tous les 30 jours
+#    frequence=3 # interpolation tous les 10 jours -> cumul tous les 30 jours
+    frequence=10
     t=1
     lst_img=[]
     while frequence <= len(band_indice):
@@ -80,40 +82,40 @@ if __name__ == "__main__":
 
     if args.vege == True:
 
-    frequence=3 # interpolation tous les 10 jours -> cumul tous les 30 jours
-    t=1
-    lst_img=[]
+        frequence=3 # interpolation tous les 10 jours -> cumul tous les 30 jours
+        t=1
+        lst_img=[]
+        
+        while frequence <= len(band_indice)-3:
+            expres = []
+            
+            for i in band_indice[8:frequence]:
+            
+                i= "im1b"+str(i)
+                expres.append(i) 
+        
+            expres = '+'.join(str(x) for x in expres)     
+            tile="{}".format(str(args.tile).strip("['']"))
+            print (tile)
+            print (path_folder)
+            print (df_indice)
+            print(indice)
+            print("===================")
+            print(expres)
+            
+            BMapp = otbApplication.Registry.CreateApplication("BandMath")
+            BMapp.SetParameterStringList("il",[path_folder +"Sentinel2_%s_Features.tif"%tile])
+            BMapp.SetParameterString("out",path_folder+"SUMmensuel_%s_%s_vege_temp%s.tif"% (tile,indice,t))
+            BMapp.SetParameterString("exp", expres)
+            BMapp.ExecuteAndWriteOutput()
+            
+            lst_img.append(path_folder+"SUMmensuel_%s_%s_vege_temp%s.tif"% (tile,indice,t))
+            print("image SUMmensuel_%s_%s_vege_temp%s.tif ajoutée à la liste"% (tile,indice,t))
+            
+            frequence+=3
+            t+=1
     
-    while frequence <= len(band_indice)-3:
-        expres = []
-        
-        for i in band_indice[8:frequence]:
-        
-            i= "im1b"+str(i)
-            expres.append(i) 
-    
-        expres = '+'.join(str(x) for x in expres)     
-        tile="{}".format(str(args.tile).strip("['']"))
-        print (tile)
-        print (path_folder)
-        print (df_indice)
-        print(indice)
-        print("===================")
-        print(expres)
-        
-        BMapp = otbApplication.Registry.CreateApplication("BandMath")
-        BMapp.SetParameterStringList("il",[path_folder +"Sentinel2_%s_Features.tif"%tile])
-        BMapp.SetParameterString("out",path_folder+"SUMmensuel_%s_%s_vege_temp%s.tif"% (tile,indice,t))
-        BMapp.SetParameterString("exp", expres)
-        BMapp.ExecuteAndWriteOutput()
-        
-        lst_img.append(path_folder+"SUMmensuel_%s_%s_vege_temp%s.tif"% (tile,indice,t))
-        print("image SUMmensuel_%s_%s_vege_temp%s.tif ajoutée à la liste"% (tile,indice,t))
-        
-        frequence+=3
-        t+=1
-    
-    ConcatImg = otbApplication.Registry.CreateApplication("ConcatenateImages")
-    ConcatImg.SetParameterStringList("il", lst_img)
-    ConcatImg.SetParameterString("out", path_folder+"SUMmensuel_%s_%s_vege.tif"% (tile,indice))
-    ConcatImg.ExecuteAndWriteOutput()
+        ConcatImg = otbApplication.Registry.CreateApplication("ConcatenateImages")
+        ConcatImg.SetParameterStringList("il", lst_img)
+        ConcatImg.SetParameterString("out", path_folder+"SUMmensuel_%s_%s_vege.tif"% (tile,indice))
+        ConcatImg.ExecuteAndWriteOutput()

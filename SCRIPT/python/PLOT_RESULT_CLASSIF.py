@@ -67,7 +67,7 @@ def pltax2(y,x1,x2):
         
 if __name__ == "__main__":
     d={}
-    d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/RUN_TDJ/"
+    d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/RUN/"
     d["SAVE"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_SYNTH_CLASSIF/"
     # =============================================================================
     # Recuperation KAPPA & OA 
@@ -147,6 +147,11 @@ if __name__ == "__main__":
     data.reset_index(inplace=True)
     data.replace(to_replace ='nan' , value= pd.NaT, inplace =True)
     data1=data.replace(to_replace =pd.NaT , value= 0)
+    Name_lab=[]
+    for i in np.arange(data1.shape[0]):
+        a=data1.Classe.iloc[i].strip()
+        Name_lab.append(a)
+    data1["Name_label"]=Name_lab
     dfstep=data1.groupby('step').mean()
     dfstep.drop(['level_0','index'],axis=1,inplace=True)
     dfstep.replace(to_replace ='nan' , value= pd.NaT, inplace =True)
@@ -180,7 +185,7 @@ if __name__ == "__main__":
         plt.figure(figsize=(20,20))
         sns.set(style="darkgrid")
         sns.set_context('paper')
-        g = sns.FacetGrid(data1, col="Classe", col_wrap=9, palette="Set1",height=5)# Gerer la color par run et +3 a modifier en focntion du nb de run 
+        g = sns.FacetGrid(data1, col="Name_label", col_wrap=9, palette="Set1",height=5)# Gerer la color par run et +3 a modifier en focntion du nb de run 
         g.map_dataframe(errplot, "step", "mean_"+var, "std_"+var)
         g.savefig(d["SAVE"]+var+"_plot_classe_run.png")
 
@@ -190,7 +195,7 @@ if __name__ == "__main__":
     sns.heatmap(dfindice[["mean_Kappa","mean_OA"]],annot=True,cmap="coolwarm",annot_kws={"size": 15})
     plt.savefig(d["SAVE"]+"tab_mean.png")
 
-    
+#    
 # =============================================================================
 #    MAIZE
 # =============================================================================
