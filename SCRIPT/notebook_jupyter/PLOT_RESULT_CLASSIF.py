@@ -35,8 +35,8 @@ def plt_classif(df,var1,var2,var3):
     plt.show()
 
 d={}
-d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/"
-
+d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/RUN/"
+d["SAVE"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/"
 # =============================================================================
 # Plot Resul Classif  
 # ===========================================================================
@@ -71,10 +71,10 @@ for j in os.listdir(d["data_file"]):
 
 data=pd.concat([dfall,dfaccu,dfrapp,dffsc],axis=1)
 data.columns=names_dfs
+data.sort_index(by=["step","Classe"],ascending=True,inplace=True)
 data.reset_index(inplace=True)
 dfstep=data.groupby('step').mean()
 dfstep.drop(['level_0','index'],axis=1,inplace=True)
-
 #dita=data.drop([2,12,17],axis=0)
 # =============================================================================
 #  plot comparer les run  
