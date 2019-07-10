@@ -65,8 +65,8 @@ def parse_csv(csv_in):
 
     with open(csv_in, 'r') as csvfile:
         csv_reader = csv.reader(csvfile)
-        ref_lab = [elem.replace("#Reference labels (rows):", "") for elem in csv_reader]
-        prod_lab = [elem.replace("#Produced labels (columns):", "") for elem in csv_reader]
+        ref_lab = [elem.replace("#Reference labels (rows):", "") for elem in next(csv_reader)]
+        prod_lab = [elem.replace("#Produced labels (columns):", "") for elem in next(csv_reader)]
         all_labels = sorted([int(label) for label in list(set(ref_lab + prod_lab))])
 
         # construct confusion matrix structure and init it at 0
@@ -329,7 +329,7 @@ def fig_conf_mat(conf_mat_dic, nom_dict, kappa, oacc, p_dic, r_dic, f_dic,
     norm_conf = normalize_conf(conf_mat_array, norm=point_of_view)
     rgb_matrix = get_rgb_mat(norm_conf, diag_cmap, not_diag_cmap)
 
-    fig = plt.figure(figsize=(nb_labels / 2, nb_labels / 2))
+    fig = plt.figure(figsize=(nb_labels / 1, nb_labels / 1))
     grid_s = gridspec.GridSpec(3, 3, width_ratios=[1, 1.0 / len(labels_ref), 1.0 / len(labels_ref)],
                                height_ratios=[1, 1.0 / len(labels_prod), 1.0 / len(labels_prod)])
     grid_s.update(wspace=0.1, hspace=0.1)
@@ -527,8 +527,8 @@ def gen_confusion_matrix_fig(csv_in, out_png, nomenclature_path,
     merge_class : list
         list of dictionnary. 
         example : 
-            merge_class = [{"src_label":[1,2,3],
-                            "dst_label":[50],
+            merge_class = [{"src_label": [1,2,3],
+                            "dst_label": 50,
                             "dst_name" : "URBAN"},
                            {...}]
     """
@@ -629,10 +629,10 @@ def get_conf_max(conf_mat_dic, nom_dict):
 
     conf_max = {}
     for class_ref, prod in list(conf_mat_dic.items()):
-        buff = collections.OrderedDict()
+        buff_dico = collections.OrderedDict()
         for class_prod, value in list(prod.items()):
-            buff[nom_dict[class_prod]] = float(value)
-            buff = sorted(iter(list(buff.items())), key=lambda k_v: (k_v[1], k_v[0]))[::-1]
+            buff_dico[nom_dict[class_prod]] = float(value)
+            buff = sorted(iter(list(buff_dico.items())), key=lambda k_v: (k_v[1], k_v[0]))[::-1]
         conf_max[class_ref] = [class_name for class_name, value in buff]
 
     return conf_max

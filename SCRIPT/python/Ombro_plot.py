@@ -20,24 +20,23 @@ import STAT_ZONAL_SPECRTE as plot
 
 if __name__ == "__main__":
     
-    DF_OMBRO=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SCRIPT/python/DATA_OMBRO.csv")
+    DF_OMBRO=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_METEO/DATA_OMBRO.csv")
     DF_OMBRO.set_index("JJ",inplace=True)
     DF_OMBRO.index=pd.to_datetime(DF_OMBRO.index,format="%Y%m%d")
     
     
     list_name=list(set(DF_OMBRO.Nom))
     for i in list_name:
-        globals()["OMBRO%s"% (i)]=DF_OMBRO[DF_OMBRO.Nom==i].resample("M").agg({'t': 'mean',"rr24" : 'sum'})
+        globals()["OMBRO%s"% (i)]=DF_OMBRO[DF_OMBRO.Nom==i].resample("M").agg({'t': 'mean',"plui" : 'sum'})
         plt.figure(figsize=(15,15))
         sns.set(style="darkgrid")
         sns.set_context('paper')
-        plt.bar(globals()["OMBRO%s"% (i)].rr24.index[23:-1],globals()["OMBRO%s"% (i)].rr24[23:-1],color="blue",width=20)
+        plt.bar(globals()["OMBRO%s"% (i)].index[12:24]-1,globals()["OMBRO%s"% (i)].plui[12:24],color="blue",width=20)
         plt.ylim(-10,100)
         plt.ylabel("Précipitation en mm")
         ax2 = plt.twinx()
-        ax2.plot(globals()["OMBRO%s"% (i)].t.index[23:-1],globals()["OMBRO%s"% (i)].t[23:-1],linewidth=2,color='r')
+        ax2.plot(globals()["OMBRO%s"% (i)].index[12:24]-1,globals()["OMBRO%s"% (i)].t[12:24],linewidth=5,color='r')
         plt.ylim(-5,50)
         plt.ylabel("Température en °C")
         plt.title(i)
-        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/DIAGRAMME_OMBRO_SO/DIAG_OMBRO%s.png"%(i))
-        
+        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/DIAGRAMME_OMBRO_SO/DIAG_OMBRO%s_2017.png"%(i))

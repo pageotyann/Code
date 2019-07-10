@@ -163,7 +163,7 @@ if __name__ == "__main__":
 #    plt_classif(dfstep,'Precision','Fscore','rappel')
 #    plt.savefig(d["SAVE"]+"CLASSIF_RUN.png")
     plt_classif_kappa(dfindice,"Kappa","OA")
-    plt.savefig(d["SAVE"]+"KAPPA_RUN.png")
+    plt.savefig(d["SAVE"]+"KAPPA_RUNREU2juillet_sais_SS.png")
     # =============================================================================
     # Plot visualisation run[i] par classe a finir
     # =============================================================================
@@ -179,21 +179,22 @@ if __name__ == "__main__":
 #    # =============================================================================
     # PLOT Compare les esulats des run à la classe
     # =============================================================================
-    for i in data1[["mean_Fscore","mean_Precision","mean_rappel"]]:
+    data2=pd.concat([data1[data1['level_0'] == 0],data1[data1["level_0"]== 3],data1[data1["level_0"]== 4],data1[data1["level_0"]== 1]])
+    for i in data2[["mean_Fscore","mean_Precision","mean_rappel"]]:
         print(i)
         var=i[5:]
         plt.figure(figsize=(20,20))
         sns.set(style="darkgrid")
         sns.set_context('paper')
-        g = sns.FacetGrid(data1, col="Name_label", col_wrap=9, palette="Set1",height=5)# Gerer la color par run et +3 a modifier en focntion du nb de run 
+        g = sns.FacetGrid(data2, col="Name_label", col_wrap=9, palette="Set1",height=5)# Gerer la color par run et +3 a modifier en focntion du nb de run 
         g.map_dataframe(errplot, "step", "mean_"+var, "std_"+var)
-        g.savefig(d["SAVE"]+var+"_plot_classe_run.png")
+        g.savefig(d["SAVE"]+var+"_plot_classe_runREU2juillet_sais_SS.png")
 
     
     #pltax2(dfindice.index,dfindice.mean_Kappa,dfindice.mean_OA)
     plt.figure(figsize=(15,7))
     sns.heatmap(dfindice[["mean_Kappa","mean_OA"]],annot=True,cmap="coolwarm",annot_kws={"size": 15})
-    plt.savefig(d["SAVE"]+"tab_mean.png")
+    plt.savefig(d["SAVE"]+"tab_meanREU2juillet_sais_SS.png")
 
 #    
 # =============================================================================
@@ -209,7 +210,7 @@ if __name__ == "__main__":
     for k in np.arange(1,len(dfstep)*2,2):
         plt.text(x = -0.25 , y = k+0.90, s = label[k],size=9,fontweight = 'bold')
     plt.title("Comparaison perf Maize")
-    plt.savefig(d["SAVE"]+"tab_mean_Fscore_Mais.png")
+    plt.savefig(d["SAVE"]+"tab_mean_Fscore_MaisREU2juillet_sais_SS.png")
    
 # =============================================================================
 # SOYBEAN
@@ -223,4 +224,4 @@ if __name__ == "__main__":
     for k in np.arange(1,len(dfstep)*2,2):
         plt.text(x = -0.25 , y = k+0.90, s = label[k],size=9,fontweight = 'bold')
     plt.title("Comparaison perf Soybean")
-    plt.savefig(d["SAVE"]+"tab_mean_Fscore_Soja.png")
+    plt.savefig(d["SAVE"]+"tab_mean_Fscore_SojaREU2juillet_sais.png")

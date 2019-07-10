@@ -16,7 +16,8 @@ from matplotlib import pyplot as plt
 from matplotlib import cm
 import csv
 import collections
-from ResultsUtils import get_coeff, get_conf_max 
+#from ResultsUtils import get_coeff, get_conf_max 
+from ResultsUtils import *
 
 
 def parse_csv(path_csv):
@@ -134,12 +135,15 @@ if __name__ == "__main__":
 #                    all.append(kappa)  
     lab=[1,2,3,4,5]
     Fscore=[]
+    nom=get_nomenclature("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/Nomenclature_RPG.txt")
     for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/"):
         print (i)                
         globals()["matrix_%s"% (i[:-4])]=parse_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/%s" %i)
 
         kappa, oacc, p_dic, r_dic, f_dic=get_coeff_modif(globals()["matrix_%s"% (i[:-4])],lab)
         Fscore.append(f_dic)
+        
+        fig_conf_mat(globals()["matrix_%s"% (i[:-4])],nom,kappa, oacc, p_dic, r_dic, f_dic,"/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/matrix_%s.png"%(i[:-4]) )
         
 #        gen_confusion_matrix_fig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/%s" %i,"/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/", "/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/Nomenclature_RPG.txt" )
 ## Récuparation des labels pour recalculer les get coeff

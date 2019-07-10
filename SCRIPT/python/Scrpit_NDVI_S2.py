@@ -130,5 +130,5 @@ for j in Images_nan_zip:
 	App4.SetParameterString("out", "IMG_F_COLOR_%s.tif"%(path_img))
 	App4.ExecuteAndWriteOutput()
 
-	os.system("mv *_NDVI.tif /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_GROUND_2018/DPI_2018/S2_NDVI_FAUSSE_COLOR")
-	os.system("mv *IMG_F* /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_GROUND_2018/DPI_2018/S2_NDVI_FAUSSE_COLOR")
+#	os.system("mv *_NDVI.tif /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_GROUND_2018/DPI_2018/S2_NDVI_FAUSSE_COLOR")
+#	os.system("mv *IMG_F* /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_GROUND_2018/DPI_2018/S2_NDVI_FAUSSE_COLOR")

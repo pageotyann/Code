@@ -9,61 +9,46 @@ import gdal
 import argparse
 
 
-def fusion_sm(empriseA,empriseB):
-	for i in empriseA:
-		date=i[0:8]
-		for j in empriseB :
-			date2=j[0:8]
-			if date==date2:
-				print ("processing en cours")
-				os.system("gdal_merge.py -o SM_%s.tif %s/%s %s/%s -n 0.0"%(date,PATHA,i,PATHB,j))
-			else : 
-				print ("pas de Fusion")
+#def fusion_sm(empriseA,empriseB):
+#	for i in empriseA:
+#		date=i[0:8]
+#		for j in empriseB :
+#			date2=j[0:8]
+#			if date==date2:
+#				print ("processing en cours")
+#				os.system("gdal_merge.py -o SM_%s.tif %s/%s %s/%s -n 0"%(date,PATHA,i,PATHB,j))
+#			else : 
+#				print ("pas de Fusion")
 
-	os.system("mv SM* %s"%(outpath))
+#	os.system("mv SM* %s"%(outpath))
 
-
+def fusion_sm1(PATHA,PATHB,outpath):
+    for i in os.listdir(PATHA):
+        for j in os.listdir(PATHB):
+            print (i,j)
+            date=i[-19:-11]
+            date2=j[-19:-11]
+            print (date)
+            print (date2)
+            if date==date2:
+                print( 'fus')
+                os.system("gdal_merge.py -o SM_%s.tif %s/%s %s/%s -n 0"%(date,PATHA,i,PATHB,j))
+            else : 
+                print ("pas de Fusion")
+    os.system("mv SM* %s"%(outpath))
 
 if __name__ == '__main__':
- 	# parser = argparse.ArgumentParser(description='Process some integers.')
- 	# parser.add_argument('-out', dest='out',mandatory=True)
- 	# parser.add_argument('-in', dest='path',nargs='+')
- 	# args = parser.parse_args()
- 	# print args.path
- 	# print args.out
-# 	d={}
-# 	d["dataset_folder"] = "/datalocal/vboxshare/THESE/CLASSIFICATION/IMG_SAT/L_LST_MASKED/"
-# 	d["empriseA"]= d["dataset_folder"] + "198029" +"/"
-# 	d["empriseB"]= d["dataset_folder"] + "198030" +"/"
-# 	outpath = "/datalocal/vboxshare/THESE/CLASSIFICATION/IMG_SAT/"	
-# 	
-# 	PATHA=d["empriseA"]
-# 	PATHB=d["empriseB"]	
-# 	empriseA = os.listdir(PATHA)
-# 	empriseB = os.listdir(PATHB)
-# 	fusion_sm(empriseA,empriseB)
-  
+    parser = argparse.ArgumentParser(description='FUSION_RASTER.')
+    parser.add_argument('-out', dest='out')
+    parser.add_argument('-inp1', dest='path1',nargs='+',required = True)
+    parser.add_argument('-inp2', dest='path2',nargs='+',required = True)
+    args = parser.parse_args()
+    print (args.out)
+    
 
-#if __name__ == '__main__':
-#	# parser = argparse.ArgumentParser(description='Process some integers.')
-#	# parser.add_argument('-out', dest='out',mandatory=True)
-#	# parser.add_argument('-in', dest='path',nargs='+')
-#	# args = parser.parse_args()
-#	# print args.path
-#	# print args.out
-	d={}
-	d["dataset_folder"] = "/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/CARTES_SOIL_MOISTURE/"
-	d["empriseA"]= d["dataset_folder"] + "Fp3_S1a" +"/"
-	d["empriseB"]= d["dataset_folder"] + "Fp2_S1a" +"/"
+#	outpath = "/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SOIL_MOISTURE/"	
 
-	outpath = "/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/SOIL_MOISTURE/"	
-	
-	PATHA=d["empriseA"]
-	PATHB=d["empriseB"]	
+    fusion_sm1("{}".format(str(args.path1).strip("['']")),"{}".format(str(args.path2).strip("['']")),"{}".format(str(args.out).strip("['']")))
 
-	empriseA = os.listdir(PATHA)
-	empriseB = os.listdir(PATHB)
-
-	fusion_sm(empriseA,empriseB)
  
  

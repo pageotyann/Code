@@ -96,72 +96,103 @@ def pltmutlimode(x,x2,x3,x4,y1,y1bis,y2,y2bis,y3,y3bis,y3tris,y3quad,y4,y4bis,y4
     plt.ylabel("pluviométrie en mm")
     plt.setp(ax6.get_xticklabels(),rotation=90)
     
-def plotconfi(x,x2,x3,y1,y1bis,y3,y3bis,y3tris,y3quad,y4,y4bis,y4tris,y4quad,x6,y6,confsup,confinf):
+def plotconfi(x,x2,x3,y1,y1bis,y3,y3bis,y3tris,y3quad,y4,y4bis,y4tris,y4quad,yr,yrbis,yr1,yrbis1,x6,y6,confsup,confinf):
     plt.figure(figsize=(20,20))
     sns.set(style="darkgrid")
     sns.set_context('paper')
-    ax1 = plt.subplot(611)
-    p1=plt.plot(x,y1,color='blue')
-    p2=plt.plot(x,y1bis,color='red',linestyle='--')
+    ax1 = plt.subplot(811)
+    p1=plt.plot(x,y1.T.mean(),color='blue')
+    p2=plt.plot(x,y1bis.T.mean(),color='red',linestyle='--')
+    plt.fill_between(x, confsup[0], confinf[0], facecolor='blue', alpha=0.2)
+    plt.fill_between(x, confsup[1], confinf[1], facecolor='red', alpha=0.2)
     plt.ylabel("NDVI")
     plt.setp(ax1.get_xticklabels(), visible=False)
-    ax2 = plt.subplot(612)
-    plt.plot(x3, y3tris.T.mean(), color='blue',linestyle=":")
-    plt.fill_between(x3, confsup[2], confinf[2], facecolor='blue', alpha=0.2)
-    plt.plot(x3, y3quad.T.mean(), color='red',linestyle=":")
-    plt.fill_between(x3, confsup[3], confinf[3], facecolor='red', alpha=0.2)
+    ax2 = plt.subplot(812)
+    plt.plot(x2, y3.T.mean(), color='blue',linestyle=":")
+    plt.fill_between(x2, confsup[2], confinf[2], facecolor='blue', alpha=0.2)
+    plt.plot(x2, y3bis.T.mean(), color='red',linestyle=":")
+    plt.fill_between(x2, confsup[3], confinf[3], facecolor='red', alpha=0.2)
     plt.ylabel("VV asc")
     plt.setp(ax2.get_xticklabels(), visible=False)
-    ax3 = plt.subplot(613)
-    plt.plot(x2, y3.T.mean(), color='blue')
-    plt.fill_between(x2, confsup[0], confinf[0], facecolor='blue', alpha=0.2)
-    plt.plot(x2, y3bis.T.mean(), color='red')
-    plt.fill_between(x2, confsup[1], confinf[1], facecolor='red', alpha=0.2)
+    ax3 = plt.subplot(813)
+    plt.plot(x3, y3tris.T.mean(), color='blue')
+    plt.fill_between(x3, confsup[4], confinf[4], facecolor='blue', alpha=0.2)
+    plt.plot(x3, y3quad.T.mean(), color='red')
+    plt.fill_between(x3, confsup[5], confinf[5], facecolor='red', alpha=0.2)
     plt.ylabel("VV des")
     plt.legend((p1[0],p2[0]),("Irrigué","Non Irrigué"))
     plt.setp(ax3.get_xticklabels(), visible=False)    
-    ax4 = plt.subplot(614)
+    ax4 = plt.subplot(814)
     plt.plot(x2, y4.T.mean(), color='blue')
-    plt.fill_between(x2, confsup[4], confinf[4], facecolor='blue', alpha=0.2)
+    plt.fill_between(x2, confsup[6], confinf[6], facecolor='blue', alpha=0.2)
     plt.plot(x2, y4bis.T.mean(), color='red')
-    plt.fill_between(x2, confsup[5], confinf[5], facecolor='red', alpha=0.2)
+    plt.fill_between(x2, confsup[7], confinf[7], facecolor='red', alpha=0.2)
     plt.ylabel("VH asc")
     plt.setp(ax4.get_xticklabels(), visible=False)
-    ax5 = plt.subplot(615)
+    ax5 = plt.subplot(815)
     plt.plot(x3, y4tris.T.mean(), color='blue',linestyle=":")
-    plt.fill_between(x3, confsup[6], confinf[6], facecolor='blue', alpha=0.2)
+    plt.fill_between(x3, confsup[8], confinf[8], facecolor='blue', alpha=0.2)
     plt.plot(x3, y4quad.T.mean(), color='red',linestyle=":")
-    plt.fill_between(x3, confsup[7], confinf[7], facecolor='red', alpha=0.2)
+    plt.fill_between(x3, confsup[9], confinf[9], facecolor='red', alpha=0.2)
     plt.ylabel("VH des")
     plt.setp(ax5.get_xticklabels(),visible=False)
     plt.legend((p1[0],p2[0]),("Irrigué","Non Irrigué"))
-    ax6 = plt.subplot(616)
+    ax6= plt.subplot(816)
+    plt.plot(yr.index, yr.T.mean(), color='blue',linestyle=":")
+    plt.fill_between(yr.index, confsup[10], confinf[10], facecolor='blue', alpha=0.2)
+    plt.plot(yr.index, yrbis.T.mean(), color='red',linestyle=":")
+    plt.fill_between(yr.index, confsup[11], confinf[11], facecolor='red', alpha=0.2)
+    plt.ylabel("ratio des_VH/VV")
+    plt.setp(ax6.get_xticklabels(),visible=False)
+    ax7= plt.subplot(817)
+    plt.plot(yr1.index, yr1.T.mean(), color='blue',linestyle=":")
+    plt.fill_between(yr1.index, confsup[12], confinf[12], facecolor='blue', alpha=0.2)
+    plt.plot(yr1.index, yrbis1.T.mean(), color='red',linestyle=":")
+    plt.fill_between(yr1.index, confsup[13], confinf[13], facecolor='red', alpha=0.2)
+    plt.ylabel("ratio asc_VH/VV")
+    plt.setp(ax7.get_xticklabels(),visible=False)
+    ax8 = plt.subplot(818)
     plt.bar(x6,y6,color='blue',width=1)
     plt.ylabel("pluviométrie en mm")
-    plt.setp(ax6.get_xticklabels(),rotation=90)
+    plt.setp(ax8.get_xticklabels(),rotation=90)
 
-def col_sqlite(path,name,list_bd_drop):
+def col_sqlite(path,name,list_bd_drop,pathlist_names_feature):
     """
     Permet d'attribuer le nom des primitives dans le sqlite a partir de la list des primitives"""
-    dfnames=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",sep=',', header=None)
+    
+    
+    dfnames=pd.read_csv(pathlist_names_feature,sep=',', header=None) 
     df1=dfnames.T
     df1.columns=["band_name"]
     colnames=list(df1.band_name.apply(lambda s: s[2:-1]))
     
-    df=pd.read_csv(path)
-    globals()["%s"% name ]=df.groupby("originfid").mean()
-    labcroirr=globals()["%s"% name ].labcroirr
-    globals()["%s"% name ].drop(columns=list_bd_drop,inplace=True)
-    globals()["%s"% name ]=globals()["%s"% name ].T
+    if ".csv" in path:
+        df=pd.read_csv(path)
+        globals()["%s"% name ]=df.groupby("originfid").mean()
+        labcroirr=globals()["df%s"% name ].labcroirr
+        globals()["df%s"% name ].drop(columns=list_bd_drop,inplace=True)
+        globals()["df%s"% name ]=globals()["df%s"% name ].T
 
-    globals()["%s"% name ]["band_names"]=colnames
-    globals()["%s"% name ]["date"] = globals()["%s"% name ].band_names.apply(lambda s: s[-8:])
-    globals()["%s"% name ].set_index("band_names",inplace=True)
-    globals()["%s"% name ]=globals()["%s"% name ].T
-    globals()["%s"% name ]["labcroirr"]= labcroirr
-    
-def indexdate(df,intervalle_inf,out,intervalle_sup=len(df.index)):
-    globals()["%s"% out ] = df.rename(index=lambda x: x[intervalle_inf:intervalle_sup])
+        globals()["df%s"% name ]["band_names"]=colnames
+        globals()["df%s"% name ]["date"] = globals()["%s"% name ].band_names.apply(lambda s: s[-8:])
+        globals()["df%s"% name ].set_index("band_names",inplace=True)
+        globals()["df%s"% name ]=globals()["%s"% name ].T
+        globals()["df%s"% name ]["labcroirr"]= labcroirr
+    else:
+       sql=sqlite3.connect(path)
+       df=pd.read_sql_query("SELECT * FROM output", sql)
+       globals()["df%s"%name]=df.groupby("originfid").mean()
+       labcroirr=globals()["df%s"%name]["labcroirr"]
+       globals()["df%s"%name].drop(columns=list_bd_drop,inplace=True)
+       globals()["df%s"% name ]=globals()["df%s"%name].T
+       globals()["df%s"% name ]["band_names"]=colnames
+       globals()["df%s"% name ]["date"] = globals()["df%s"% name ].band_names.apply(lambda s: s[-8:])
+       globals()["df%s"% name ].set_index("band_names",inplace=True)
+       globals()["df%s"% name ]=globals()["df%s"% name ].T
+       globals()["df%s"% name ]["labcroirr"]= labcroirr
+        
+def indexdate(df,intervalle_inf,out):
+    globals()["%s"% out ] = df.rename(index=lambda x: x[intervalle_inf:])
     globals()["%s"%out].sort_index(inplace=True)
     globals()["%s"%out].index=pd.to_datetime(globals()["%s"%out].index,format="%Y%m%d")
 
@@ -171,16 +202,18 @@ if __name__ == '__main__':
 #    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/TEST_ANALYSE_SIGNAL/ZONE_TEST_MAIZE.csv")
 #    dfpar=df.groupby("originfid").mean()
     label=[1,11]
-    polarisation=["des_vv","asc_vv","des_vh","asc_vh","userfeature"]
+    polarisation=["des_vv","asc_vv","des_vh","asc_vh","des_userfeature",'asc_userfeature']
     indice=["NDVI","NDWI","Brightness"]
+    Indice=["ndvi","ndwi","brightness"]
     features=polarisation+indice
-    drop_band=['X', 'Y', 'region', 'labcroirr',"alt_band_0"]
-    
+#    drop_band=['X', 'Y', 'region', 'labcroirr',"alt_band_0"]
+    list_bd_drop=["region","labcroirr","ogc_fid","alt_band_0"]
+    list_drop=["labcroirr","region","ogc_fid"]
    # =============================================================================
 #     SAFRAN
 # =============================================================================
-    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/SAFRAN_TCJ.csv")
-    date=sorted(list(set(df.DATE)))
+#    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/SAFRAN_TCJ.csv")
+#    date=sorted(list(set(df.DATE)))
     
 #    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/SAFRAN_TCJ_NORD.csv")
 #    SAFRAN_EST_TCJ=df.groupby('gid').mean() 
@@ -194,176 +227,232 @@ if __name__ == '__main__':
 # =============================================================================
 #     Ceate plot
 # =============================================================================
-    for z in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/TEST_ANALYSE_SIGNAL/"):
+    for z in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"):
         print(z)
-        tile=z[-9:-4]
+        tile=z[:3]
         print (tile)
-        if z != 'DT_MAIZE_TDJ_N.csv':
-            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/TEST_ANALYSE_SIGNAL/%s"%(z),"df%s"%(tile),drop_band[0:4])    
+        if '2017' in z:
+            if 'TCJ' in tile:
+                col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s"%z ,tile,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt")
+            else:
+                col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s"%z ,tile,list_bd_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt")
+            if 'TYP' in tile:
+                col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s"%z ,tile,list_bd_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR_TYP.txt")
         else: 
-            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/TEST_ANALYSE_SIGNAL/%s"%(z),"df%s"%(tile),drop_band)
-            
+            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/2018_TCJ_S2/learningSamples/Samples_region_1_seed0_learn.sqlite",'df2018',list_bd_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TDJ2018.txt")
+            tile="2018"
         for p in polarisation:
             SAR_process_db(label,globals()["df%s"% tile],p)
+            for i in label :
+                indexdate(globals()["dbdf%s%s"% (p,i)],-8,'%s%s' % (p,i))
+                
             
         for ind in indice:
             print (ind)
             Optique_Process(label,globals()["df%s"% tile],ind)
-            
-        for f in indice:
-            indexdate(globals()["df%s1"% (f)],-8,f.upper()+"1")
-            indexdate(globals()["df%s11"% (f)],-8,f.upper()+"11")
-
-        globals()["VV%s1"% (tile)]=pd.concat([dbdfdes_vv1,dbdfasc_vv1])
-        indexdate(globals()["VV%s1"% (tile)],-8,"VV1")
-    
-        globals()["VH%s1"% (tile)]=pd.concat([dbdfdes_vh1,dbdfasc_vh1])
-        indexdate(globals()["VH%s1"% (tile)],-8,"VH1")
-    
-        globals()["VV%s11"% (tile)]=pd.concat([dbdfdes_vv11,dbdfasc_vv11])
-        indexdate(globals()["VV%s11"% (tile)],-8,"VV11")
+            for i in label:
+                indexdate(globals()["df%s%s"% (ind,i)],-8,ind.upper()+str(i))
         
-        globals()["VH%s11"% (tile)]=pd.concat([dbdfdes_vh11,dbdfasc_vh11])
-        indexdate(globals()["VH%s11"% (tile)],-8,"VH11")
-    
-        indexdate(dbdfasc_vv1,-8,'VVa1')
-        indexdate(dbdfasc_vh1,-8,'VHa1')
-        indexdate(dbdfasc_vv11,-8,'VVa11')
-        indexdate(dbdfasc_vh11,-8,'VHa11')
-    
-        indexdate(dbdfdes_vv1,-8,'VVd1')
-        indexdate(dbdfdes_vh1,-8,'VHd1')
-        indexdate(dbdfdes_vv11,-8,'VVd11')
-        indexdate(dbdfdes_vh11,-8,'VHd11')
-        
-        indexdate(dbdfuserfeature1,-8,"VH_VV1")
-        indexdate(dbdfuserfeature11,-8,"VH_VV11")
-        
-        tab=["VVa1","VVa11","VVd1","VVd11","VHa1","VHa11","VHd1","VHd11"]
         confianceinf=[]
         confiancesup=[]
-        for i in tab:
-            globals()["_%s"% (i)],globals()["b_sup%s"% (i)]=stats.t.interval(0.95,globals()["%s"%i].shape[1]-1,loc=globals()["%s"%i].T.mean(),scale=stats.sem(globals()["%s"%i].T))
-            confianceinf.append(globals()["_%s"% (i)])
-            confiancesup.append(globals()["b_sup%s"% (i)])
+        colnames=[]
+        for i in feature:
+            for l in label:
+                print ("%s%s"%(i,l))
+                a="%s%s"%(i,l)
+                colnames.append(a)
+                globals()["_%s%s"% (i,l)],globals()["b_sup%s%s"% (i,l)]=stats.t.interval(0.95,globals()["%s%s"%(i,l)].shape[1]-1,loc=globals()["%s%s"%(i,l)].T.mean(),scale=stats.sem(globals()["%s%s"%(i,l)].T))
+                confianceinf.append(globals()["_%s%s"% (i,l)])
+                confiancesup.append(globals()["b_sup%s%s"% (i,l)])
+#        inf=pd.DataFrame(confianceinf).T
+#        inf.columns=colnames
+#        sup=pd.DataFrame(confiancesup).T
+#        sup.columns=colnames
+        
         
         for m in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/"):
             print (m)
-            if m[-9:-4] == tile:
-                df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/%s"% m)
-                globals()["SAFR%s"% (tile)]=df.groupby('gid').mean() 
-                gid=globals()["SAFR%s"% (tile)].index
-                globals()["dfSAFR%s"% (tile)]=globals()["SAFR%s"% (tile)].drop(columns=['X','Y','labelirr', 'labelcrirr','originfid','area','surf_parc',"id","labcroirr"])
-                globals()["dfSAFR%s"% (tile)]=globals()["dfSAFR%s"% (tile)].T
-                globals()["dfSAFR%s"% (tile)]['date']=date
-                globals()["dfSAFR%s"% (tile)].set_index("date",inplace=True)
-                globals()["dfSAFR%s"% (tile)].index=pd.to_datetime(globals()["dfSAFR%s"% (tile)].index,format="%Y%m%d")
-        #print(globals()["dfSAFR%s"% (tile)]) #" VERIFIER COCONDANCE DES METEO si pas de concorance mettre traitment meteo ici avec fonction IF qui check la météo
+            if ".csv" in m :
+                if m[:3] == tile :
+                    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/%s" % m)
+                    df=df[["DATE","PRELIQ_Q"]]
+                    globals()["dfSAFR%s"% (tile)]=df.set_index("DATE")
+                    globals()["dfSAFR%s"% (tile)].index=pd.to_datetime(globals()["dfSAFR%s"% (tile)].index,format="%Y%m%d")
+
         
-        pltmutli(NDVI1.index,VV1.index,NDVI1,NDVI11,NDWI1,NDWI11,VV1,VV11,VH1,VH11,VH_VV1,VH_VV11,globals()["dfSAFR%s"% (tile)].index,globals()["dfSAFR%s"% (tile)].iloc[:,1])    
-        plt.savefig(d["SAVE"]+"comparaison_IRR_NIRR_%s.png"% tile)
-        pltmutlimode(NDVI1.index,VVa1.index,VVd1.index,VH_VV1.index,NDVI1,NDVI11,NDWI1,NDWI11,VVa1,VVa11,VVd1,VVd11,VHa1,VHa11,VHd1,VHd11,VH_VV1,VH_VV11,globals()["dfSAFR%s"% (tile)].index,globals()["dfSAFR%s"% (tile)].iloc[:,1])
-        plt.savefig(d["SAVE"]+"comparaison_IRR_NIRR_SARMODE_%s.png"% tile)
-        plotconfi(NDVI1.index,VVa1.index,VVd1.index,NDVI1,NDVI11,VVa1,VVa11,VVd1,VVd11,VHa1,VHa11,VHd1,VHd11,globals()["dfSAFR%s"% (tile)].index,globals()["dfSAFR%s"% (tile)].iloc[:,1],confiancesup,confianceinf)
-        plt.savefig(d["SAVE"]+"comparaison_IRR_NIRR_SARMODE_confiance_%s.png"% tile)
+#        pltmutli(NDVI1.index,VV1.index,NDVI1,NDVI11,NDWI1,NDWI11,VV1,VV11,VH1,VH11,VH_VV1,VH_VV11,globals()["dfSAFR%s"% (tile)].index,globals()["dfSAFR%s"% (tile)].PRELIQ_Q)    
+#        plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/comparaison_IRR_NIRR_2017%s.png"% tile)
+#        pltmutlimode(NDVI1.index,VVa1.index,VVd1.index,VH_VV1.index,NDVI1,NDVI11,NDWI1,NDWI11,VVa1,VVa11,VVd1,VVd11,VHa1,VHa11,VHd1,VHd11,VH_VV1,VH_VV11,globals()["dfSAFR%s"% (tile)].index,globals()["dfSAFR%s"% (tile)].PRELIQ_Q)
+#        plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/comparaison_IRR_NIRR_SARMODE_2017%s.png"% tile)
+        plotconfi(NDVI1.index,asc_vv11.index,des_vv1.index,NDVI1,NDVI11,asc_vv1,asc_vv11,des_vv1,des_vv11,asc_vh1,asc_vh11,des_vh1,des_vh11,des_userfeature1,des_userfeature11,asc_userfeature1,asc_userfeature11,globals()["dfSAFR%s"% (tile)].index,globals()["dfSAFR%s"% (tile)].PRELIQ_Q,confiancesup,confianceinf)
+#        plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/comparaison_IRR_NIRR_SARMODE_confiance_2017%s.png"% tile)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 # =============================================================================
 #     GEstion DATA TDJ add nom band + date
 ## =============================================================================
-#    col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/TEST_ANALYSE_SIGNAL/DT_MAIZE_TCJ_O.csv",'dfTDJ',drop_band[0:4])
-#   
-#    for p in polarisation:
-#        SAR_process_db(label,dfTDJ,p)
+    list_bd_drop=["ogc_fid",'region', 'labcroirr',"alt_band_0"]
+    sqlite_df('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/2018_TCJ_S2/learningSamples/Samples_region_1_seed0_learn.sqlite','df2018')
+#    df2018.to_csv('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/2018_TCJ_S2/learningSamples/df2018TCJ.csv')
+    col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/2018_TCJ_S2/learningSamples/df2018TCJ.csv",'df2018',list_bd_drop)
+#    col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/TEST_ANALYSE_SIGNAL/DT_MAIZE_TCJ_O.csv",'dfTCJ',drop_band[0:4])
+    sqlite_df('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/Samples_region_1_seed4_learn.sqlite','dfr14')
+#    dfr14.to_csv('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/dfr14.csv')
+#    list_bd_drop=['ogc_fid', 'region', 'labcroirr']
+#    col_sqlite('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/dfr14.csv','dfr14',list_bd_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt")
+#    col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/2018_TCJ_S2/learningSamples/Samples_region_1_seed0_learn.sqlite",'df2018',list_bd_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TDJ2018.txt")
+#    tile="2018" 
+    for p in polarisation:
+        SAR_process_db(label,dfr14,p)
+        
+    for ind in Indice[:-1]:
+        print (ind)
+        Optique_Process(label,dfr14,ind)
+    
+    for f in Indice[:-1]:
+        indexdate(globals()["df%s1"% f],-8,f.upper()+"1")
+        indexdate(globals()["df%s11"% f],-8,f.upper()+"11")
+
+
+    indexdate(dbdfasc_vv1,-8,'VVa1')
+    indexdate(dbdfasc_vh1,-8,'VHa1')
+    indexdate(dbdfasc_vv11,-8,'VVa11')
+    indexdate(dbdfasc_vh11,-8,'VHa11')
+    
+    indexdate(dbdfdes_vv1,-8,'VVd1')
+    indexdate(dbdfdes_vh1,-8,'VHd1')
+    indexdate(dbdfdes_vv11,-8,'VVd11')
+    indexdate(dbdfdes_vh11,-8,'VHd11')
+    
+    indexdate(dbdfuserfeature1,-8,"VH_VV1")
+    indexdate(dbdfuserfeature11,-8,"VH_VV11")
+
+    VV1=pd.concat([dbdfdes_vv1,dbdfasc_vv1])
+    indexdate(VV1,-8,"VV1")
+
+    VH1=pd.concat([dbdfdes_vh1,dbdfasc_vh1])
+    indexdate(VH1,-8,"VH1")
+
+    VV11=pd.concat([dbdfdes_vv11,dbdfasc_vv11])
+    indexdate(VV11,-8,"VV11")
+    
+    VH11=pd.concat([dbdfdes_vh11,dbdfasc_vh11])
+    indexdate(VH11,-8,"VH11")
+    
+    confianceinf1=[]
+    confiancesup1=[]
+    for i in indice[:-1]:
+        globals()["_%s"% (i)],globals()["b_sup%s"% (i)]=stats.t.interval(0.95,globals()["%s1"%i].shape[1]-1,loc=globals()["%s1"%i].T.mean(),scale=stats.sem(globals()["%s1"%i].T))
+        confianceinf1.append(globals()["_%s"% (i)])
+        confiancesup1.append(globals()["b_sup%s"% (i)])
+    
+    confianceinf11=[]
+    confiancesup11=[]
+    for i in indice[:-1]:
+        globals()["_%s"% (i)],globals()["b_sup%s"% (i)]=stats.t.interval(0.95,globals()["%s11"%i].shape[1]-1,loc=globals()["%s11"%i].T.mean(),scale=stats.sem(globals()["%s11"%i].T))
+        confianceinf11.append(globals()["_%s"% (i)])
+        confiancesup11.append(globals()["b_sup%s"% (i)])
+    
+    tab=["VV1","VH1","VV11","VH11","VH_VV1","VH_VV11"]
+    confianceinfSAR=[]
+    confiancesupSAR=[]
+    for i in tab:
+        globals()["_%s"% (i)],globals()["b_sup%s"% (i)]=stats.t.interval(0.95,globals()["%s"%i].shape[1]-1,loc=globals()["%s"%i].T.mean(),scale=stats.sem(globals()["%s"%i].T))
+        confianceinfSAR.append(globals()["_%s"% (i)])
+        confiancesupSAR.append(globals()["b_sup%s"% (i)])
 #        
-#    for ind in indice:
-#        print (ind)
-#        Optique_Process(label,dfTDJ,ind)
-#        
-#    for f in indice:
-#        indexdate(globals()["df%s1"% f],-8,f.upper()+"1")
-#        indexdate(globals()["df%s11"% f],-8,f.upper()+"11")
-#
-##    VV1=pd.concat([dbdfdes_vv1,dbdfasc_vv1])
-##    indexdate(VV1,-8,"VV1")
-##
-##    VH1=pd.concat([dbdfdes_vh1,dbdfasc_vh1])
-##    indexdate(VH1,-8,"VH1")
-##
-##    
-##    VV11=pd.concat([dbdfdes_vv11,dbdfasc_vv11])
-##    indexdate(VV11,-8,"VV11")
-##    
-##    VH11=pd.concat([dbdfdes_vh11,dbdfasc_vh11])
-##    indexdate(VH11,-8,"VH11")
-#
-#    indexdate(dbdfasc_vv1,-8,'VVa1')
-#    indexdate(dbdfasc_vh1,-8,'VHa1')
-#    indexdate(dbdfasc_vv11,-8,'VVa11')
-#    indexdate(dbdfasc_vh11,-8,'VHa11')
-#    
-#    indexdate(dbdfdes_vv1,-8,'VVd1')
-#    indexdate(dbdfdes_vh1,-8,'VHd1')
-#    indexdate(dbdfdes_vv11,-8,'VVd11')
-#    indexdate(dbdfdes_vh11,-8,'VHd11')
-#    
-#    indexdate(dbdfuserfeature1,-8,"VH_VV1")
-#    indexdate(dbdfuserfeature11,-8,"VH_VV11")
-#    
-##    pltmutli(NDVI1.index,VVa1.index,VH_VV1.index,NDVI1,NDVI11,NDWI1,NDWI11,VVa1,VVa11,VHa1,VHa11,VH_VV11,dfSAFRTCJ_O.index,dfSAFRTCJ_O.iloc[:,1])
-#    plt.figure(figsize=(20,20))
-#    sns.set(style="darkgrid")
-#    sns.set_context('paper')
-#    ax1 = plt.subplot(611)
-#    p1=plt.plot(NDVI1.index,NDVI1,color='blue')
-#    p2=plt.plot(NDVI1.index,NDVI11,color='red',linestyle='--')
-#    plt.ylabel("NDVI")
-#    plt.setp(ax1.get_xticklabels(), visible=False)
-#    ax2 = plt.subplot(612)
-#    plt.plot(NDVI1.index,NDWI1,color="blue")
-#    plt.plot(NDVI1.index,NDWI11,color='red',linestyle='--')
+
+    plt.figure(figsize=(13,10))
+    sns.set(style="darkgrid")
+    sns.set_context('paper')
+    ax1 = plt.subplot(411)
+    p1=plt.plot(NDVI1.index,NDVI1.T.mean(),color='blue')
+#    p2=plt.plot(NDVI1.index,NDVI11.T.mean(),color='red',linestyle='--')
+    plt.fill_between(NDVI1.index, confiancesup1[0], confianceinf1[0], facecolor='blue', alpha=0.2)
+#    plt.fill_between(NDVI11.index, confiancesup11[0], confianceinf11[0], facecolor='red', alpha=0.2)
+    plt.ylabel("NDVI")
+    plt.xticks(size='large')
+    plt.yticks(size='large')
+    plt.setp(ax1.get_xticklabels(), visible=False)
+    ax2 = plt.subplot(412)
+    plt.plot(VH_VV1.index,VH_VV1.T.mean(),color='blue')
+#    plt.plot(VH_VV11.index,VH_VV11.T.mean(),color='red',linestyle='--')
+    plt.fill_between(VH_VV1.index, confiancesupSAR[4], confianceinfSAR[4], facecolor='blue', alpha=0.2)
+#    plt.fill_between(VH_VV11.index, confiancesupSAR[5], confianceinfSAR[5], facecolor='red', alpha=0.2)
+    plt.ylabel("VH_VV en db")
+    plt.xticks(size='large')
+    plt.yticks(size='large')
+    plt.setp(ax2.get_xticklabels(), visible=False)   
+    ax3 = plt.subplot(413)
+    plt.plot(VV1.index,VV1.T.mean(),color='blue')
+#    plt.plot(VV11.index,VV11.T.mean(),color='red',linestyle='--')
+    plt.fill_between(VV1.index, confiancesupSAR[0], confianceinfSAR[0], facecolor='blue', alpha=0.2)
+#    plt.fill_between(VV11.index, confiancesupSAR[2], confianceinfSAR[2], facecolor='red', alpha=0.2)
+    plt.ylabel("VV en db")
+    plt.setp(ax3.get_xticklabels(), visible=False)    
+    
+#    plt.plot(NDWI1.index,NDWI1.T.mean(),color="blue")
+#    plt.plot(NDWI1.index,NDWI11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(NDVI1.index, confiancesup1[1], confianceinf1[1], facecolor='blue', alpha=0.2)
+#    plt.fill_between(NDVI11.index, confiancesup11[1], confianceinf11[1], facecolor='red', alpha=0.2)
 #    plt.ylabel("NDWI")
-#    plt.setp(ax2.get_xticklabels(), visible=False)
-#    ax3 = plt.subplot(613)
-#    plt.plot(VVa1.index,VVa1[42],color='blue')
-#    p3=plt.plot(VVa1.index, VVa11[140],color="red",linestyle='-',label= "asc")
-#    p4=plt.plot(VVd1.index,VVd1[42],color='blue',linestyle=':',label="des")
-#    plt.plot(VVd1.index,VVd11[140],color='red',linestyle=':')
-#    plt.legend((p3[0],p4[0]),("asc","des"))
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.setp(ax2.get_xticklabels(), visible=True)
+    
+    
+#    ax3 = plt.subplot(412)
+#    plt.plot(VV1.index,VV1.T.mean(),color='blue')
+#    plt.plot(VV11.index,VV11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(VV1.index, confiancesupSAR[0], confianceinfSAR[0], facecolor='blue', alpha=0.2)
+#    plt.fill_between(VV11.index, confiancesupSAR[2], confianceinfSAR[2], facecolor='red', alpha=0.2)
 #    plt.ylabel("VV")
 #    plt.setp(ax3.get_xticklabels(), visible=False)    
-#    ax4 = plt.subplot(614)
-#    plt.plot(VVa1.index,VHa1,color='blue')
-#    plt.plot(VVa1.index, VHa11,color='red',linestyle='-')
-#    plt.plot(VVd1.index,VHd1,color='blue',linestyle=':')
-#    plt.plot(VVd1.index,VHd11,color='red',linestyle=':')
-#    plt.legend((p3[0],p4[0]),("asc","des"))
-#    plt.ylabel("VH")
+#    ax4 = plt.subplot(413)
+#    plt.plot(VH_VV1.index,VH_VV1.T.mean(),color='blue')
+#    plt.plot(VH_VV11.index,VH_VV11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(VH_VV1.index, confiancesupSAR[4], confianceinfSAR[4], facecolor='blue', alpha=0.2)
+#    plt.fill_between(VH_VV11.index, confiancesupSAR[5], confianceinfSAR[5], facecolor='red', alpha=0.2)
+#    plt.ylabel("VH_VV")
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
 #    plt.setp(ax4.get_xticklabels(), visible=False)
-#    ax5 = plt.subplot(615)
-#    plt.plot(x4,y5,color='blue')
-#    plt.plot(x4, y5bis,color='red',linestyle='--')
-#    plt.ylabel("VH/VV")
-#    plt.setp(ax5.get_xticklabels(),rotation=False)
-#    plt.legend((p1[0],p2[0]),("Irrigué","Non Irrigué"))
-#    ax6 = plt.subplot(616)
-#    plt.bar(x3,y6,color='blue',width=1)
-#    plt.ylabel("pluviométrie en mm")
-#    plt.setp(ax6.get_xticklabels(),rotation=90)
-#    plt.savefig(d["SAVE"]+"comparaison_IRR_NIRR_TDJ_NORD.png")
-#    
 #
-#    sns.set(style="darkgrid")
-#    sns.set_context('paper')
-#    plt.plot(VV1,color='blue')
-#    plt.plot(VVa1,color='red')
-#    plt.xticks(rotation=90)
-#    plt.show()
-        
-# =============================================================================
-#         Confience index
-# =============================================================================
-   
-        
-#    _vv,b_supvv=stats.t.interval(0.95,VVa1.shape[1]-1,loc=VVa1.T.mean(),scale=stats.sem(VVa1.T))
-##    _,b_sup=stats.t.interval(0.95,VVa11.shape[1]-1,loc=VVa11.T.mean(),scale=stats.sem(VVa11.T))
-#    plt.plot(VVa1.index, VVa1.T.mean(), label="Mais irrigue", color='blue')
-#    plt.fill_between(VVa1.index, 'b_sup'+vv, _+vv, facecolor='orange', alpha=0.2)
+##    plt.setp(ax4.get_xticklabels(), visible=False)
+##    ax5 = plt.subplot(615)
+##    plt.plot(x4,y5,color='blue')
+##    plt.plot(x4, y5bis,color='red',linestyle='--')
+##    plt.ylabel("VH/VV")
+##    plt.setp(ax5.get_xticklabels(),rotation=False)
+#    plt.legend((p1[0],p2[0]),("Irrigué","Non Irrigué"))
+    ax6 = plt.subplot(414)
+    plt.bar(dfSAFRTCJ_O.index,dfSAFRTCJ_O.iloc[:,1],color='blue',width=1)
+    plt.ylabel("pluviométrie en mm")
+    plt.setp(ax6.get_xticklabels(),rotation=90)
+    plt.xticks(size='large')
+    plt.yticks(size='large')
+    plt.savefig(d["SAVE"]+"indices.png")
+    
+
+    sns.set(style="darkgrid")
+    sns.set_context('paper')
+    plt.plot(VV1,color='blue')
+    plt.plot(VVa1,color='red')
+    plt.xticks(rotation=90)
+    plt.show()
+#        
+## =============================================================================
+##        Calcule de la différence entre IRR et NIRR sur VV
+## =============================================================================
+    diffvv=VV1.T.mean()-VV11.iloc[:,0:4].T.mean()
+    plt.plot(diffvv)
+    diffvv=VV11.T.mean()-VV1.iloc[:,0:4].T.mean()

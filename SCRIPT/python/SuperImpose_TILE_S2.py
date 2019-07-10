@@ -53,7 +53,8 @@ if __name__ == "__main__":
     for i in list_IMG:
         print (i)
         for j in list_tile:
-            tile=os.path.basename(j)[-16:-11]
+#            tile=os.path.basename(j)[-16:-11]
+            tile=os.path.basename(j)[0:3]
             print(tile)
             Superimpose = otbApplication.Registry.CreateApplication("Superimpose")
             Superimpose.SetParameterString('inm',"{}".format(str(args.path).strip("['']"))+i)

@@ -16,8 +16,6 @@ import seaborn as sns
 import csv
 from scipy import *
 from pylab import *
-#import Scatter_plot
-import re
 
 def pltemp(x):
     plt.figure(figsize=(15,10))
@@ -69,12 +67,16 @@ def SAR_process_db(list_lab,data,variable_resarch): # Attention variable_resarch
             if variable_resarch in index:
                 globals()['%s%s' % (variable_resarch,i)].append (row)
                 globals()['df%s%s' %(variable_resarch,i)]=pd.DataFrame(globals()['%s%s' % (variable_resarch,i)])
+                globals()["df%s%s"% (variable_resarch,i)].replace(to_replace =0 , value= pd.NaT,inplace=True)
                 globals()["dbdf%s%s" %(variable_resarch ,i)]=10*np.log10(globals()['df%s%s' % (variable_resarch,i)])
-                
+     return globals()['df%s%s' %(variable_resarch,i)]      
+
+
 def sqlite_df(path,x):
     sql=sqlite3.connect(path)
     df=pd.read_sql_query("SELECT * FROM output", sql)
     globals()["%s"%x]=df.groupby("originfid").mean()
+    return globals()["%s"%x]
     
 
 def Optique_Process(list_lab,data,variable_resarch):
@@ -86,7 +88,7 @@ def Optique_Process(list_lab,data,variable_resarch):
             if variable_resarch in index:
                 globals()['%s%s' % (variable_resarch,i)].append (row)
                 globals()['df%s%s' %(variable_resarch,i)]=pd.DataFrame(globals()['%s%s' %(variable_resarch,i)])
-    
+    return globals()['df%s%s' %(variable_resarch,i)]
 
 if __name__ == "__main__":
     # =============================================================================
@@ -106,18 +108,20 @@ if __name__ == "__main__":
     for i in lab:
         print(i)
         globals()['cropslab%s' % i] = pd.DataFrame(dfr14[dfr14.labcroirr==i]).T
-        globals()['NDVI30j%s' % i]=[]
+        globals()['NDVI%s' % i]=[]
         for index,row in globals()['cropslab%s' % i].iterrows():
             if "ndvi" in index:
-                globals()['NDVI30j%s' % i].append (row)
-                globals()['dfndvi30j%s' % i]=pd.DataFrame(globals()['NDVI30j%s' % i])
-    
+                globals()['NDVI%s' % i].append (row)
+                globals()['dfndvi%s' % i]=pd.DataFrame(globals()['NDVI%s' % i])
+        globals()["_%s"% (i)],globals()["b_sup%s"% (i)]=stats.t.interval(0.95,globals()["dfndvi%s"%i].shape[1]-1,loc= globals()["dfndvi%s"%i].T.mean(),scale=stats.sem(globals()["dfndvi%s"%i].T.mean()))
         plt.figure(figsize=(15,10))
         #y_pos=np.arange(df.shape[0])
         sns.set(style="darkgrid")
         sns.set_context('paper')
         #plt.plot(globals()['dfndvi%s' % i])
-        plt.errorbar(globals()['dfndvi%s' % i].index,globals()['dfndvi%s' % i].T.mean(),yerr=globals()['dfndvi%s' % i].T.std())
+        plt.plot(globals()['dfndvi%s' % i].index,globals()['dfndvi%s' % i].T.mean())
+        plt.fill_between(globals()['dfndvi%s' % i].index, globals()["b_sup%s"% (i)], globals()["_%s"% (i)], facecolor='blue', alpha=0.2)
+#        plt.errorbar(globals()['dfndvi%s' % i].index,globals()['dfndvi%s' % i].T.mean(),yerr=globals()['dfndvi%s' % i].T.std())
         plt.xticks(rotation=90)
         plt.title("CODE_CULTURE"+"_"+str(i))
         plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_TEMPOREL/NDVI_2017/plot_NDWI_TEMPOREL_%s.png"%(i))
@@ -180,59 +184,22 @@ if __name__ == "__main__":
             plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_TEMPOREL/SAR_2017/plot_%s_TEMPOREL_%s_mean.png"%(p,i))
     
     
-    #if i == names_crops.code:
-    #    print (names_crops.code)
-    #Maize irrigated:1
-    #Maize no irrigated:11
-    #Soybean irrigated:2
-    #Soybean no irrigated:22
-    #Sorghum no irrigated:33
-    #Sunflower no irrigated:44
-    #Peas no irrigated:55
-    #Others:6
-    #
     
     
-    
-    # =============================================================================
-    # SPECTRE SM
-    # =============================================================================
-    timeSM=pd.DataFrame()
-    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_SM_DT/"):
-        print (i)
-        date=i[3:11]
-        sqlite_df("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_SM_DT/"+i,"dfSM")
-        lab=dfSM.labcroirr.astype(int)
-        globals()["meansm%s"%date]=dfSM.value_0
-        globals()["meansm%s"%date].rename("SM_"+date,inplace=True)
-        timeSM=timeSM.append(globals()["meansm%s"%date])
-        
-    timeSM=timeSM.sort_index(ascending=True)
-    timesm=timeSM.T/5
-    timesm["label"]=lab
-    label=list(set(lab))
-    for j in label:
-        print(j)
-        globals()['SMcropslab%s' % j] = pd.DataFrame(timesm[timesm.label==j]).T
-        plt.figure(figsize=(15,10))
-        plt.errorbar(globals()['SMcropslab%s' % j].index,globals()['SMcropslab%s' % j].T.mean(),yerr=globals()['SMcropslab%s' % j].T.std())
-        plt.title("CODE_CULTURE"+"_"+str(j))
-        plt.ylabel("soil moisture en mv")
-        plt.xticks(rotation=90)
-        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_SM/PLOT_TEMPO_SM_%s_mean.png"%(j))
+  
      
         
     
     # =============================================================================
     # Gestion des datas SAFRAN 
     # =============================================================================
-    #df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/preliq2017.csv")
-    
-    #LAMBX=df.LAMBX*100
-    #LAMBY=df.LAMBY*100
-    #df["lambX"]=LAMBX
-    #df['lambY']=LAMBY
-    #df.to_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/preliq2017_v2.csv")
+#    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/SIM2_2018_201901.csv",sep=";")
+#    
+#    LAMBX=df.LAMBX*100
+#    LAMBY=df.LAMBY*100
+#    df["lambX"]=LAMBX
+#    df['lambY']=LAMBY
+#    df.to_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/SAFRAN2018_L2.csv")
     
     df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/SAFRAN_TCJ.csv")
     df1=df.drop([0])
@@ -294,116 +261,6 @@ if __name__ == "__main__":
             plt.title("CODE_CULTURE"+"_"+str(i))
             plt.ylabel("db %s"%("ascVV_VH"))
             plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_TEMPOREL/SAR_2017/plot_SAR_%s_%s_SAFRAN_mean.png"%("ascVV_VH",i))
-    
-    
-    # =============================================================================
-    # SAFRAN_SM
-    # =============================================================================
-    date_SM=[]
-    for i in timeSM.index:
-        h=i[3:]
-        date_SM.append(h)
-    dateSM=list(map(int,date_SM))
-    
-    resultSM=set(list(date_safran)).intersection(set(dateSM))
-    
-    SAFRAN_SM=meandate.loc[dateSM]
-    SAFRAN_SM.index=pd.to_datetime(SAFRAN_SM.index,format='%Y%m%d')
-    label=list(set(lab))
-    for j in label:
-        pltemplui(SAFRAN_SM.index,SAFRAN_SM.PRELIQ_Q,globals()['SMcropslab%s' % j].iloc[:-1,:].T.mean())
-        plt.title("CODE_CULTURE"+"_"+str(j))
-        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_SM/PLOT_SM_PLUVIO_%s.png"%(j))
-    
-    
-    # =============================================================================
-    # SRTM_STAT
-    # =============================================================================
-    STASRTM = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/SRTM_TCJ_SLP_SampleExtraction.sqlite')
-    df=pd.read_sql_query("SELECT * FROM output", STASRTM)
-    
-    dfpar=df.groupby("originfid").mean()
-    dfpar=df.groupby("originfid").var()
-    
-    dflab=dfpar.groupby("labcroirr").mean()
-    
-    plt.figure(figsize=(15,15))
-    sns.set(style="darkgrid")
-    sns.set_context('paper')
-    g=sns.violinplot(x='labcroirr', y='value_0', data=dfpar)
-    plt.ylabel("mean_elevation")
-    #g.set_xticklabels(,rotation=90)
-    plt.xlabel("label")
-    
-    
-    STApente = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_SRTM_TCJ/S2__TEST_AUX_REFDE2_T31TCJ_0001_SLP_R1.TIF_SampleExtraction.sqlite')
-    dfslp=pd.read_sql_query("SELECT * FROM output", STApente)
-    
-    dfpar=dfslp.groupby("originfid").mean()
-    
-    plt.figure(figsize=(15,15))
-    sns.set(style="darkgrid")
-    sns.set_context('paper')
-    g=sns.violinplot(x='labcroirr', y='value_0', data=dfslp)
-    plt.ylabel("mean_pente")
-    #g.set_xticklabels(,rotation=90)
-    plt.xlabel("label")
-    
-    
-    STAexpo = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_SRTM_TCJ/RECLASS_EXPO_MASK_T31TCJ.tif_SampleExtraction.sqlite')
-    dfexpo=pd.read_sql_query("SELECT * FROM output", STAexpo)
-    
-    dfpar=dfexpo.groupby("originfid").mean()
-    
-    plt.figure(figsize=(15,15))
-    sns.set(style="darkgrid")
-    sns.set_context('paper')
-    g=sns.box(x='labcroirr', y='value_0', data=dfexpo)
-    plt.ylabel("mean_pente")
-    #g.set_xticklabels(,rotation=90)
-    plt.xlabel("label")
-    
-    #loop sur file tile SRTM et pente et EXPO 
-    
-    d={}
-    d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/"
-    d["ALL"]=d["data_file"]+"STAT_SRTM_DT_ALL/"
-    for i in os.listdir(d["ALL"]):
-        tile=i[19:26]
-        var=i[32:35]
-        print (tile)
-        print (var)
-        dfsrtm = sqlite3.connect(d["ALL"]+i)
-        df=pd.read_sql_query("SELECT * FROM output", dfsrtm)
-        dfpar=df.groupby("originfid").mean()
-        plt.figure(figsize=(15,15))
-        sns.set(style="darkgrid")
-        sns.set_context('paper')
-        g=sns.violinplot(x='labcroirr', y='value_0', data=df)
-        plt.ylabel(var+tile)
-        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLT_SRTM_DT/%s_%s.png"%(var,tile))
-    
-    # =============================================================================
-    # CODE ANCIERN 
-    # =============================================================================
-            
-    #polarisation=["ascVV",'desVV','ascVH','desVH',"desVV_VH","ascVV_VH"]       
-    #for p in polarisation:
-    #    print (p)     
-    #    for i in lab:
-    #        globals()["dbdf%s%s" %(p,i)]["date"]=globals()["images_S1_%s" %(p[0:3])]
-    #        others=pd.DataFrame()
-    #        for j in list(globals()["dbdf%s%s" %(p,i)].columns): 
-    #            if 'asc' in p:
-    #                add=pd.DataFrame({"date":list(miss1), j:list(val1)})
-    #                others=others.append(add)
-    #            else:
-    #                add=pd.DataFrame({"date":list(miss2), j:list(val2)})
-    #                others=others.append(add)
-    #        globals()["db%s"% i]=pd.concat([globals()["dbdf%s%s" %(p,i)],others])
-    #        #globals()["dbdf%s"% i]=globals()["db%s"% i].sort_values(by="date")
-    #        globals()["dbdf%sNA%s"%(p,i)] =globals()["db%s"% i].groupby("date").mean()
-        
     
     # =============================================================================
     # Avec des errort bar
@@ -467,28 +324,7 @@ if __name__ == "__main__":
                 plt.ylabel("Precipitation en mm")
                 plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_TEMPOREL/SAR_2017/plot_SAR_%s_%s_SAFRAN_mean.png"%("orbitedes",i))
     
-    # =============================================================================
-    # PLOT_SM_PLUVIO
-    # =============================================================================
-    
-    dateSM=pd.to_datetime(dateSM,format="%Y%m%d")
-    meandate.index=pd.to_datetime(meandate.index,format="%Y%m%d")
-    timeSM=timeSM.sort_index()
-    label=list(set(lab))
-    for j in label[:-1]:
-        print(j)
-        globals()['SMcropslab%s' % j] = pd.DataFrame(timesm[timesm.label==j]).T
-        plt.figure(figsize=(15,10))
-        ax1 = plt.subplot(411)
-        plt.errorbar(meandate.loc[dateSM].index,globals()['SMcropslab%s' % j][:-1].T.mean(),yerr=globals()['SMcropslab%s' % j][:-1].T.std())
-        plt.title("CODE_CULTURE"+"_"+str(j))
-        plt.ylabel("soil moisture en mv vol %")
-        plt.setp(ax1.get_xticklabels(), visible=False)
-        # share x only
-        ax2 = plt.subplot(412)
-        plt.bar(meandate.loc[dateSM].index,meandate.loc[dateSM].PRELIQ_Q,width=1)
-        plt.ylabel("Précipitation en mm")
-        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_SM/plot_SM_%s_SAFRAN_mean.png"%(j))
+
 
     # =============================================================================
     #   SAR Orbite 132 ASC_ vv
@@ -532,25 +368,7 @@ if __name__ == "__main__":
         ax5 = plt.subplot(212)
         plt.bar(meandate.index[156:-4], meandate.PRELIQ_Q[156:-4],width=1)
         plt.ylabel("Precipitation en mm")
-        
-    # =============================================================================
-    # TEST effet interpolation IOTA 
-    # =============================================================================
-    b=set(dbdfVV1.index).intersection(set(dbdfascVV1.index))
-    a=set(dbdfVV1.columns).intersection(set(dbdfascVV1.columns))
-    
-    plt.figure(figsize=(15,10))
-    plt.scatter(dbdfascVV1.loc[b][a],dbdfVV1.loc[b][a])
-    plt.xlabel("polarisation VV gapfillée ")
-    plt.ylabel("polarisation VV non gapfillée")
-    rms = sqrt(mean_squared_error(dbdfascVV1.loc[b][a],dbdfVV1.loc[b][a]))
-    plt.text(-12,-1,"RMSE = "+str(round(rms,2)))
-    R2=r2_score(dbdfascVV1.loc[b][a],dbdfVV1.loc[b][a])
-    plt.text(-12,-1.5,"R² = "+str(round(R2,2)))
-    plt.ylim(-12,1)
-    plt.xlim(-12,1)
-    plt.plot([-12,1],[-12,1],'r-', lw=2)
-    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/scatter_gap_VV.png")
+
 
     # =============================================================================
     # Profil TST 
@@ -607,3 +425,69 @@ if __name__ == "__main__":
     plt.subplot(212)
     plt.bar(meandate.loc[a].index,meandate.loc[a].PRELIQ_Q,width=5)
 
+#    # =============================================================================
+#    # SRTM_STAT
+#    # =============================================================================
+#    STASRTM = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/SRTM_TCJ_SLP_SampleExtraction.sqlite')
+#    df=pd.read_sql_query("SELECT * FROM output", STASRTM)
+#    
+#    dfpar=df.groupby("originfid").mean()
+#    dfpar=df.groupby("originfid").var()
+#    
+#    dflab=dfpar.groupby("labcroirr").mean()
+#    
+#    plt.figure(figsize=(15,15))
+#    sns.set(style="darkgrid")
+#    sns.set_context('paper')
+#    g=sns.violinplot(x='labcroirr', y='value_0', data=dfpar)
+#    plt.ylabel("mean_elevation")
+#    #g.set_xticklabels(,rotation=90)
+#    plt.xlabel("label")
+#    
+#    
+#    STApente = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_SRTM_TCJ/S2__TEST_AUX_REFDE2_T31TCJ_0001_SLP_R1.TIF_SampleExtraction.sqlite')
+#    dfslp=pd.read_sql_query("SELECT * FROM output", STApente)
+#    
+#    dfpar=dfslp.groupby("originfid").mean()
+#    
+#    plt.figure(figsize=(15,15))
+#    sns.set(style="darkgrid")
+#    sns.set_context('paper')
+#    g=sns.violinplot(x='labcroirr', y='value_0', data=dfslp)
+#    plt.ylabel("mean_pente")
+#    #g.set_xticklabels(,rotation=90)
+#    plt.xlabel("label")
+#    
+#    
+#    STAexpo = sqlite3.connect('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_SRTM_TCJ/RECLASS_EXPO_MASK_T31TCJ.tif_SampleExtraction.sqlite')
+#    dfexpo=pd.read_sql_query("SELECT * FROM output", STAexpo)
+#    
+#    dfpar=dfexpo.groupby("originfid").mean()
+#    
+#    plt.figure(figsize=(15,15))
+#    sns.set(style="darkgrid")
+#    sns.set_context('paper')
+#    g=sns.box(x='labcroirr', y='value_0', data=dfexpo)
+#    plt.ylabel("mean_pente")
+#    #g.set_xticklabels(,rotation=90)
+#    plt.xlabel("label")
+#    
+#    #loop sur file tile SRTM et pente et EXPO 
+#    
+#    d={}
+#    d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/"
+#    d["ALL"]=d["data_file"]+"STAT_SRTM_DT_ALL/"
+#    for i in os.listdir(d["ALL"]):
+#        tile=i[19:26]
+#        var=i[32:35]
+#        print (tile)
+#        print (var)
+#        dfsrtm = sqlite3.connect(d["ALL"]+i)
+#        df=pd.read_sql_query("SELECT * FROM output", dfsrtm)
+#        dfpar=df.groupby("originfid").mean()
+#        plt.figure(figsize=(15,15))
+#        sns.set(style="darkgrid")
+#        sns.set_context('paper')
+#        g=sns.violinplot(x='labcroirr', y='value_0', data=df)
+#        plt.ylabel(var+tile)
+#        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLT_SRTM_DT/%s_%s.png"%(var,tile))
