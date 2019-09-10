@@ -356,13 +356,13 @@ if __name__ == '__main__':
     df_S2.columns=["date","tile","N"]
     df_S2.date=pd.to_datetime(df_S2.date,format="%Y%m%d")
 
-    dfinterdateS1=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/S1_vh_ASC_dates_input.txt",header=None) 
-    df_S1=pd.concat([dfinterdateS1, pd.DataFrame(np.repeat('ASC',dfinterdateS1.shape[0])),pd.DataFrame(np.repeat(2,dfinterdateS1.shape[0]))],axis =1)
-    df_S1.columns=["date","mode","N"]
-    df_S1.date=pd.to_datetime(df_S1.date,format="%Y%m%d")
-    
+#    dfinterdateS1=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/S1_vh_ASC_dates_input.txt",header=None) 
+#    df_S1=pd.concat([dfinterdateS1, pd.DataFrame(np.repeat('ASC',dfinterdateS1.shape[0])),pd.DataFrame(np.repeat(2,dfinterdateS1.shape[0]))],axis =1)
+#    df_S1.columns=["date","mode","N"]
+#    df_S1.date=pd.to_datetime(df_S1.date,format="%Y%m%d")
+#    
     dfinterdateS1=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/S1_vh_DES_dates_input.txt",header=None) 
-    df_S1_DES=pd.concat([dfinterdateS1, pd.DataFrame(np.repeat('DES',dfinterdateS1.shape[0])),pd.DataFrame(np.repeat(1.5,dfinterdateS1.shape[0]))],axis =1)
+    df_S1_DES=pd.concat([dfinterdateS1, pd.DataFrame(np.repeat('DES',dfinterdateS1.shape[0])),pd.DataFrame(np.repeat(1.25,dfinterdateS1.shape[0]))],axis =1)
     df_S1_DES.columns=["date","mode","N"]
     df_S1_DES.date=pd.to_datetime(df_S1_DES.date,format="%Y%m%d")
 
@@ -372,9 +372,8 @@ if __name__ == '__main__':
     sns.set_context('paper')
     plt.setp(ax1.get_yticklabels(), visible=False)
     p1=plt.plot(df_S2.date,df_S2.N,marker='o',linestyle='')
-    p2=plt.plot(df_S1.date,df_S1.N,marker='^',linestyle='')
     p3=plt.plot(df_S1_DES.date,df_S1_DES.N,marker='v',linestyle='')
     plt.xticks(rotation=0)
-    plt.ylim(0.5,2.5)
-    plt.legend((p1[0],p2[0],p3[0]),("Sentinel-2","SAR-asc","SAR-des"),loc='best')
+    plt.ylim(0.75,1.5)
+    plt.legend((p1[0],p3[0]),("Sentinel-2","SAR-des"),loc='best')
     plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/imagesdate_entier.png")

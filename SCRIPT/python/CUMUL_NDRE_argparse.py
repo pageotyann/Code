@@ -43,47 +43,52 @@ if __name__ == "__main__":
     band_rededge = df_rededge["band"].tolist()
 
     path_folder = "{}".format(str(args.path).strip("['']"))
+    
+    if args.vege == False:
+		expres = []
+		for i, j in zip(band_NIR, band_rededge):
+			num = "(im1b"+str(i)+"-im1b"+str(j)+")"
+			denum = "(im1b"+str(i)+"+im1b"+str(j)+")"
+			x = num+"/"+denum
+			condition = denum+"<=0 ? 1: "
+			compute = condition + x
+			expres.append(compute)
+		expres = ','.join(str(x) for x in expres)
+			
+		tile="{}".format(str(args.tile).strip("['']"))
+		print (tile)
+		print (path_folder)
+		print (df_NIR)
+		print (df_rededge)
+		print(NIR)
+		print(rededge)
 
-    expres = []
+		BMapp1 = otbApplication.Registry.CreateApplication("BandMath")
+		BMapp1.SetParameterStringList("il",[path_folder +"Sentinel2_%s_Features.tif"%tile])
+		BMapp1.SetParameterString("out",path_folder+"CUMUL_%s_%s_%s.tif"% (tile,NIR,rededge))
+		BMapp1.SetParameterString("exp", expres)
+		BMapp1.ExecuteAndWriteOutput()  
 
-    for i, j in zip(band_NIR, band_rededge):
-        num = "(im1b"+str(i)+"-im1b"+str(j)+")"
-        denum = "(im1b"+str(i)+"+im1b"+str(j)+")"
-        x = num+"/"+denum
-        condition = denum+"<=0 ? 1: "
-        compute = condition + x
-        expres.append(compute)
-    expres = ','.join(str(x) for x in expres)
-        
-    tile="{}".format(str(args.tile).strip("['']"))
-    print (tile)
-    print (path_folder)
-    print (df_NIR)
-    print (df_rededge)
-    print(NIR)
-    print(rededge)
+    else:
+		expres = []
+		for i, j in zip(band_NIR[8:-3], band_rededge[8:-3]):
+			num = "(im1b"+str(i)+"-im1b"+str(j)+")"
+			denum = "(im1b"+str(i)+"+im1b"+str(j)+")"
+			x = num+"/"+denum
+			condition = denum+"<=0 ? 1: "
+			compute = condition + x
+			expres.append(compute)
 
-    BMapp1 = otbApplication.Registry.CreateApplication("BandMath")
-    BMapp1.SetParameterStringList("il",[path_folder +"Sentinel2_%s_Features.tif"%tile])
-    BMapp1.SetParameterString("out",path_folder+"SUM_%s_%s_%s_test.tif"% (tile,NIR,rededge))
-    BMapp1.SetParameterString("exp", expres)
-    BMapp1.ExecuteAndWriteOutput()  
-
-    if args.vege == True:
-        expres = []
-        for i, j in zip(band_NIR[8:-3], band_rededge[8:-3]):
-            if i or j <0 :
-                j = 0
-                i = 0
-            else: 
-                x = "((im1b"+str(i)+"-"+"im1b"+str(j)+")/(im1b"+str(i)+"+"+"im1b"+str(j)+"))"
-                expres.append(x)
-        expres = "+".join(str(x) for x in expres)
-
-        tile="{}".format(str(args.tile).strip("['']"))
-
-        BMapp1 = otbApplication.Registry.CreateApplication("BandMath")
-        BMapp1.SetParameterStringList("il",[path_folder +"Sentinel2_%s_Features.tif"%tile])
-        BMapp1.SetParameterString("out",path_folder+"SUM_%s_%s_%s_time_vege.tif"% (tile,NIR,rededge))
-        BMapp1.SetParameterString("exp", expres)
-        BMapp1.ExecuteAndWriteOutput() 
+		expres = ','.join(str(x) for x in expres)
+		print(expres)
+	
+		tile="{}".format(str(args.tile).strip("['']"))
+		print (df_NIR)
+		print (df_rededge)
+		print(NIR)
+		print(rededge)
+		BMapp1 = otbApplication.Registry.CreateApplication("BandMath")
+		BMapp1.SetParameterStringList("il",[path_folder +"Sentinel2_%s_Features.tif"%tile])
+		BMapp1.SetParameterString("out",path_folder+"CUMUL_%s_%s_%s_time_vege.tif"% (tile,NIR,rededge))
+		BMapp1.SetParameterString("exp", expres)
+		BMapp1.ExecuteAndWriteOutput() 

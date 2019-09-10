@@ -34,7 +34,7 @@ from osgeo import gdal
 from osgeo import ogr
 from osgeo import osr
 from osgeo.gdalconst import *
-import otbApplication as otb
+#import otbApplication as otb
 from Common.Utils import run
 
 
@@ -45,7 +45,7 @@ def ensure_dir(dirname, raise_exe=True):
     import errno
     try:
         os.makedirs(dirname)
-    except OSError, e:
+    except OSError as e:
         if e.errno != errno.EEXIST:
             if raise_exe:
                 raise
@@ -177,7 +177,7 @@ def commonMaskSARgeneration(cfg, tile, cMaskName):
     cMaskPathVec = featureFolder + "/" + tile + "/tmp/" + cMaskName + ".shp"
     VectorMask = "gdal_polygonize.py -f \"ESRI Shapefile\" -mask " + cMaskPath + " " + cMaskPath +\
                  " " + cMaskPathVec
-    print VectorMask
+    print (VectorMask)
     if not os.path.exists(cMaskPathVec):
         os.system(VectorMask)
     os.system(VectorMask)
@@ -638,7 +638,7 @@ def getIndex(listOfTuple, keyVal):
     try:
         retour = [item for key, item in listOfTuple].index(keyVal) + 1
     except:
-        print keyVal + " not in list of bands"
+        print (keyVal + " not in list of bands")
         retour = []
     return retour
 
@@ -831,7 +831,7 @@ def readRaster(name, data=False, band=1):
     try:
         raster = gdal.Open(name, 0)
     except:
-        print "Problem on raster file path"
+        print ("Problem on raster file path")
         sys.exit()
 
     raster_band = raster.GetRasterBand(band)
@@ -943,7 +943,7 @@ def getNbDateInTile(dateInFile, display=True, raw_dates=False):
                 validDate = datetime.datetime(int(Y), int(M), int(D))
                 allDates.append(vardate)
                 if display:
-                    print validDate
+                    print (validDate)
             except ValueError:
                 raise Exception("unvalid date in : "+dateInFile+" -> '"+str(vardate)+"'")
     if raw_dates:
@@ -1198,7 +1198,7 @@ def mergeSQLite(outname, opath, files):
         if len(files) > 1:
             for f in range(1, len(files)):
                 fusion = 'ogr2ogr -f SQLite -update -append '+filefusion+' '+files[f]
-                print fusion
+                print (fusion)
                 run(fusion)
     else:
         shutil.copy(files[0], filefusion)
@@ -2024,8 +2024,8 @@ class serviceCompareVectorFile:
 
                 geom1 = feature1.GetGeometryRef()
                 geom2 = feature2.GetGeometryRef()
-                print geom1
-                print geom2
+                print (geom1)
+                print (geom2)
                 # check if coordinates are equal
                 isEqual(str(geom1), str(geom2))
 

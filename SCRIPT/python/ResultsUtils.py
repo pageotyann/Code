@@ -268,7 +268,7 @@ def normalize_conf(conf_mat_array, norm="ref"):
     return norm_conf
 
 def fig_conf_mat(conf_mat_dic, nom_dict, kappa, oacc, p_dic, r_dic, f_dic,
-                 out_png, dpi=900, write_conf_score=True,
+                 out_png, dpi=600, write_conf_score=True,
                  grid_conf=False, conf_score="count",
                  point_of_view="ref", threshold=0):
     """
@@ -332,6 +332,7 @@ def fig_conf_mat(conf_mat_dic, nom_dict, kappa, oacc, p_dic, r_dic, f_dic,
     fig = plt.figure(figsize=(nb_labels / 1, nb_labels / 1))
     grid_s = gridspec.GridSpec(3, 3, width_ratios=[1, 1.0 / len(labels_ref), 1.0 / len(labels_ref)],
                                height_ratios=[1, 1.0 / len(labels_prod), 1.0 / len(labels_prod)])
+
     grid_s.update(wspace=0.1, hspace=0.1)
     plt.clf()
     axe = fig.add_subplot(grid_s[0])
@@ -342,7 +343,7 @@ def fig_conf_mat(conf_mat_dic, nom_dict, kappa, oacc, p_dic, r_dic, f_dic,
     if grid_conf:
         axe.set_xticks(np.arange(-.5, len(labels_prod), 1), minor=True)
         axe.set_yticks(np.arange(-.5, len(labels_ref), 1), minor=True)
-        axe.grid(which='minor', color='gray', linestyle='-', linewidth=1, alpha=0.5)
+        axe.grid(which='minor', color='grey', linestyle='-', linewidth=1, alpha=0.5)
 
     maxtrix = norm_conf
     axe.imshow(rgb_matrix,
@@ -369,7 +370,7 @@ def fig_conf_mat(conf_mat_dic, nom_dict, kappa, oacc, p_dic, r_dic, f_dic,
                              xy=(y_coord, x_coord),
                              horizontalalignment='center',
                              verticalalignment='center',
-                             fontsize='xx-small',
+                             fontsize=8,
                              rotation=45)
 
     plt.xticks(list(range(width)), [lab for lab in labels_prod], rotation=90)
@@ -393,7 +394,7 @@ def fig_conf_mat(conf_mat_dic, nom_dict, kappa, oacc, p_dic, r_dic, f_dic,
         ax2.annotate("{:.3f}".format(rec_val[y_coord][1]), xy=(1, y_coord),
                      horizontalalignment='center',
                      verticalalignment='center',
-                     fontsize='xx-small')
+                     fontsize= 8)
     # Precision
     pre_val = []
     ax3 = fig.add_subplot(grid_s[3])
@@ -412,7 +413,7 @@ def fig_conf_mat(conf_mat_dic, nom_dict, kappa, oacc, p_dic, r_dic, f_dic,
         ax3.annotate("{:.3f}".format(pre_val[0][x_coord]), xy=(x_coord, 1),
                      horizontalalignment='center',
                      verticalalignment='center',
-                     fontsize='xx-small')
+                     fontsize=8)
     ax3.set_xlabel("Precision")
     ax3.set_xticklabels([])
 
@@ -431,7 +432,7 @@ def fig_conf_mat(conf_mat_dic, nom_dict, kappa, oacc, p_dic, r_dic, f_dic,
         ax4.annotate("{:.3f}".format(fs_val[y_coord][1]), xy=(1, y_coord),
                      horizontalalignment='center',
                      verticalalignment='center',
-                     fontsize='xx-small')
+                     fontsize= 8 )
     # Kappa and oacc
     fig.text(0, 1, 'KAPPA : {:.3f} OA : {:.3f}'.format(kappa, oacc), ha='center', va='center')
 
@@ -679,7 +680,7 @@ def compute_interest_matrix(all_matrix, f_interest="mean"):
     for ref_lab, prod in list(matrix.items()):
         for prod_lab, prod_val in list(prod.items()):
             if f_interest.lower() == "mean":
-                output_matrix[ref_lab][prod_lab] = "{0:.2f}".format(np.mean(matrix[ref_lab][prod_lab]))
+                output_matrix[ref_lab][prod_lab] = round(np.mean(matrix[ref_lab][prod_lab]),3)
 
     return output_matrix
 
@@ -721,13 +722,13 @@ def get_interest_coeff(runs_coeff, nb_lab, f_interest="mean"):
     for label, values in list(coeff_buff.items()):
         if f_interest.lower() == "mean":
             mean = np.mean(values)
-            _, b_sup = stats.t.interval(0.95, nb_lab - 1,
-                                        loc=np.mean(values),
-                                        scale=stats.sem(values))
-            if nb_run > 1:
-                coeff_out[label] = "{:.3f} +- {:.3f}".format(mean, b_sup - mean)
-            elif nb_run == 1:
-                coeff_out[label] = "{:.3f}".format(mean)
+#            _, b_sup = stats.t.interval(0.95, nb_lab - 1,
+#                                        loc=np.mean(values),
+#                                        scale=stats.sem(values))
+#            if nb_run > 1:
+#                coeff_out[label] = "{:.3f} +- {:.3f}".format(mean, b_sup - mean)
+#            elif nb_run == 1:
+            coeff_out[label] = round(mean,3)
     return coeff_out
 
 def stats_report(csv_in, nomenclature_path, out_report, undecidedlabel=None):

@@ -18,30 +18,33 @@ import csv
 import collections
 #from ResultsUtils import get_coeff, get_conf_max 
 from ResultsUtils import *
+from Common import FileUtils as fu
+from Common.Utils import run
+import ResultsUtils as resU
 
 
-def parse_csv(path_csv):
-    with open(path_csv, 'r') as csvfile:
-        csv_reader = csv.reader(csvfile)
-        ref_lab = [elem.replace("#Reference labels (rows):", "") for elem in next(csv_reader)]
-        prod_lab = [elem.replace("#Produced labels (columns):", "") for elem in next(csv_reader)]
-        all_labels = sorted([int(label) for label in list(set(ref_lab + prod_lab))])
-
-        # construct confusion matrix structure and init it at 0
-        matrix = collections.OrderedDict()
-        for lab_ref in all_labels:
-            matrix[lab_ref] = collections.OrderedDict()
-            for lab_prod in all_labels:
-                matrix[lab_ref][lab_prod] = 0
-
-        # fill-up confusion matrix
-        csv_dict = csv.DictReader(csvfile, fieldnames=prod_lab)
-        for row_num, row_ref in enumerate(csv_dict):
-            for klass, value in list(row_ref.items()):
-                ref = int(ref_lab[row_num])
-                prod = int(klass)
-                matrix[ref][prod] += float(value)
-    return matrix
+#def parse_csv(path_csv):
+#    with open(path_csv, 'r') as csvfile:
+#        csv_reader = csv.reader(csvfile)
+#        ref_lab = [elem.replace("#Reference labels (rows):", "") for elem in next(csv_reader)]
+#        prod_lab = [elem.replace("#Produced labels (columns):", "") for elem in next(csv_reader)]
+#        all_labels = sorted([int(label) for label in list(set(ref_lab + prod_lab))])
+#
+#        # construct confusion matrix structure and init it at 0
+#        matrix = collections.OrderedDict()
+#        for lab_ref in all_labels:
+#            matrix[lab_ref] = collections.OrderedDict()
+#            for lab_prod in all_labels:
+#                matrix[lab_ref][lab_prod] = 0
+#
+#        # fill-up confusion matrix
+#        csv_dict = csv.DictReader(csvfile, fieldnames=prod_lab)
+#        for row_num, row_ref in enumerate(csv_dict):
+#            for klass, value in list(row_ref.items()):
+#                ref = int(ref_lab[row_num])
+#                prod = int(klass)
+#                matrix[ref][prod] += float(value)
+#    return matrix
 
 def get_coeff_modif(matrix,list_lab):
     """
@@ -133,27 +136,89 @@ if __name__ == "__main__":
 #                    kappa, oacc, p_dic, r_dic, f_dic=get_coeff_modif(globals()["matrix_%s_%s"% (j,k[:-4])],lab)
 #                    
 #                    all.append(kappa)  
-    lab=[1,2,3,4,5]
-    Fscore=[]
-    nom=get_nomenclature("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/Nomenclature_RPG.txt")
-    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/"):
-        print (i)                
-        globals()["matrix_%s"% (i[:-4])]=parse_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/%s" %i)
-
-        kappa, oacc, p_dic, r_dic, f_dic=get_coeff_modif(globals()["matrix_%s"% (i[:-4])],lab)
-        Fscore.append(f_dic)
-        
-        fig_conf_mat(globals()["matrix_%s"% (i[:-4])],nom,kappa, oacc, p_dic, r_dic, f_dic,"/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/matrix_%s.png"%(i[:-4]) )
-        
-#        gen_confusion_matrix_fig("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/%s" %i,"/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/", "/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/Nomenclature_RPG.txt" )
-## Récuparation des labels pour recalculer les get coeff
-#    ref1_1=matrix[1][1]
-#    ref11_11=matrix[11][11]
-#    ref1_11=matrix[1][11]
-#    ref11_1=matrix[11][1]
-#    
-#    matribis=np.array([[ref1_1,ref1_11],[ref11_1,ref11_11]])
+#    lab=[1,11,2,22,33,44]
+#    Fscore=[]
+#    nom=get_nomenclature("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/Nomenclature_RPG.txt")
+#    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/"):
+#        print (i)                
+#        globals()["matrix_%s"% (i[:-4])]=parse_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/MATRIX/%s" %i)
 #
-#    precision1=matribis[0][0]/sum(matribis[0])
-#    rappel1=matribis[0][0]/sum(matribis[:,0])
-#    fscore1=(2.0 * precision1 * rappel1) / (precision1 + rappel1)
+#        kappa, oacc, p_dic, r_dic, f_dic=get_coeff_modif(globals()["matrix_%s"% (i[:-4])],lab)
+#        Fscore.append(f_dic)
+#        
+#        fig_conf_mat(globals()["matrix_%s"% (i[:-4])],nom,kappa, oacc, p_dic, r_dic, f_dic,"/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/MATRIX_CONFU_TYP_RPG/matrix_%s.png"%(i[:-4]) )
+   
+
+# =============================================================================
+#  Fusion matrix run 5     
+# =========================================================== ==================
+    nom=get_nomenclature("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt")
+    pathNom="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt"
+    pathRes="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/2017/MT/RUN_POLA_DES_FULL_3ind/final/"
+    
+
+
+    all_k = []
+    all_oa = []
+    all_p = []
+    all_r = []
+    all_f = []
+    all_matrix = []
+    for csv in os.listdir(pathRes):
+        if "csv" in csv and "ColorIndexed" in csv:
+            if "CM" in csv:
+                print (csv)
+                conf_mat_dic = parse_csv(pathRes+csv)
+                kappa, oacc, p_dic, r_dic, f_dic = get_coeff(conf_mat_dic)
+                all_matrix.append(conf_mat_dic)
+                all_k.append(kappa)
+                all_oa.append(oacc)
+                all_p.append(p_dic)
+                all_r.append(r_dic)
+                all_f.append(f_dic)
+        
+    conf_mat_dic = compute_interest_matrix(all_matrix, f_interest="mean")
+    nom_dict = get_nomenclature("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt")
+    size_max, labels_prod, labels_ref = get_max_labels(conf_mat_dic, nom_dict)
+    p_mean = get_interest_coeff(all_p, nb_lab=len(labels_ref), f_interest="mean")
+    r_mean = get_interest_coeff(all_r, nb_lab=len(labels_ref), f_interest="mean")
+    f_mean = get_interest_coeff(all_f, nb_lab=len(labels_ref), f_interest="mean")
+
+   
+    fig_conf_mat(conf_mat_dic,nom,np.mean(all_k),np.mean(all_oa),p_mean,r_mean,f_mean,pathRes[:-4]+"Matrix_fusion.png",conf_score="percentage")
+
+
+
+    nom=get_nomenclature("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt")
+    pathNom="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt"
+    pathRes="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/2018/RUN_MT/RUN_POLA_DES_FULL_3ind_RPG_SOG/final/TMP/"
+    
+
+
+    all_k = []
+    all_oa = []
+    all_p = []
+    all_r = []
+    all_f = []
+    all_matrix = []
+    for csv in os.listdir(pathRes):
+        if "csv" in csv and "Classif" in csv:
+            print (csv)
+            conf_mat_dic = parse_csv(pathRes+csv)
+            kappa, oacc, p_dic, r_dic, f_dic = get_coeff(conf_mat_dic)
+            all_matrix.append(conf_mat_dic)
+            all_k.append(kappa)
+            all_oa.append(oacc)
+            all_p.append(p_dic)
+            all_r.append(r_dic)
+            all_f.append(f_dic)
+        
+    conf_mat_dic = compute_interest_matrix(all_matrix, f_interest="mean")
+    nom_dict = get_nomenclature("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt")
+    size_max, labels_prod, labels_ref = get_max_labels(conf_mat_dic, nom_dict)
+    p_mean = get_interest_coeff(all_p, nb_lab=len(labels_ref), f_interest="mean")
+    r_mean = get_interest_coeff(all_r, nb_lab=len(labels_ref), f_interest="mean")
+    f_mean = get_interest_coeff(all_f, nb_lab=len(labels_ref), f_interest="mean")
+
+   
+    fig_conf_mat(conf_mat_dic,nom,np.mean(all_k),np.mean(all_oa),p_mean,r_mean,f_mean,pathRes[:-4]+"Matrix_fusion.png",conf_score="percentage")

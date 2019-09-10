@@ -50,7 +50,7 @@ if __name__ == '__main__':
                 # Tet on the top of each barplot
         for j in range(len(df["sum"])):
             plt.text(x = y_pos[j] -0.3 , y = df["sum"][j], s = list(label)[j], size = 11)
-        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_DT_%s.png" %tile) 
+#        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_DT_%s.png" %tile) 
     
     
     for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_TUILES/"):
@@ -74,7 +74,7 @@ if __name__ == '__main__':
                 # Tet on the top of each barplot
         for j in range(len(df["sum"])):
             plt.text(x = y_pos[j] -0.3 , y = df["sum"][j], s = list(label)[j], size = 11)
-        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_RPG_%s.png" %tile) 
+#        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_RPG_%s.png" %tile) 
     
     for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_BV/"):
         print(i)
@@ -97,7 +97,7 @@ if __name__ == '__main__':
                 # Tet on the top of each barplot
         for j in range(len(df["sum"])):
             plt.text(x = y_pos[j] -0.3 , y = df["sum"][j], s = list(label)[j], size = 11)
-        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_RPG_%s.png" %BV) 
+#        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_RPG_%s.png" %BV) 
         
     for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_PARTENAIRES/"):
         print (i)
@@ -120,57 +120,60 @@ if __name__ == '__main__':
 #                # Tet on the top of each barplot
 #        for j in range(len(df["sum"])):
 #            plt.text(x = y_pos[j] -0.3 , y = df["sum"][j], s = list(label)[j], size = 11)
-        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_RPG_%s.png" %zone) 
+#        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_RPG_%s.png" %zone) 
         
 # =============================================================================
 #         Test data même plot
 # =============================================================================
-    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_PARTENAIRES/"):
-        for j in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_BV/"):
-            print (i,j)
-            if i[-9:-4] == j[-9:-4]: 
-                df1=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_PARTENAIRES/%s" %i)
-                df2=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_BV/%s" %j)
-                df1=df1.sort_values(by='category', ascending=True)
-                df1["name"]=names_crop
-                df1=df1.reset_index()
-                df1["source"]=np.repeat("DT",len(names_crop))
-                df2=df2.sort_values(by='category', ascending=True)
-                df2["name"]=names_RPG
-                df2=df2.reset_index()
-                df2["source"]=np.repeat("RPG",len(names_RPG))
-                DF=pd.concat([df1,df2])
-                y_pos= np.arange(len(list(df1.name)))
-                plt.figure(figsize=(15,10))
-                sns.set(style="darkgrid")
-                sns.set_context('paper')
-                sns.barplot(x="name",y="sum",hue="source",data=DF)
-                plt.title("Bassin versant %s" %i[-9:-4])
-                
-            else : 
-                print("pas même zone")
-                
+#    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_PARTENAIRES/"):
+#        for j in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_BV/"):
+#            print (i,j)
+#            if i[-9:-4] == j[-9:-4]: 
+#                df1=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_PARTENAIRES/%s" %i)
+#                df2=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_BV/%s" %j)
+#                df1=df1.sort_values(by='category', ascending=True)
+#                df1["name"]=names_crop
+#                df1=df1.reset_index()
+#                df1["source"]=np.repeat("DT",len(names_crop))
+#                df2=df2.sort_values(by='category', ascending=True)
+#                df2["name"]=names_RPG
+#                df2=df2.reset_index()
+#                df2["source"]=np.repeat("RPG",len(names_RPG))
+#                DF=pd.concat([df1,df2])
+#                y_pos= np.arange(len(list(df1.name)))
+#                plt.figure(figsize=(15,10))
+#                sns.set(style="darkgrid")
+#                sns.set_context('paper')
+#                sns.barplot(x="name",y="sum",hue="source",data=DF)
+#                plt.title("Bassin versant %s" %i[-9:-4])
+#                
+#            else : 
+#                print("pas même zone")
+#                
     # =============================================================================
     # Diagramme secteur 
     # =============================================================================
+    a=pd.DataFrame()
     for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_BV/"):
         print(i)
-        BV=i[-14:-4]
-        df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_BV/%s" %i)
-        df=df.sort_values(by='category', ascending=True)
-        df["name"]=names_RPG_fr
-        df=df.reset_index()
-        y_pos= np.arange(len(list(df.name)))
-        plt.figure(figsize=(10,10))
-        sns.set(style="darkgrid")
-        sns.set_context('paper')
-        colors=["b","cadetblue","peru","orange","salmon"]
-        plt.pie(df["sum"].iloc[[0,1,5,6,7]],labels=df["name"].iloc[[0,1,5,6,7]],autopct='%1.1f%%',colors=colors,textprops={'fontsize': 20})
-        plt.title("Bassin versant %s" %BV)
-        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_secteur_RPG_%s.png" %BV) 
+        if '2018' in i:
+            BV=i[-14:-4]
+            df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_RPG_BV/%s" %i)
+            df=df.sort_values(by='category', ascending=True)
+            df["name"]=names_RPG_fr
+            df=df.reset_index()
+            y_pos= np.arange(len(list(df.name)))
+            plt.figure(figsize=(10,10))
+            sns.set(style="darkgrid")
+            sns.set_context('paper')
+            colors=["b","cadetblue","peru","orange","salmon"]
+            plt.pie(df["sum"].iloc[[0,1,5,6,7]],labels=df["name"].iloc[[0,1,5,6,7]],autopct='%1.1f%%',colors=colors,textprops={'fontsize': 20})
+            plt.title("Bassin versant %s" %BV)
+            print(df)
+            plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_secteur_RPG_%s.png" %BV) 
 #    plt.pie(df2["sum"].iloc[[0,1,5,6,7]],labels=df2["name"].iloc[[0,1,5,6,7]],autopct='%1.1f%%')
 #    plt.axis('equal')
-        
+    
     for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_DT_PARTENAIRES/"):
         if "2018" not in i:
             print (i)
@@ -187,7 +190,8 @@ if __name__ == '__main__':
             plt.title("Bassin versant %s" %zone)
             colors=["b","cadetblue","olive","r","pink","peru","orange",'green']
             plt.pie(df["sum"],labels=df["name"],autopct='%1.1f%%',colors=colors,textprops={'fontsize': 20})
-            plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_secteur_DT_%s.png" %zone) 
+#            plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_secteur_DT_%s.png" %zone) 
+            
         else:
             print (i)
             zone2=i[-14:-9]
@@ -202,4 +206,51 @@ if __name__ == '__main__':
             plt.title("Bassin versant %s" %zone2)
             colors=["b","cadetblue","olive","r","pink","peru","orange",'green']
             plt.pie(df["sum"],labels=df["name"],autopct='%1.1f%%',colors=colors,textprops={'fontsize': 20})
-            plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_secteur_DT_2018%s.png" %zone2)
+#            plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_secteur_DT_2018%s.png" %zone2)
+    
+# =============================================================================
+#     Stat_all 2017 ss CACG
+# =============================================================================
+    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_ALL_2018.csv") 
+    df=df.sort_values(by='category', ascending=True)
+    df["name"]=names_crop_fr[:-1]
+    df=df.reset_index()
+    y_pos= np.arange(len(list(df.name)))
+    plt.figure(figsize=(10,10))
+    sns.set(style="darkgrid")
+    sns.set_context('paper')
+    plt.title("Bassin versant %s" %zone2)
+    colors=["b","cadetblue","olive","r","pink","peru","orange",'green']
+    plt.pie(df["sum"],labels=df["name"],autopct='%1.1f%%',colors=colors,textprops={'fontsize': 20})
+
+    for i in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_BV_DT_all/"):
+        df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_BV_DT_all/%s" %i)
+        df=df.sort_values(by='category', ascending=True)
+        df["name"]=names_crop_fr[:-1]
+        df=df.reset_index()
+        y_pos= np.arange(len(list(df.name)))
+        plt.figure(figsize=(10,10))
+        sns.set(style="darkgrid")
+        sns.set_context('paper')
+        plt.title("Bassin versant %s" %i[:-4])
+        colors=["b","cadetblue","olive","r","pink","peru","orange",'green']
+        plt.pie(df["sum"],labels=df["name"],autopct='%1.1f%%',colors=colors,textprops={'fontsize': 20})
+        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/HISTO_REP_DT/REPARITION_secteur_DT_%s.png" %i[:-4])
+
+# =============================================================================
+#  Polygon_Validation/run
+# =============================================================================
+    all=pd.DataFrame()
+    for csv in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_LEARN_VAL_CLASSIF_MT/2017/RUN_POLA_DES/Stat_polygon_vali/") :
+        df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_LEARN_VAL_CLASSIF_MT/2017/RUN_POLA_DES/Stat_polygon_vali/"+str(csv))
+        df=df.sort_values(by='category', ascending=True)
+        df["name"]=[names_crop_fr[index] for index in [0,1,3,4,5,6]]
+        df=df.reset_index()
+        all=all.append(df)
+    df_mean_classe=all.groupby("name").mean()
+    y_pos= np.arange(len(list(df.name)))
+    plt.figure(figsize=(10,10))
+    sns.set(style="darkgrid")
+    sns.set_context('paper')
+    colors=["b","r","cadetblue","pink","peru","orange"]
+    plt.pie(df_mean_classe["sum"],labels=df_mean_classe.index,autopct='%1.1f%%',colors=colors,textprops={'fontsize': 20})

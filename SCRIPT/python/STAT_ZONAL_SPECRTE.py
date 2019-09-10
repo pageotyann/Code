@@ -69,7 +69,7 @@ def SAR_process_db(list_lab,data,variable_resarch): # Attention variable_resarch
                 globals()['df%s%s' %(variable_resarch,i)]=pd.DataFrame(globals()['%s%s' % (variable_resarch,i)])
                 globals()["df%s%s"% (variable_resarch,i)].replace(to_replace =0 , value= pd.NaT,inplace=True)
                 globals()["dbdf%s%s" %(variable_resarch ,i)]=10*np.log10(globals()['df%s%s' % (variable_resarch,i)])
-     return globals()['df%s%s' %(variable_resarch,i)]      
+     return  globals()["dbdf%s%s" %(variable_resarch ,i)]
 
 
 def sqlite_df(path,x):
@@ -88,7 +88,7 @@ def Optique_Process(list_lab,data,variable_resarch):
             if variable_resarch in index:
                 globals()['%s%s' % (variable_resarch,i)].append (row)
                 globals()['df%s%s' %(variable_resarch,i)]=pd.DataFrame(globals()['%s%s' %(variable_resarch,i)])
-    return globals()['df%s%s' %(variable_resarch,i)]
+        return globals()['df%s%s' %(variable_resarch,i)],globals()['%s%s' %(variable_resarch,i)]
 
 if __name__ == "__main__":
     # =============================================================================

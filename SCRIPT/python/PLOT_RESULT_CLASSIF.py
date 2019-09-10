@@ -38,16 +38,22 @@ def plt_classif(df,var1,var2,var3):
     plt.legend()
     
 def plt_classif_kappa(df,var1,var2):
-    plt.figure(figsize=(15,15))
+    plt.figure(figsize=(10,5))
     y_pos=np.arange(df.shape[0])
     sns.set(style="darkgrid")
     sns.set_context('paper')
     plt.bar(y_pos,df["mean_"+var1],yerr=df["std_"+var1],capsize=3,width = 1,label=var1)
     plt.bar(y_pos+df.shape[0]+0.5,df["mean_"+var2],yerr=df["std_"+var2],capsize=3,width = 1,label=var2)
+    plt.ylabel("score")
+    plt.xlabel("step")
     plt.xticks(y_pos, tuple(df.index),rotation=90)
     y_pos3=y_pos+df.shape[0]+0.5
     for j in np.arange(len(df.index)):
         plt.text(x = y_pos3[j]-0.25 , y = -0.03, s = list(df.index)[j],size=9,rotation=90)
+    for j in np.arange(len(df.index)):
+        plt.text(x = y_pos[j]-0.4, y=df["mean_"+var1][j]+0.02,s = list(df["mean_"+var1])[j],size=9)
+    for j in np.arange(len(df.index)):
+        plt.text(x = y_pos3[j]-0.4, y=df["mean_"+var2][j]+0.02,s = list(df["mean_"+var2])[j],size=9)
     plt.legend()
 
 def errplot(x, y, yerr, **kwargs):
@@ -67,13 +73,14 @@ def pltax2(y,x1,x2):
         
 if __name__ == "__main__":
     d={}
-    d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/RUN/"
+    d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/RUN_2017/"
     d["SAVE"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_SYNTH_CLASSIF/"
     # =============================================================================
     # Recuperation KAPPA & OA 
     # =============================================================================
     KAPPA=pd.DataFrame()
     run=pd.DataFrame()
+    matrix=pd.DataFrame()
     for j in os.listdir(d["data_file"]):
         run=run.append([j],ignore_index=True)
         for i in os.listdir(d["data_file"] +j):
@@ -104,6 +111,7 @@ if __name__ == "__main__":
     names_indice=["step","kappa",'OverA',"mean_Kappa","std_Kappa","mean_OA","std_OA"]
     dfindice.columns=names_indice
     dfindice.set_index("step",inplace=True)
+    dfindice.sort_index(inplace=True)
     
     
     
@@ -122,11 +130,10 @@ if __name__ == "__main__":
     for j in os.listdir(d["data_file"]):
         print (j)
         for i in os.listdir(d["data_file"] +j):
-            print (i)
-            df=pd.read_csv(d["data_file"]+j+"/"+i+"/"+"RESULTS.txt",sep='\|',skiprows=int(17))
+            df=pd.read_csv(d["data_file"]+j+"/"+i+"/"+"RESULTS.txt",sep='\|',skiprows=int(18),header=None)
             df.columns=names_df
-            df1=df.drop([0])
-            df1=df1.reset_index()
+#            df1=df.drop([0])
+            df1=df.reset_index()
             origin=pd.DataFrame({'step':j},index=[0],dtype="category")
             origindup=pd.DataFrame(np.repeat(origin.values,df.shape[0]),dtype="category")
             df1["step"]=origindup
@@ -163,7 +170,7 @@ if __name__ == "__main__":
 #    plt_classif(dfstep,'Precision','Fscore','rappel')
 #    plt.savefig(d["SAVE"]+"CLASSIF_RUN.png")
     plt_classif_kappa(dfindice,"Kappa","OA")
-    plt.savefig(d["SAVE"]+"KAPPA_RUNREU2juillet_sais_SS.png")
+    plt.savefig(d["SAVE"]+"KAPPA_RUN_2018.png",dpi=600,bbox_inches='tight', pad_inches=0.5)
     # =============================================================================
     # Plot visualisation run[i] par classe a finir
     # =============================================================================
@@ -179,22 +186,22 @@ if __name__ == "__main__":
 #    # =============================================================================
     # PLOT Compare les esulats des run à la classe
     # =============================================================================
-    data2=pd.concat([data1[data1['level_0'] == 0],data1[data1["level_0"]== 3],data1[data1["level_0"]== 4],data1[data1["level_0"]== 1]])
-    for i in data2[["mean_Fscore","mean_Precision","mean_rappel"]]:
+    data2=pd.concat([data1[data1['level_0'] == 0],data1[data1["level_0"]== 2],data1[data1["level_0"]== 1],data1[data1["level_0"]== 3]])
+    for i in data1[["mean_Fscore","mean_Precision","mean_rappel"]]:
         print(i)
         var=i[5:]
         plt.figure(figsize=(20,20))
         sns.set(style="darkgrid")
         sns.set_context('paper')
-        g = sns.FacetGrid(data2, col="Name_label", col_wrap=9, palette="Set1",height=5)# Gerer la color par run et +3 a modifier en focntion du nb de run 
+        g = sns.FacetGrid(data1, col="Name_label", col_wrap=9, palette="Set1",height=5)# Gerer la color par run et +3 a modifier en focntion du nb de run 
         g.map_dataframe(errplot, "step", "mean_"+var, "std_"+var)
-        g.savefig(d["SAVE"]+var+"_plot_classe_runREU2juillet_sais_SS.png")
+        g.savefig(d["SAVE"]+var+"_plot_classe_run_MT2018.png",dpi=600,bbox_inches='tight', pad_inches=0.5)
 
     
     #pltax2(dfindice.index,dfindice.mean_Kappa,dfindice.mean_OA)
     plt.figure(figsize=(15,7))
     sns.heatmap(dfindice[["mean_Kappa","mean_OA"]],annot=True,cmap="coolwarm",annot_kws={"size": 15})
-    plt.savefig(d["SAVE"]+"tab_meanREU2juillet_sais_SS.png")
+    plt.savefig(d["SAVE"]+"tab_mean.png",dpi=600,bbox_inches='tight', pad_inches=0.5)
 
 #    
 # =============================================================================
@@ -202,7 +209,7 @@ if __name__ == "__main__":
 # =============================================================================
     data2=data.set_index("step")
     plt.figure(figsize=(15,7))
-    sns.heatmap( data2[["mean_Fscore","mean_rappel","mean_Precision"]].loc[data2["index"].isin([1,4])],annot=True,cmap="coolwarm",annot_kws={"size": 15})
+    sns.heatmap( data2[["mean_Fscore","mean_rappel","mean_Precision"]].loc[data2["index"].isin([0,2])],annot=True,cmap="coolwarm",annot_kws={"size": 15})
     label1=list(np.repeat(['Irr'],len(dfstep)*2))
     label=list(np.repeat(['No Irr'],len(dfstep)*2))
     for j in np.arange(0,len(dfstep)*2,2):
@@ -210,13 +217,13 @@ if __name__ == "__main__":
     for k in np.arange(1,len(dfstep)*2,2):
         plt.text(x = -0.25 , y = k+0.90, s = label[k],size=9,fontweight = 'bold')
     plt.title("Comparaison perf Maize")
-    plt.savefig(d["SAVE"]+"tab_mean_Fscore_MaisREU2juillet_sais_SS.png")
+    plt.savefig(d["SAVE"]+"tab_mean_Fscore_MaisMT2018.png",dpi=600,bbox_inches='tight', pad_inches=0.5)
    
 # =============================================================================
 # SOYBEAN
 # =============================================================================
     plt.figure(figsize=(15,7))
-    sns.heatmap(data2[["mean_Fscore","mean_rappel","mean_Precision"]].loc[data2["index"].isin([2,5])],annot=True,cmap="coolwarm",annot_kws={"size": 15})
+    sns.heatmap(data2[["mean_Fscore","mean_rappel","mean_Precision"]].loc[data2["index"].isin([1,3])],annot=True,cmap="coolwarm",annot_kws={"size": 15})
     label1=list(np.repeat(['Irr'],len(dfstep)*2))
     label=list(np.repeat(['No Irr'],len(dfstep)*2))
     for j in np.arange(0,len(dfstep)*2,2):
@@ -224,4 +231,4 @@ if __name__ == "__main__":
     for k in np.arange(1,len(dfstep)*2,2):
         plt.text(x = -0.25 , y = k+0.90, s = label[k],size=9,fontweight = 'bold')
     plt.title("Comparaison perf Soybean")
-    plt.savefig(d["SAVE"]+"tab_mean_Fscore_SojaREU2juillet_sais.png")
+    plt.savefig(d["SAVE"]+"tab_mean_Fscore_SojaMT2018.png",dpi=600,bbox_inches='tight', pad_inches=0.5)

@@ -31,6 +31,7 @@ def loadRaster(inRaster):
     return gdalRaster,GeoTransform,Projection
 
 if __name__ == "__main__":
+     path_classif = '/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/LIA_ASC_2017.tif'
     
     path_classif = '/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp//file_Mask_classif/CLASSIF_CUMUL_GSM_3in_T31.tif'
     path_masque_crops='/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/RPG/MASK_T31_UINT.tif'
@@ -55,7 +56,7 @@ if __name__ == "__main__":
     Label=[1]
     lst_df=[]
     for label in lst_label:
-        Sum=np.sum(bv==label)*0.01
+        Sum=np.sum(classif==label)*0.01
         lst_df.append(Sum)
         
         
