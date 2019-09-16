@@ -44,9 +44,15 @@ def calcumul_index_saison(path,x,name_champ_label,indice2,list_drop,pathlist_nam
                 globals()["df_%s"%indice2] = df_indice.cumsum(axis=1)
         
             else:
-                df_indice = globals()["df%s"%x].filter(like=indice2)
-                df_indice_col = df_indice.rename(columns=lambda x: x[-8:])
-                df_indice_col=df_indice_col.iloc[:-1]
+                if indice2 == "NDWI":
+                    df_indice = globals()["df%s"%x].filter(like=indice2)
+                    df_indice_col = df_indice.rename(columns=lambda x: x[-8:])
+                    df_indice_col=df_indice_col.iloc[:-1]
+                    df_indice_col=df_indice_col*-1
+                else:
+                    df_indice = globals()["df%s"%x].filter(like=indice2)
+                    df_indice_col = df_indice.rename(columns=lambda x: x[-8:])
+                    df_indice_col=df_indice_col.iloc[:-1]
                 if years== 2017:
                     globals()["df_%s"%indice2] = df_indice_col.iloc[:,8:-3].cumsum(axis=1)
                 else:
@@ -391,4 +397,7 @@ if __name__ == '__main__':
 #        globals()["df_mean_%s"%'NDVI']=globals()["df_%s"%'NDVI'].groupby('labcroirr').mean().T 
 #        globals()["df_mean_%s"%'NDVI'].index=pd.to_datetime(globals()["df_mean_%s"%'NDVI'].index,format="%Y%m%d")
     
-    
+#    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/ADOUR_Samples_2018.sqlite",'dfbv','labcroirr' ,"NDWI",list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
+#
+#    plt.plot(df_mean_NDWI.index,df_mean_NDWI[1.0])
+#    plt.plot(df_mean_NDWI.index,df_mean_NDWI[11.0])

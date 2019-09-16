@@ -50,8 +50,7 @@ if __name__ == "__main__":
     years='2018'
     d={}
     d["SAVE"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_SYNTH_CLASSIF/"
-
-    for b in ["ADOUR","TARN"]: 
+    for b in ["ADOUR"]: 
         step = []
         jobs=pd.DataFrame()
         KAPPA = []
@@ -61,11 +60,11 @@ if __name__ == "__main__":
         Recall=pd.DataFrame()
         Prec=pd.DataFrame()
         Fscore=pd.DataFrame()
-        for classif in os.listdir('/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/FILE_TXT_RESULAT/MAT_CONF_CSV_'+years+'/ASC/'):
+        for classif in os.listdir('/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/FILE_TXT_RESULAT/FIxe_seed/'+years+'/'):
             print (classif)
             nom=get_nomenclature("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt")
             pathNom="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt"
-            pathRes="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/FILE_TXT_RESULAT/MAT_CONF_CSV_"+years+"/ASC/"+classif+"/"
+            pathRes="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/FILE_TXT_RESULAT/FIxe_seed/"+years+"/"+classif+"/"
             all_k = []
             all_oa = []
             all_p = []
@@ -117,7 +116,7 @@ if __name__ == "__main__":
         dfindice_bv=dfindice_bv.T
         dfindice_bv[["mean_Kappa","std_Kappa","mean_OA","std_OA"]]=dfindice_bv[["mean_Kappa","std_Kappa","mean_OA","std_OA"]].apply(pd.to_numeric)
         dfindice_bv.set_index("step",inplace=True)
-        dfindice_bv.sort_index(inplace=True)
+#        dfindice_bv.sort_index(inplace=True)
         plt_classif_kappa(dfindice_bv,"Kappa","OA")
         plt.savefig(d["SAVE"]+"KAPPA_RUN_"+b+"_"+years+".png",dpi=600,bbox_inches='tight', pad_inches=0.5)
                 
@@ -126,16 +125,16 @@ if __name__ == "__main__":
         dfmetric.columns=df_names
         Classe=labels_ref*len(step)
         dfmetric["Classe"]=Classe  
-        dfmetric.sort_values("step",inplace=True)
+#        dfmetric.sort_values("step",inplace=True)
    
-
-        for i in dfmetric[["mean_fscore","mean_Recall","mean_Precision"]]:
+        dfMetric=pd.concat([dfmetric[dfmetric['Classe'] != "Sorghum"]])
+        for i in dfMetric[["mean_fscore","mean_Recall","mean_Precision"]]:
             print(i)
             var=i[5:]
             plt.figure(figsize=(20,20))
             sns.set(style="darkgrid")
             sns.set_context('paper')
-            g = sns.FacetGrid(dfmetric, col="Classe", col_wrap=6, palette="Set1",height=5)# Gerer la color par run et +3 a modifier en focntion du nb de run 
+            g = sns.FacetGrid(dfMetric, col="Classe", col_wrap=6, palette="Set1",height=5)# Gerer la color par run et +3 a modifier en focntion du nb de run 
             g.map_dataframe(errplot, "step", "mean_"+var, "std_"+var)
             g.savefig(d["SAVE"]+var+"_plot_classe_run_"+b+"_"+years+".png",dpi=600,bbox_inches='tight', pad_inches=0.5)
 
