@@ -229,8 +229,8 @@ if __name__ == '__main__':
         for j in ["NDVI","NDWI","NDRE1","des_userfeature1","des_vv","des_vh"]:
             if "2017" in bv:
                 print ('bv')
-                if "NESTE" in bv:
-                    z=bv[:5]
+#                if "NESTE" in bv:
+#                    z=bv[:5]
 #                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr',j,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",'2017')
 #                    globals()["df_mean_%s"%j].columns=["Maize","Soybean","Sorghum"]
 #                    globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
@@ -239,20 +239,21 @@ if __name__ == '__main__':
 #                    globals()["_%s%s"% (z,j)].index=["Maize","Soybean","Sorghum"]
 #                    globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
 #                    globals()["b_sup%s%s"% (z,j)].index=["Maize","Soybean","Sorghum"]
-                else:
-                    z=bv[:5]
-                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",'2017')
-                    globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-                    globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
-                    globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
-                    globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
-                    globals()["_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-                    globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
-                    globals()["b_sup%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+#                else:
+#                    if bv[:5] == "ADOUR":
+#                        z=bv[:5]
+#                        calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",'2017')
+#                        globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+#                        globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
+#                        globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
+#                        globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
+#                        globals()["_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+#                        globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
+#                        globals()["b_sup%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
 #            
-#            else:
-#                 if "NESTE" in bv:
-#                    z=bv[:5]
+            else:
+                 if "NESTE" in bv:
+                    z=bv[:5]
 ##                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
 ##                    globals()["df_mean_%s"%j].columns=["Maize","Soybean","Sorghum","Sunflower"]
 ##                    globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
@@ -261,16 +262,18 @@ if __name__ == '__main__':
 ##                    globals()["_%s%s"% (z,j)].index=["Maize","Soybean","Sorghum","Sunflower"]
 ##                    globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
 ##                    globals()["b_sup%s%s"% (z,j)].index=["Maize","Soybean","Sorghum","Sunflower"]
-#                 else:
-#                    z=bv[:5]
-#                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
-#                    globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-#                    globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
-#                    globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
-#                    globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
-#                    globals()["_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-#                    globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
-#                    globals()["b_sup%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+                 else:
+                    z=bv[:5]
+                    if bv[:5] =="ADOUR":
+                        z=bv[:5]
+                        calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
+                        globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+                        globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
+                        globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
+                        globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
+                        globals()["_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+                        globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
+                        globals()["b_sup%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
 
     fig, ax = plt.subplots(figsize=(20, 7))
     sns.set(style="darkgrid")
@@ -340,7 +343,7 @@ if __name__ == '__main__':
     plt.xlabel('Dates interpollees')
     plt.setp(ax6.get_xticklabels(),visible=True,rotation=45) 
 
-    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_CUMUL_temporelle/ADOUR_BV_MAIZE_2017.png")
+    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_CUMUL_temporelle/ADOUR_BV_MAIZE_2018.png")
     
              
 
