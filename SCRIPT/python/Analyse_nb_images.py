@@ -21,43 +21,47 @@ if __name__ == "__main__":
 # =============================================================================
 #     Frise nb acquisition sur 1 tuiles
 # =============================================================================
-#    dfnames=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",sep=',', header=None)
-#    df1=dfnames.T
-#    df1.columns=["band_name"]
-#    date_interpol=list(df1.band_name.apply(lambda s: s[-9:-1]))
-#    df1["date_inter"]=date_interpol
-#    
-#    dfinterdate=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/list_2017dates_enterier.txt",header=None)
-#    dfinterdate.columns=["band_name"]
-#    date_nninter=dfinterdate.band_name.apply(lambda s: s[11:19]).astype(int)
-#    date_nninter=pd.DataFrame(sorted(date_nninter))
-#    tile=dfinterdate.band_name.apply(lambda s: s[-13:-7])
-#    pd.DataFrame(np.repeat(1,tile.shape[0]))
-#    df_S2=pd.concat([date_nninter,tile,pd.DataFrame(np.repeat(1,tile.shape[0]))],axis =1)
-#    df_S2.columns=["date","tile","N"]
-#    df_S2.date=pd.to_datetime(df_S2.date,format="%Y%m%d")
-#    
-#    #    dfinterdateS1=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/S1_vh_ASC_dates_input.txt",header=None) 
-#    #    df_S1=pd.concat([dfinterdateS1, pd.DataFrame(np.repeat('ASC',dfinterdateS1.shape[0])),pd.DataFrame(np.repeat(2,dfinterdateS1.shape[0]))],axis =1)
-#    #    df_S1.columns=["date","mode","N"]
-#    #    df_S1.date=pd.to_datetime(df_S1.date,format="%Y%m%d")
-#    #    
-#    dfinterdateS1=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/S1_vh_DES_dates_input.txt",header=None) 
-#    df_S1_DES=pd.concat([dfinterdateS1, pd.DataFrame(np.repeat('DES',dfinterdateS1.shape[0])),pd.DataFrame(np.repeat(1.25,dfinterdateS1.shape[0]))],axis =1)
-#    df_S1_DES.columns=["date","mode","N"]
-#    df_S1_DES.date=pd.to_datetime(df_S1_DES.date,format="%Y%m%d")
-#    
-#    plt.figure(figsize=(15,4))
-#    ax1 = plt.subplot(111)
-#    sns.set(style="darkgrid")
-#    sns.set_context('paper')
-#    plt.setp(ax1.get_yticklabels(), visible=False)
-#    p1=plt.plot(df_S2.date,df_S2.N,marker='o',linestyle='')
-#    p3=plt.plot(df_S1_DES.date,df_S1_DES.N,marker='v',linestyle='')
-#    plt.xticks(rotation=0)
-#    plt.ylim(0.75,1.5)
-#    plt.legend((p1[0],p3[0]),("Sentinel-2","SAR-des"),loc='best')
-#    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/imagesdate_entier.png")
+    dfnames=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",sep=',', header=None)
+    df1=dfnames.T
+    df1.columns=["band_name"]
+    date_interpol=list(df1.band_name.apply(lambda s: s[-9:-1]))
+    df1["date_inter"]=date_interpol
+    
+    dfinterdate=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/list_2017dates_enterier.txt",header=None)
+    dfinterdate.columns=["band_name"]
+    date_nninter=dfinterdate.band_name.apply(lambda s: s[11:19]).astype(int)
+    date_nninter=pd.DataFrame(sorted(date_nninter))
+    tile=dfinterdate.band_name.apply(lambda s: s[-13:-7])
+    pd.DataFrame(np.repeat(1,tile.shape[0]))
+    df_S2=pd.concat([date_nninter,tile,pd.DataFrame(np.repeat(1,tile.shape[0]))],axis =1)
+    df_S2.columns=["date","tile","N"]
+    df_S2.date=pd.to_datetime(df_S2.date,format="%Y%m%d")
+    
+    #    dfinterdateS1=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/S1_vh_ASC_dates_input.txt",header=None) 
+    #    df_S1=pd.concat([dfinterdateS1, pd.DataFrame(np.repeat('ASC',dfinterdateS1.shape[0])),pd.DataFrame(np.repeat(2,dfinterdateS1.shape[0]))],axis =1)
+    #    df_S1.columns=["date","mode","N"]
+    #    df_S1.date=pd.to_datetime(df_S1.date,format="%Y%m%d")
+    dfinterdate_S1_2018=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/S1_vv_DES_dates_input.txt",header=None)
+    dfinterdateS1=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/S1_vh_DES_dates_input.txt",header=None) 
+    df_S1_DES=pd.concat([dfinterdateS1, pd.DataFrame(np.repeat('DES',dfinterdateS1.shape[0])),pd.DataFrame(np.repeat(1.25,dfinterdateS1.shape[0]))],axis =1)
+    df_S1_DES.columns=["date","mode","N"]
+    df_S1_DES.date=pd.to_datetime(df_S1_DES.date,format="%Y%m%d")
+    
+    df_S1_DES_2018=pd.concat([dfinterdate_S1_2018, pd.DataFrame(np.repeat('DES',dfinterdate_S1_2018.shape[0])),pd.DataFrame(np.repeat(1.25,dfinterdate_S1_2018.shape[0]))],axis =1)
+    df_S1_DES_2018.columns=["date","mode","N"]
+    df_S1_DES_2018.date=pd.to_datetime(df_S1_DES_2018.date,format="%Y%m%d")
+    
+    plt.figure(figsize=(15,4))
+    ax1 = plt.subplot(111)
+    sns.set(style="darkgrid")
+    sns.set_context('paper')
+    plt.setp(ax1.get_yticklabels(), visible=False)
+    p1=plt.plot(Acqui_claire_2018_TCJ.date,Acqui_claire_2018_TCJ.nb,marker='o',linestyle='')
+    p3=plt.plot(df_S1_DES_2018.date[30:108],df_S1_DES_2018.N[30:108],marker='v',linestyle='')
+    plt.xticks(rotation=0)
+    plt.ylim(0.75,1.5)
+    plt.legend((p1[0],p3[0]),("Sentinel-2","SAR-des"),loc='best')
+    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/imagesdate_entier_2018.png")
 
 
 # =============================================================================
@@ -101,7 +105,8 @@ if __name__ == "__main__":
             print (dfCloudseason.count())
 #            img_clair=Classe.loc(axis=0)[:, ['0-24']]
 #            print (r"  years : {} tile : {} : result : {}".format(i[13:17],list(tile.iloc[1]),img_clair))
-
+            Acqui_claire_2018_TCJ=dfCloudseason[dfCloudseason.classe=="0-24"]
+            Acqui_claire_2018_TCJ["nb"]=1
 # =============================================================================
 #  Plot acquisitions claire by tuiles 
 #    for tile in ["2018_T31TCJ","2018_T31TDJ","2018_T30TYN","2018_T30TYP","2017_T31TCJ","2017_T31TDJ","2017_T30TYN","2017_T30TYP"]:

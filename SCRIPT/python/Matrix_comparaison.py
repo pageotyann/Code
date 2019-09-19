@@ -166,17 +166,17 @@ if __name__ == "__main__":
     all_matrix = []
     for csv in os.listdir(pathRes):
         if "csv" in csv and "ColorIndexed" in csv:
-            if "CM" in csv:
-                print (csv)
-                conf_mat_dic = parse_csv(pathRes+csv)
-                kappa, oacc, p_dic, r_dic, f_dic = get_coeff(conf_mat_dic)
-                all_matrix.append(conf_mat_dic)
-                all_k.append(kappa)
-                all_oa.append(oacc)
-                all_p.append(p_dic)
-                all_r.append(r_dic)
-                all_f.append(f_dic)
-        
+#            if "CM" in csv:
+            print (csv)
+            conf_mat_dic = parse_csv(pathRes+csv)
+            kappa, oacc, p_dic, r_dic, f_dic = get_coeff(conf_mat_dic)
+            all_matrix.append(conf_mat_dic)
+            all_k.append(kappa)
+            all_oa.append(oacc)
+            all_p.append(p_dic)
+            all_r.append(r_dic)
+            all_f.append(f_dic)
+    
     conf_mat_dic = compute_interest_matrix(all_matrix, f_interest="mean")
     nom_dict = get_nomenclature("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt")
     size_max, labels_prod, labels_ref = get_max_labels(conf_mat_dic, nom_dict)

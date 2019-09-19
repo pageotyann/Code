@@ -309,5 +309,4 @@ if __name__ == "__main__":
                      r_mean = get_interest_coeff(all_r, nb_lab=len(labels_ref), f_interest="mean")
                      f_mean = get_interest_coeff(all_f, nb_lab=len(labels_ref), f_interest="mean")
             
-               
                      fig_conf_mat(conf_mat_dic,nom,np.mean(all_k),np.mean(all_oa),p_mean,r_mean,f_mean,pathRes+"Matrix_fusion"+b+"_"+classif+"_regularized.png",conf_score="percentage")

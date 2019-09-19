@@ -34,6 +34,7 @@ if __name__ == "__main__":
     parser.add_argument('-out', dest='out')
     parser.add_argument('-inref', dest='pathref',nargs='+',required = True)
     parser.add_argument('-inp', dest='path',nargs='+',required = True)
+    parser.add_argument('-ram', dest='ram',nargs='+',required = True)
     args = parser.parse_args()
     print (args.path)
     print (args.out)
@@ -48,7 +49,7 @@ if __name__ == "__main__":
 
     
     
-    list_IMG= os.listdir("{}".format(str(args.path).strip("['']")))
+    list_IMG=os.listdir("{}".format(str(args.path).strip("['']")))
     list_tile=os.listdir("{}".format(str(args.pathref).strip("['']")))
     for i in list_IMG:
         print (i)
@@ -59,6 +60,7 @@ if __name__ == "__main__":
             Superimpose = otbApplication.Registry.CreateApplication("Superimpose")
             Superimpose.SetParameterString('inm',"{}".format(str(args.path).strip("['']"))+i)
             Superimpose.SetParameterString('inr',"{}".format(str(args.pathref).strip("['']"))+j)
+            Superimpose.SetParameterString('ram',"{}".format(str(args.ram).strip("['']")))
             Superimpose.SetParameterString('interpolator','nn')
             Superimpose.SetParameterString("out","{}".format(str(args.out).strip("['']"))+"/%s_%s"%(tile,i))
             Superimpose.ExecuteAndWriteOutput()

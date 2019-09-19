@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+##!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Wed Mar  6 13:48:40 2019
@@ -22,6 +22,7 @@ if __name__ == "__main__":
     parser.add_argument('-vec', dest='vector',nargs='+',help='shapefile',required = True)
     parser.add_argument('-inp', dest='image',nargs='+',help="image where extract informtion",required = True)
     parser.add_argument('-lab',dest='label',nargs='+',help='Name of field',required = True)
+    parser.add_argument('-ram',dest='ram',nargs='+',help='Name of field',required = True)
     parser.add_argument('-pixel',dest='pixel', action='store_false') 
     args = parser.parse_args()
     print (args.vector)
@@ -32,9 +33,9 @@ if __name__ == "__main__":
 # Ajoute une fonction if si tu veux les statistiques au polygones
     for i in os.listdir("{}".format(str(args.image).strip("['']"))):
         print (i)
-        os.system("otbcli_PolygonClassStatistics -in %s%s -vec %s -field %s -out stat.xml"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.vector).strip("['']")),"{}".format(str(args.label).strip("['']"))))
-        os.system("otbcli_SampleSelection -in %s%s -vec %s -field %s -instats stat.xml -strategy all -out SampleSelection.sqlite"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.vector).strip("['']")),"{}".format(str(args.label).strip("['']"))))
-        os.system("otbcli_SampleExtraction -in %s%s -vec SampleSelection.sqlite -field %s -out %s/SampleExtraction%s.sqlite"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.label).strip("['']")).lower(),"{}".format(str(args.outstat).strip("['']")),i))
+        os.system("otbcli_PolygonClassStatistics -in %s%s -vec %s -field %s -out stat.xml -ram %s"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.vector).strip("['']")),"{}".format(str(args.label).strip("['']")),"{}".format(str(args.ram).strip("['']"))))
+        os.system("otbcli_SampleSelection -in %s%s -vec %s -field %s -instats stat.xml -strategy all -out SampleSelection.sqlite -ram %s"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.vector).strip("['']")),"{}".format(str(args.label).strip("['']")),"{}".format(str(args.ram).strip("['']"))))
+        os.system("otbcli_SampleExtraction -in %s%s -vec SampleSelection.sqlite -field %s -out %s/SampleExtraction%s.sqlite -ram %s"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.label).strip("['']")).lower(),"{}".format(str(args.outstat).strip("['']")),i,"{}".format(str(args.ram).strip("['']"))))
         os.system("rm stat.xml")
         os.system("rm SampleSelection.sqlite")
     

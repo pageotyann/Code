@@ -47,7 +47,7 @@ def get_interest_coeff(runs_coeff, nb_lab, f_interest="mean"):
                 coeff_out[label] = "{:.3f} +- {:.3f}".format(mean, b_sup - mean)
     return coeff_out
 if __name__ == "__main__":
-    years='2018'
+    years='2017'
     d={}
     d["SAVE"]="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_SYNTH_CLASSIF/"
     for b in ["ADOUR"]: 
@@ -116,7 +116,7 @@ if __name__ == "__main__":
         dfindice_bv=dfindice_bv.T
         dfindice_bv[["mean_Kappa","std_Kappa","mean_OA","std_OA"]]=dfindice_bv[["mean_Kappa","std_Kappa","mean_OA","std_OA"]].apply(pd.to_numeric)
         dfindice_bv.set_index("step",inplace=True)
-#        dfindice_bv.sort_index(inplace=True)
+        dfindice_bv.sort_index(inplace=True)
         plt_classif_kappa(dfindice_bv,"Kappa","OA")
         plt.savefig(d["SAVE"]+"KAPPA_RUN_"+b+"_"+years+".png",dpi=600,bbox_inches='tight', pad_inches=0.5)
                 
@@ -125,7 +125,7 @@ if __name__ == "__main__":
         dfmetric.columns=df_names
         Classe=labels_ref*len(step)
         dfmetric["Classe"]=Classe  
-#        dfmetric.sort_values("step",inplace=True)
+        dfmetric.sort_values("step",inplace=True)
    
         dfMetric=pd.concat([dfmetric[dfmetric['Classe'] != "Sorghum"]])
         for i in dfMetric[["mean_fscore","mean_Recall","mean_Precision"]]:

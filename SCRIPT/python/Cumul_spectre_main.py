@@ -229,8 +229,8 @@ if __name__ == '__main__':
         for j in ["NDVI","NDWI","NDRE1","des_userfeature1","des_vv","des_vh"]:
             if "2017" in bv:
                 print ('bv')
-#                if "NESTE" in bv:
-#                    z=bv[:5]
+                if "NESTE" in bv:
+                    z=bv[:5]
 #                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr',j,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",'2017')
 #                    globals()["df_mean_%s"%j].columns=["Maize","Soybean","Sorghum"]
 #                    globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
@@ -239,34 +239,10 @@ if __name__ == '__main__':
 #                    globals()["_%s%s"% (z,j)].index=["Maize","Soybean","Sorghum"]
 #                    globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
 #                    globals()["b_sup%s%s"% (z,j)].index=["Maize","Soybean","Sorghum"]
-#                else:
-#                    if bv[:5] == "ADOUR":
-#                        z=bv[:5]
-#                        calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",'2017')
-#                        globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-#                        globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
-#                        globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
-#                        globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
-#                        globals()["_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-#                        globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
-#                        globals()["b_sup%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-#            
-            else:
-                 if "NESTE" in bv:
-                    z=bv[:5]
-##                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
-##                    globals()["df_mean_%s"%j].columns=["Maize","Soybean","Sorghum","Sunflower"]
-##                    globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
-##                    globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
-##                    globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
-##                    globals()["_%s%s"% (z,j)].index=["Maize","Soybean","Sorghum","Sunflower"]
-##                    globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
-##                    globals()["b_sup%s%s"% (z,j)].index=["Maize","Soybean","Sorghum","Sunflower"]
-                 else:
-                    z=bv[:5]
-                    if bv[:5] =="ADOUR":
+                else:
+                    if bv[:5] == "ADOUR":
                         z=bv[:5]
-                        calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
+                        calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",'2017')
                         globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
                         globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
                         globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
@@ -274,16 +250,40 @@ if __name__ == '__main__':
                         globals()["_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
                         globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
                         globals()["b_sup%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+            
+#            else:
+#                 if "NESTE" in bv:
+#                    z=bv[:5]
+###                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
+###                    globals()["df_mean_%s"%j].columns=["Maize","Soybean","Sorghum","Sunflower"]
+###                    globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
+###                    globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
+###                    globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
+###                    globals()["_%s%s"% (z,j)].index=["Maize","Soybean","Sorghum","Sunflower"]
+###                    globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
+###                    globals()["b_sup%s%s"% (z,j)].index=["Maize","Soybean","Sorghum","Sunflower"]
+#                 else:
+#                    z=bv[:5]
+#                    if bv[:5] =="ADOUR":
+#                        z=bv[:5]
+#                        calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
+#                        globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+#                        globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
+#                        globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
+#                        globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
+#                        globals()["_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+#                        globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
+#                        globals()["b_sup%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
 
     fig, ax = plt.subplots(figsize=(20, 7))
     sns.set(style="darkgrid")
     sns.set_context('paper')
     ax1=plt.subplot(231)
     plt.title("Watershed : Adour")
-    p1=plt.plot(df_mean_ADOURNDVI.index,df_mean_ADOURNDVI["Maize_Irr"],color='blue')
-    p2=plt.plot(df_mean_ADOURNDVI.index,df_mean_ADOURNDVI["Maize_Nirr"],color='red')
-    plt.fill_between(df_mean_ADOURNDVI.index, b_supADOURNDVI.T["Maize_Irr"], _ADOURNDVI.T["Maize_Irr"], facecolor='blue', alpha=0.2)
-    plt.fill_between(df_mean_ADOURNDVI.index,  b_supADOURNDVI.T["Maize_Nirr"], _ADOURNDVI.T["Maize_Nirr"], facecolor='red', alpha=0.2)
+    p1=plt.plot(df_mean_ADOURNDVI.index,df_mean_ADOURNDVI["Maize_Irr"]/1000,color='blue')
+    p2=plt.plot(df_mean_ADOURNDVI.index,df_mean_ADOURNDVI["Maize_Nirr"]/1000,color='red')
+    plt.fill_between(df_mean_ADOURNDVI.index, b_supADOURNDVI.T["Maize_Irr"]/1000, _ADOURNDVI.T["Maize_Irr"]/1000, facecolor='blue', alpha=0.2)
+    plt.fill_between(df_mean_ADOURNDVI.index,  b_supADOURNDVI.T["Maize_Nirr"]/1000, _ADOURNDVI.T["Maize_Nirr"]/1000, facecolor='red', alpha=0.2)
     plt.legend((p1[0],p2[0]),("Irr","Nirr"))
     plt.xticks(size='large')
     plt.yticks(size='large')
@@ -291,10 +291,10 @@ if __name__ == '__main__':
     plt.setp(ax1.get_xticklabels(),visible=False)
     ax2=plt.subplot(232)
     plt.title("Watershed : Adour")
-    p1=plt.plot(df_mean_ADOURNDWI.index,df_mean_ADOURNDWI["Maize_Irr"],color='blue')
-    p2=plt.plot(df_mean_ADOURNDWI.index,df_mean_ADOURNDWI["Maize_Nirr"],color='red')
-    plt.fill_between(df_mean_ADOURNDWI.index, b_supADOURNDWI.T["Maize_Irr"], _ADOURNDWI.T["Maize_Irr"], facecolor='blue', alpha=0.2)
-    plt.fill_between(df_mean_ADOURNDWI.index,  b_supADOURNDWI.T["Maize_Nirr"], _ADOURNDWI.T["Maize_Nirr"], facecolor='red', alpha=0.2)
+    p1=plt.plot(df_mean_ADOURNDWI.index,df_mean_ADOURNDWI["Maize_Irr"]/1000,color='blue')
+    p2=plt.plot(df_mean_ADOURNDWI.index,df_mean_ADOURNDWI["Maize_Nirr"]/1000,color='red')
+    plt.fill_between(df_mean_ADOURNDWI.index, b_supADOURNDWI.T["Maize_Irr"]/1000, _ADOURNDWI.T["Maize_Irr"]/1000, facecolor='blue', alpha=0.2)
+    plt.fill_between(df_mean_ADOURNDWI.index,  b_supADOURNDWI.T["Maize_Nirr"]/1000, _ADOURNDWI.T["Maize_Nirr"]/1000, facecolor='red', alpha=0.2)
     plt.xticks(size='large')
     plt.yticks(size='large')
     plt.ylabel('Cumul %s moyen'%"NDWI")
@@ -317,7 +317,7 @@ if __name__ == '__main__':
     plt.fill_between(df_mean_ADOURdes_vv.index,  b_supADOURdes_vv.T["Maize_Nirr"], _ADOURdes_vv.T["Maize_Nirr"], facecolor='red', alpha=0.2)
     plt.xticks(size='large')
     plt.yticks(size='large')
-    plt.ylabel('Cumul %s moyen'%"VV")
+    plt.ylabel('Cumul %s moyen'%"VV sigma0")
     plt.xlabel('Dates interpollees')
     plt.legend((p1[0],p2[0]),("Irr","Nirr"))
     plt.setp(ax4.get_xticklabels(),visible=True, rotation=45)
@@ -329,7 +329,8 @@ if __name__ == '__main__':
     plt.fill_between(df_mean_ADOURdes_vh.index,  b_supADOURdes_vh.T["Maize_Nirr"], _ADOURdes_vh.T["Maize_Nirr"], facecolor='red', alpha=0.2)
     plt.xticks(size='large')
     plt.yticks(size='large')
-    plt.ylabel('Cumul %s moyen'%"VH")
+    plt.ylabel('Cumul %s moyen'%"VH sigma0")
+    plt.xlabel('Dates interpollees')
     plt.setp(ax5.get_xticklabels(),visible=True, rotation=45) 
     ax6=plt.subplot(236)
     plt.title("Watershed : Adour")
@@ -339,11 +340,11 @@ if __name__ == '__main__':
     plt.fill_between(df_mean_ADOURdes_userfeature1.index,  b_supADOURdes_userfeature1.T["Maize_Nirr"], _ADOURdes_userfeature1.T["Maize_Nirr"], facecolor='red', alpha=0.2)
     plt.xticks(size='large')
     plt.yticks(size='large')
-    plt.ylabel('Cumul %s moyen'%"VH/VV")
+    plt.ylabel('Cumul %s moyen'%"VH/VV sigma0")
     plt.xlabel('Dates interpollees')
     plt.setp(ax6.get_xticklabels(),visible=True,rotation=45) 
 
-    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_CUMUL_temporelle/ADOUR_BV_MAIZE_2018.png")
+    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_CUMUL_temporelle/ADOUR_BV_MAIZE_2017.png")
     
              
 
