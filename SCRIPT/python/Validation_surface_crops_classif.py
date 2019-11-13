@@ -10,7 +10,7 @@ Created on Tue Sep 10 14:52:09 2019
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from Plot import plotenbar
+from Plot_frise_images import plotenbar
 import seaborn as sns
 import geopandas as gp
 import pandas as pd
@@ -34,37 +34,46 @@ from matplotlib.colors import ListedColormap, BoundaryNorm
 if __name__ == "__main__":
     names_crop=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
     path_vector = "/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/RPG/RPG_BV/RPG_SUMMER_2017_ADOUR_AMONT.shp"
-    path_raster = "/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/2018/RUN_MT/RUN_POLA_DES_FULL_3ind/final/Classif_ADOUR_1_regularized.tif"
-
-    Stat_zonal = zonal_stats(path_vector, 
-                    path_raster, 
-                    categorical=True, all_touched=True) #surestimation
-    df_dic = pd.DataFrame(Stat_zonal)
-
-    classe_pixel = df_dic.sum()
-    classe_ha=classe_pixel*0.01
-    Area_classif=pd.DataFrame(classe_ha)
-#    Area_classif["name"]=names_crop
-
-# =============================================================================
-#   Data validation od partenaire 
-# =============================================================================
     Data_Val=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/DATA_VALIDATION_PARTENAIRE/ADOUR/DONNEES_VALIDATION_SURFACE_IRRIG_ADOUR_2018_2019.csv",sep=",")
     Data_Val["label"]=[1,1,1,2,44]
     Data_Val_regroup=Data_Val.groupby("label").sum()
     Data_Val_regroup.loc[33]=0
     Data_Val_regroup.loc[11]=0
     Data_Val_regroup.loc[22]=0
-#    Data_Val_regroup["name"]=['Maize_Irr',"Soybean_Irr",'Sunflower',"Sorghum","Maize_Nirr","Soybean_Nirr"]
-        
-
-# =============================================================================
-# Plot Comparatif
-# =============================================================================
+    total_classe_ha=[]
+    for i in np.arange(0,5):
+        print(i)
+        path_raster = "/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/2017/RUN_fixe_seed/SHARK/DES_F_3ind/final/Classif_ADOUR_"+str(i)+"_regularized.tif"
+        Stat_zonal = zonal_stats(path_vector, 
+                        path_raster, 
+                        categorical=True, all_touched=True) #surestimation
+        df_dic = pd.DataFrame(Stat_zonal)
     
-    df=pd.concat([Area_classif,Data_Val_regroup],axis=1)
-    df.loc["origin"]=["Classif","Parten","Parten"]
-    g = sns.catplot(df.index[0:-1], y=df[[0,"Surface_en_2018"]],height=6, kind="bar", palette="muted")
+        classe_pixel = df_dic.sum()
+        classe_ha=classe_pixel*0.01
+        print(classe_ha)
+        total_classe_ha.append(classe_ha)
+        Area_classif=pd.DataFrame(total_classe_ha)
+        Area_classif_mean=Area_classif.mean()
+        Area_classif_std=Area_classif.std()
+    #    Area_classif["name"]=names_crop
+    
+    # =============================================================================
+    #   Data validation od partenaire 
+    # =============================================================================
+
+    #    Data_Val_regroup["name"]=['Maize_Irr',"Soybean_Irr",'Sunflower',"Sorghum","Maize_Nirr","Soybean_Nirr"]
+            
+    
+    # =============================================================================
+    # Plot Comparatif
+    # =============================================================================
+        
+        df=pd.concat([Area_classif_mean,Data_Val_regroup],axis=1)
+        df.columns=("Classif","surface2018","surface2019")
+        df.astype(float)
+        df=df.T
+        df["origin"]=["Classif","Parten","Parten"]
 # =============================================================================
 #     Visualisation via python 
 # =============================================================================

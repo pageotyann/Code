@@ -33,9 +33,9 @@ if __name__ == "__main__":
 # Ajoute une fonction if si tu veux les statistiques au polygones
     for i in os.listdir("{}".format(str(args.image).strip("['']"))):
         print (i)
-        os.system("otbcli_PolygonClassStatistics -in %s%s -vec %s -field %s -out stat.xml -ram %s"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.vector).strip("['']")),"{}".format(str(args.label).strip("['']")),"{}".format(str(args.ram).strip("['']"))))
-        os.system("otbcli_SampleSelection -in %s%s -vec %s -field %s -instats stat.xml -strategy all -out SampleSelection.sqlite -ram %s"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.vector).strip("['']")),"{}".format(str(args.label).strip("['']")),"{}".format(str(args.ram).strip("['']"))))
-        os.system("otbcli_SampleExtraction -in %s%s -vec SampleSelection.sqlite -field %s -out %s/SampleExtraction%s.sqlite -ram %s"%("{}".format(str(args.image).strip("['']")),i,"{}".format(str(args.label).strip("['']")).lower(),"{}".format(str(args.outstat).strip("['']")),i,"{}".format(str(args.ram).strip("['']"))))
+        os.system("otbcli_PolygonClassStatistics -in %s%s -vec %s -field %s -out stat.xml -ram %s"%(str(args.image).strip("['']"),i,str(args.vector).strip("['']"),str(args.label).strip("['']"),str(args.ram).strip("['']")))
+        os.system("otbcli_SampleSelection -in %s%s -vec %s -field %s -instats stat.xml -strategy all -out SampleSelection.sqlite -ram %s"%(str(args.image).strip("['']"),i,str(args.vector).strip("['']"),str(args.label).strip("['']"),str(args.ram).strip("['']")))
+        os.system("otbcli_SampleExtraction -in %s%s -vec SampleSelection.sqlite -field %s -out %s/SampleExtraction%s.sqlite -ram %s"%(str(args.image).strip("['']"),i,str(args.label).strip("['']").lower(),str(args.outstat).strip("['']"),i,str(args.ram).strip("['']")))
         os.system("rm stat.xml")
         os.system("rm SampleSelection.sqlite")
     

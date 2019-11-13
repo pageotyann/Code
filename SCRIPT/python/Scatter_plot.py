@@ -204,3 +204,4 @@ if __name__ == "__main__":
     NIR['lab']=2
     TSTdata=pd.concat([IR,NIR])
     pltbox('lab',0,TSTdata)
+    

@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     
     
-    list_IMG=os.listdir("{}".format(str(args.path).strip("['']")))
+    list_IMG= os.listdir("{}".format(str(args.path).strip("['']")))
     list_tile=os.listdir("{}".format(str(args.pathref).strip("['']")))
     for i in list_IMG:
         print (i)

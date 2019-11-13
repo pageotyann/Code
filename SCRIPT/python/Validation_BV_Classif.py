@@ -53,6 +53,8 @@ def mergeVectors(outname, opath, files, ext="shp", out_Tbl_name=None):
 if __name__ == "__main__":
     
     years ="2017"
+    method="CUMUL_YEARS"# or "OPEN_CV" or "SEASON_TIME" or "SHARK"
+    bv="ADOUR" # or TARN
     d={}
     file=d["data_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/"
     d["output_file"]="/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_LEARN_VAL_CLASSIF_MT/RUN_FIXE_SEED/"+years+"/"
@@ -61,48 +63,47 @@ if __name__ == "__main__":
     grain=range(0,5)
 #    
 #    for jobs in os.listdir(d["data_file"]+"DATA_LEARN_VAL_CLASSIF_MT/RUN_FIXE_SEED/"+years+"/"):
-#        print (jobs)
-#        for s in grain:
-#            print ("=========")
-#            print (s)
-#            print ("=========")
-#            SHP_seed=[]
-#            for t in tuiles:
-#                print (t)
-#                sortie=d["output_file"]+str(jobs)+'/Fusion_all/%s_seed_%s_val.shp'%(t,s)
-#                entre=d["data_file"]+'DATA_LEARN_VAL_CLASSIF_MT/RUN_FIXE_SEED/'+years+'/'+str(jobs)+'/dataAppVal/%s_seed_%s_val.sqlite'%(t,str(s))
-#                cmd='ogr2ogr -f "ESRI Shapefile" '+sortie+'  '+entre+' -skipfailures'
-#                os.system(cmd)
-#                SHP_seed.append(sortie)    
-#            print("Merge of shapefile")
-#            name="merge%s"%s
-#            mergeVectors(name,sortie[:-21],SHP_seed,ext="shp")
-#            os.system("rm /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_LEARN_VAL_CLASSIF_MT/RUN_FIXE_SEED/"+years+"/%s/Fusion_all/*seed*val*"%(jobs))
-#            for bv,BV in zip([1,2,3,4],["OTHERS","NESTE","TARN","ADOUR"]):
-#                print ("Extraction of region")
-#                sortie=d["output_file"]+str(jobs)+'/Fusion_all/%s_seed_%s.shp'% (BV,s)
-#                entre=d["output_file"]+str(jobs)+"/Fusion_all/merge%s.shp"% s
-#                arg="region='%s'" % bv
-#                print( arg)
-#                commande='ogr2ogr -f "ESRI Shapefile"  -where "'+arg+'" '+sortie+'  '+entre+''
-#
-#                os.system(commande)
+#        if "3ind" in jobs or "SAISON" in jobs:
+#            print (jobs)
+#            for s in grain:
+#                print ("=========")
+#                print (s)
+#                print ("=========")
+#                SHP_seed=[]
+#                for t in tuiles:
+#                    print (t)
+#                    sortie=d["output_file"]+str(jobs)+'/Fusion_all/%s_seed_%s_val.shp'%(t,s)
+#                    entre=d["data_file"]+'DATA_LEARN_VAL_CLASSIF_MT/RUN_FIXE_SEED/'+years+'/'+str(jobs)+'/dataAppVal/%s_seed_%s_val.sqlite'%(t,str(s))
+#                    cmd='ogr2ogr -f "ESRI Shapefile" '+sortie+'  '+entre+' -skipfailures'
+#                    os.system(cmd)
+#                    SHP_seed.append(sortie)    
+#                print("Merge of shapefile")
+#                name="merge%s"%s
+#                mergeVectors(name,sortie[:-21],SHP_seed,ext="shp")
+#                os.system("rm /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_LEARN_VAL_CLASSIF_MT/RUN_FIXE_SEED/"+years+"/%s/Fusion_all/*seed*val*"%(jobs))
+#                for bv,BV in zip([1,2,3,4],["OTHERS","NESTE","TARN","ADOUR"]):
+#                    print ("Extraction of region")
+#                    sortie=d["output_file"]+str(jobs)+'/Fusion_all/%s_seed_%s.shp'% (BV,s)
+#                    entre=d["output_file"]+str(jobs)+"/Fusion_all/merge%s.shp"% s
+#                    arg="region='%s'" % bv
+#                    print( arg)
+#                    commande='ogr2ogr -f "ESRI Shapefile"  -where "'+arg+'" '+sortie+'  '+entre+''
+#    
+#                    os.system(commande)
 #        os.system("rm /datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/DATA_LEARN_VAL_CLASSIF_MT/2017/%s/Fusion_all/others_seed_*"% (jobs))
 
         
-    for classif in os.listdir('/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed'):
-        if "MT" == classif :
-            print(classif)
-        else:
+    for classif in os.listdir('/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+method):
+        if "DES" in classif or "3ind" in classif:
             print ("=============")
             print (r" RUN : %s " %classif)
             print ("=============")
-            for seed in os.listdir('/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+classif+'/final/'):
+            for seed in os.listdir('/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+method+'/'+classif+'/final/'):
                 if "ColorIndexed.tif" in seed:
                     print (r'seed : %s' %seed[13:14])
                     for BV in os.listdir('/datalocal/vboxshare/THESE/CLASSIFICATION//DONNES_SIG/EMPRISE/EMPISE_RASTER_BV/'):
                         print (r" watershed : %s" %BV[10:-4])
-                        if BV[10:-4] == 'ADOUR' :
+                        if BV[10:-4] == bv :
                             print (True)
                             ConcatenateImages_CROPS = otbApplication.Registry.CreateApplication("ConcatenateImages") # Create Otb Application 
                             ConcatenateImages_CROPS.SetParameterStringList("il",[d["data_file"]+'/RPG/MASK_RPG_'+years+'.tif']) # or MASK_RPG_2018_Er10.tif & MASK_MT_RPG2017.tif
@@ -114,7 +115,7 @@ if __name__ == "__main__":
                             ConcatenateImages_MASK.Execute()
         
                             ConcatenateImages_Class = otbApplication.Registry.CreateApplication("ConcatenateImages") # Create Otb Application 
-                            ConcatenateImages_Class.SetParameterStringList("il",['/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+classif+"/final/"+seed])
+                            ConcatenateImages_Class.SetParameterStringList("il",['/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+method+'/'+classif+"/final/"+seed])
                             ConcatenateImages_Class.SetParameterString("out", "Classif.tif")
                             ConcatenateImages_Class.Execute()
                             
@@ -123,7 +124,7 @@ if __name__ == "__main__":
                             BandMath.AddImageToParameterInputImageList("il",ConcatenateImages_MASK.GetParameterOutputImage("out"))
                             BandMath.AddImageToParameterInputImageList("il",ConcatenateImages_CROPS.GetParameterOutputImage("out"))
                             BandMath.AddImageToParameterInputImageList("il",ConcatenateImages_Class.GetParameterOutputImage("out"))
-                            BandMath.SetParameterString("out",'/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+classif+'/final/Classif_'+BV[10:-4]+"_"+seed[13:14]+".tif")
+                            BandMath.SetParameterString("out",'/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+method+'/'+classif+'/final/Classif_'+BV[10:-4]+"_"+seed[13:14]+".tif")
                             BandMath.SetParameterString("exp", "im1b1*im2b1*im3b1")
                             BandMath.SetParameterString("ram",str(ram))
                             BandMath.SetParameterOutputImagePixelType("out",otbApplication.ImagePixelType_uint8)
@@ -131,8 +132,8 @@ if __name__ == "__main__":
         
                             print ('Map Regularization processing')
                             ClassificationMapRegularization = otbApplication.Registry.CreateApplication("ClassificationMapRegularization")
-                            ClassificationMapRegularization.SetParameterString("io.in", '/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+classif+'/final/Classif_'+BV[10:-4]+"_"+seed[13:14]+".tif")
-                            ClassificationMapRegularization.SetParameterString("io.out", '/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+classif+'/final/Classif_'+BV[10:-4]+"_"+seed[13:14]+"_regularized.tif")
+                            ClassificationMapRegularization.SetParameterString("io.in", '/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+method+'/'+classif+'/final/Classif_'+BV[10:-4]+"_"+seed[13:14]+".tif")
+                            ClassificationMapRegularization.SetParameterString("io.out", '/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+method+'/'+classif+'/final/Classif_'+BV[10:-4]+"_"+seed[13:14]+"_regularized.tif")
                             ClassificationMapRegularization.SetParameterInt("ip.radius", 1)
                             ClassificationMapRegularization.SetParameterInt("ip.nodatalabel", 0)
                             ClassificationMapRegularization.SetParameterString("ip.onlyisolatedpixels",'True')
@@ -142,8 +143,8 @@ if __name__ == "__main__":
                             
                             print ("Confusion_matrix processing")
                             ComputeConfusionMatrix = otbApplication.Registry.CreateApplication("ComputeConfusionMatrix")
-                            ComputeConfusionMatrix.SetParameterString("in", '/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+classif+'/final/Classif_'+BV[10:-4]+"_"+seed[13:14]+"_regularized.tif")          
-                            ComputeConfusionMatrix.SetParameterString("out", '/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+classif+'/final/ConfusionMatrix_regularized_%s_%s.csv'% (BV[10:-4],seed[13:14]))       
+                            ComputeConfusionMatrix.SetParameterString("in", '/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+method+'/'+classif+'/final/Classif_'+BV[10:-4]+"_"+seed[13:14]+"_regularized.tif")          
+                            ComputeConfusionMatrix.SetParameterString("out", '/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/'+years+'/RUN_fixe_seed/'+method+'/'+classif+'/final/ConfusionMatrix_regularized_%s_%s.csv'% (BV[10:-4],seed[13:14]))       
                             ComputeConfusionMatrix.SetParameterString("ref","vector")      
                             ComputeConfusionMatrix.SetParameterString("ref.vector.in", d["output_file"]+classif+'/Fusion_all/%s_seed_%s.shp'% (BV[10:-4],seed[13:14])) #d["output_file"]+classif+'/Fusion_all/merge%s.shp'%(seed[13:14])
                             ComputeConfusionMatrix.UpdateParameters()
@@ -239,11 +240,11 @@ if __name__ == "__main__":
 #                     fig_conf_mat(conf_mat_dic,nom,np.mean(all_k),np.mean(all_oa),p_mean,r_mean,f_mean,pathRes+"Matrix_fusion"+b+"_"+classif+".png",conf_score="percentage")
 
                     
-            for b in ["ADOUR"] :
+            for b in [bv] :
                 print(b)
                 nom=get_nomenclature("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt")
                 pathNom="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/nomenclature_T31TDJ.txt"
-                pathRes="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/"+years+"/RUN_fixe_seed/"+classif+"/final/"
+                pathRes="/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/"+years+"/RUN_fixe_seed/"+method+"/"+classif+"/final/"
                 all_k = []
                 all_oa = []
                 all_p = []

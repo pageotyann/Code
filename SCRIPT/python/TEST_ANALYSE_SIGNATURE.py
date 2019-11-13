@@ -204,107 +204,99 @@ if __name__ == '__main__':
 #    dfpar=df.groupby("originfid").mean()
     Label=[1,2,11,22,33,44]
     label=[1,11]
-    polarisation=["asc_vv","des_vv","asc_vh","des_vh","des_userfeature",'asc_userfeature']
-    indice=["NDVI","NDWI","Brightness"]
-    Indice=["ndvi","ndwi","brightness"]
-    features=indice[0:1]+polarisation
+    polarisation=["des_vv","des_vh","des_userfeature"]
+    indice=["NDVI","NDWI"]
+    Indice=["ndvi","ndwi"]
+    features=indice[0:2]+polarisation
 #    drop_band=['X', 'Y', 'region', 'labcroirr',"alt_band_0"]
     list_bd_drop=["region","labcroirr","ogc_fid","alt_band_0"]
     list_drop=["labcroirr","ogc_fid"]
     list_drop_bv=["labcroirr","ogc_fid","alt_band_0"]
-   # =============================================================================
-#     SAFRAN
-# =============================================================================
-#    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/DONNES_SIG/DONNEES_METEO/SAFRAN_TCJ.csv")
-#    date=sorted(list(set(df.DATE)))
-    
-#    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/SAFRAN_TCJ_NORD.csv")
-#    SAFRAN_EST_TCJ=df.groupby('gid').mean() 
-#    gid=SAFRAN_EST_TCJ.index
-#    df_ESTCJ=SAFRAN_EST_TCJ.drop(columns=['X','Y','labelirr', 'labelcrirr','originfid','area','surf_parc',"id","labcroirr"])
-#    dfEST_TCJ=df_ESTCJ.T
-#    dfEST_TCJ['date']=date
-#    dfEST_TCJ.set_index("date",inplace=True)
-#    dfEST_TCJ.index=pd.to_datetime(dfEST_TCJ.index,format="%Y%m%d")
+
     
 # =============================================================================
 #     Ceate plot
 # =============================================================================
-
+    list_drop=["labcroirr","OGC_FID","alt_band_0"]
+    list_drop_2018=["labcroirr","ogc_fid"]
     for z in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"):
-        print(z)
-        if '2017' in z:
-            tile=z[:3]
+        if '2017' in z and "ADOUR" in z and "NORD" not in z and "SUD" not in z :
+            tuile=z[:5]
+            print (tuile)
             date="2017"
-            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s"%z ,tile,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt")     
-        else: 
-            tile=z[:3]
-            print ('BV')
-            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s" %z, tile ,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt")
-            date="2018"
-        for p in polarisation:
-            print (p)
-            for i in Label:
-                globals()['cropslab%s' % i] = pd.DataFrame( globals()["df%s"% tile ][ globals()["df%s"% tile ].labcroirr==i]).T
-                globals()['%s%s' % (p,i)]=[]
-                for index,row in globals()['cropslab%s' % i].iterrows():
-                    if p in index:
-                        globals()['%s%s' % (p,i)].append (row)
-                        globals()['df%s%s' %(p,i)]=pd.DataFrame(globals()['%s%s' % (p,i)])
-                        globals()["df%s%s"% (p,i)].replace(to_replace =0 , value= pd.NaT,inplace=True)
-                        globals()["dbdf%s%s" %(p ,i)]=10*np.log10(globals()['df%s%s' % (p,i)])
+            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s"%z ,tuile+date,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt")     
+#        elif "2018" in z and "ADOUR" in z and "NORD" not in z and "SUD" not in z: 
+#            tuile=z[:5]
+#            date="2018"
+#            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s" %z, tuile+date ,list_drop_2018,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt")
+
+            for p in polarisation:
+                print (p)
+                for i in Label:
+                    globals()['cropslab%s' % i] = pd.DataFrame( globals()["df%s"% tuile+date ][ globals()["df%s"% tuile+date ].labcroirr==i]).T
+                    globals()['%s%s' % (p,i)]=[]
+                    for index,row in globals()['cropslab%s' % i].iterrows():
+                        if p in index:
+                            globals()['%s%s' % (p,i)].append (row)
+                            globals()['df%s%s' %(p,i)]=pd.DataFrame(globals()['%s%s' % (p,i)])
+                            globals()["df%s%s"% (p,i)].replace(to_replace =0 , value= pd.NaT,inplace=True)
+                            globals()["dbdf%s%s" %(p ,i)]=10*np.log10(globals()['df%s%s' % (p,i)])
 
 
-        for ind in indice:
-            print (ind)
-            for i in Label:
-                globals()['cropslab%s' % i] = pd.DataFrame(globals()["df%s"% tile ][globals()["df%s"% tile ].labcroirr==i]).T
-                globals()['%s%s' %(ind,i)]=[]
-                for index,row in globals()['cropslab%s' % i].iterrows():
-                    if ind in index:
-                        globals()['%s%s' % (ind,i)].append (row)
-                        globals()['df%s%s' %(ind,i)]=pd.DataFrame(globals()['%s%s' %(ind,i)])
+            for ind in features:
+                print (ind)
+                for i in Label:
+                    globals()['cropslab%s' % i] = pd.DataFrame(globals()["df%s"% tuile+date ][globals()["df%s"% tuile+date ].labcroirr==i]).T
+                    globals()['%s%s' %(ind,i)]=[]
+                    for index,row in globals()['cropslab%s' % i].iterrows():
+                        if ind in index:
+                            globals()['%s%s' % (ind,i)].append (row)
+                            globals()['df%s%s' %(ind,i)]=pd.DataFrame(globals()['%s%s' %(ind,i)])
+                            
+            for f in features:
+                for i in Label:
+                    if f in polarisation:
+                        globals()["%s%s"% (f,i) ] = globals()["dbdf%s%s"% (f,i)].rename(index=lambda x: x[-8:])
+                        globals()["%s%s"%(f,i)].sort_index(inplace=True)
+                        globals()["%s%s"%(f,i)].index=pd.to_datetime(globals()["%s%s"%(f,i)].index,format="%Y%m%d")
+                    else:
+                        globals()["%s%s"% (f,i) ] = globals()["df%s%s"% (f,i)].rename(index=lambda x: x[-8:])
+                        globals()["%s%s"%(f,i)].sort_index(inplace=True)
+                        globals()["%s%s"%(f,i)].index=pd.to_datetime(globals()["%s%s"%(f,i)].index,format="%Y%m%d")
                         
-        for f in features:
-            for i in Label:
-                if f in polarisation:
-                    indexdate(globals()["dbdf%s%s"% (f,i)],-8,'%s%s' % (f,i))
-                else:
-                    indexdate(globals()["df%s%s"% (f,i)],-8,'%s%s' % (f,i))
 
-                
-        confianceinf=[]
-        confiancesup=[]
-
-        for i in ["NDVI","asc_userfeature","des_userfeature"]:
-            for l in Label:
-                print ("%s%s"%(i,l))
-                a="%s%s"%(i,l)
-                globals()["_%s%s"% (i,l)],globals()["b_sup%s%s"% (i,l)]=stats.t.interval(0.95,globals()["%s%s"%(i,l)].shape[1]-1,loc=globals()["%s%s"%(i,l)].T.mean(),scale=stats.sem(globals()["%s%s"%(i,l)].T))
-                confianceinf.append(globals()["_%s%s"% (i,l)])
-                confiancesup.append(globals()["b_sup%s%s"% (i,l)])
+            confianceinf=[]
+            confiancesup=[]
+    
+            for i in features:
+                for l in Label:
+                    print ("%s%s"%(i,l))
+#                    a="%s%s"%(i,l)
+                    globals()["_%s%s"% (i,l)],globals()["b_sup%s%s"% (i,l)]=stats.t.interval(0.95,globals()["%s%s"%(i,l)].shape[1]-1,loc=globals()["%s%s"%(i,l)].T.mean(),scale=stats.sem(globals()["%s%s"%(i,l)].T))
+                    confianceinf.append(globals()["_%s%s"% (i,l)])
+                    confiancesup.append(globals()["b_sup%s%s"% (i,l)])
 
 #        
-        for m in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/"): # regle meteo pour 2018 sur les auters zones 
-            print (m)
-            if "2017" in z :
-                if m[:3] == tile :
-                    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/%s" % m)
-                    df=df[["DATE","PRELIQ_Q"]]
-                    globals()["dfSAFR%s"% (tile)]=df.set_index("DATE")
-                    globals()["dfSAFR%s"% (tile)].index=pd.to_datetime(globals()["dfSAFR%s"% (tile)].index,format="%Y%m%d")
-                elif m[4:7] == tile:
-                    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/%s" % m)
-                    df=df[["DATE","PRELIQ_Q"]]
-                    globals()["dfSAFR%s"% (tile)]=df.set_index("DATE")
-                    globals()["dfSAFR%s"% (tile)].index=pd.to_datetime(globals()["dfSAFR%s"% (tile)].index,format="%Y%m%d")
-            else:
-                if m[4:7] == tile :
-                    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/%s" % m)
-                    df=df[["DATE","PRELIQ_Q"]][0:365]
-                    globals()["dfSAFR%s"% (tile)]=df.set_index("DATE")
-                    globals()["dfSAFR%s"% (tile)].index=pd.to_datetime(globals()["dfSAFR%s"% (tile)].index,format="%Y%m%d")
-                    
+#        for m in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/"): # regle meteo pour 2018 sur les auters zones 
+#            print (m)
+#            if "2017" in z :
+#                if m[:3] == tile :
+#                    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/%s" % m)
+#                    df=df[["DATE","PRELIQ_Q"]]
+#                    globals()["dfSAFR%s"% (tile)]=df.set_index("DATE")
+#                    globals()["dfSAFR%s"% (tuile)].index=pd.to_datetime(globals()["dfSAFR%s"% (tile)].index,format="%Y%m%d")
+#                elif m[4:7] == tile:
+#                    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/%s" % m)
+#                    df=df[["DATE","PRELIQ_Q"]]
+#                    globals()["dfSAFR%s"% (tile)]=df.set_index("DATE")
+#                    globals()["dfSAFR%s"% (tile)].index=pd.to_datetime(globals()["dfSAFR%s"% (tile)].index,format="%Y%m%d")
+#            else:
+#                if m[4:7] == tile :
+#                    df=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/SAFRAN/%s" % m)
+#                    df=df[["DATE","PRELIQ_Q"]][0:365]
+#                    globals()["dfSAFR%s"% (tile)]=df.set_index("DATE")
+#                    globals()["dfSAFR%s"% (tile)].index=pd.to_datetime(globals()["dfSAFR%s"% (tile)].index,format="%Y%m%d")
+#                    
 
 #        pltmutli(NDVI1.index,VV1.index,NDVI1,NDVI11,NDWI1,NDWI11,VV1,VV11,VH1,VH11,VH_VV1,VH_VV11,globals()["dfSAFR%s"% (tile)].index,globals()["dfSAFR%s"% (tile)].PRELIQ_Q)    
 #        plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/comparaison_IRR_NIRR_2017%s.png"% tile)
@@ -321,219 +313,433 @@ if __name__ == '__main__':
         
         
         
-                ##        
-        plt.figure(figsize=(13,10))
-        sns.set(style="darkgrid")
-        sns.set_context('paper')
-        ax1 = plt.subplot(311)
-        p1=plt.plot(NDVI1.index,NDVI1.T.mean(),color='blue')
-        plt.fill_between(NDVI1.index, confiancesup[0], confianceinf[0], facecolor='blue', alpha=0.2)
-        p2=plt.plot(NDVI2.index,NDVI2.T.mean(),color='red',linestyle='--')
-        plt.fill_between(NDVI1.index, confiancesup[1], confianceinf[1], facecolor='red', alpha=0.2)
-        p3=plt.plot(NDVI11.index,NDVI11.T.mean(),color='blue',linestyle='--')
-        plt.fill_between(NDVI1.index, confiancesup[2], confianceinf[2], facecolor='blue', alpha=0.2)
-        p4=plt.plot(NDVI22.index,NDVI22.T.mean(),color='red')
-        plt.fill_between(NDVI1.index, confiancesup[3], confianceinf[3], facecolor='red', alpha=0.2)
-        p5=plt.plot(NDVI33.index,NDVI33.T.mean(),color='green')
-        plt.fill_between(NDVI1.index, confiancesup[4], confianceinf[4], facecolor='green', alpha=0.2)
-        p6=plt.plot(NDVI44.index,NDVI44.T.mean(),color='pink')
-        plt.fill_between(NDVI1.index, confiancesup[5], confianceinf[5], facecolor='pink', alpha=0.2)
-        plt.ylabel("NDVI")
-        plt.legend((p1[0],p2[0],p3[0],p4[0],p5[0],p6[0]),("Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"))
-        plt.setp(ax1.get_xticklabels(),visible=False)
-        ax2 = plt.subplot(312)
-        p1=plt.plot(asc_userfeature1.index,asc_userfeature1.T.mean(),color='blue')
-        plt.fill_between(asc_userfeature1.index, confiancesup[6], confianceinf[6], facecolor='blue', alpha=0.2)
-        plt.plot(asc_userfeature2.index,asc_userfeature2.T.mean(),color='red',linestyle='--')
-        plt.fill_between(asc_userfeature1.index, confiancesup[7], confianceinf[7], facecolor='red', alpha=0.2)
-        plt.plot(asc_userfeature11.index,asc_userfeature11.T.mean(),color='red',linestyle='--')
-        plt.fill_between(asc_userfeature1.index, confiancesup[8], confianceinf[8], facecolor='blue', alpha=0.2)
-        plt.plot(asc_userfeature22.index,asc_userfeature22.T.mean(),color='red')
-        plt.fill_between(asc_userfeature1.index, confiancesup[9], confianceinf[9], facecolor='red', alpha=0.2)
-        plt.plot(asc_userfeature33.index,asc_userfeature33.T.mean(),color='green')
-        plt.fill_between(asc_userfeature1.index, confiancesup[10], confianceinf[10], facecolor='green', alpha=0.2)
-        plt.plot(asc_userfeature44.index,asc_userfeature44.T.mean(),color='pink')
-        plt.fill_between(asc_userfeature1.index, confiancesup[11], confianceinf[11], facecolor='pink', alpha=0.2)
-        plt.ylabel("VH/VV")
-        plt.setp(ax2.get_xticklabels(),visible=False)
-        ax3 = plt.subplot(313)
-        plt.bar(globals()["dfSAFR%s"% (tile)].index,globals()["dfSAFR%s"% (tile)].PRELIQ_Q,color='blue',width=1)
-        plt.ylabel("rainfall (mm)")
-        plt.setp(ax3.get_xticklabels(),rotation=90)
-        plt.savefig(d["SAVE"]+"PLOT_NDVI_VV_VH_BV/NDVI%s%s.png"% (tile,date))
-        
-        
-        
+# =============================================================================
+# Plot illustation overlap des partiques agricoles entre zones sèche et zone humide
+# =============================================================================
+    plt.figure(figsize=(18,10))
+    sns.set(style="darkgrid")
+    sns.set_context('paper')
+    ax1 = plt.subplot(221)
+    p1=plt.plot(NDVI1.index,NDVI1.T.mean(),color='blue',linestyle="-")
+    plt.fill_between(NDVI1.index, confiancesup[0], confianceinf[0], facecolor='blue', alpha=0.1)
+#    p1=plt.plot(NDVI1.index,NDVI1.T.loc[175],color='blue',linestyle='--')
+###        plt.fill_between(NDWI1.index, confiancesup[1], confianceinf[1], facecolor='red', alpha=0.1)
+    p3=plt.plot(NDVI11.index,NDVI11.T.mean(),color='red',linestyle='-')
+    plt.fill_between(NDVI11.index, confiancesup[2], confianceinf[2], facecolor='red', alpha=0.1)
+#    p4=plt.plot(NDVI11.index,NDVI11.T.mean(),color='red',linestyle='--')
+###        plt.fill_between(NDWI1.index, confiancesup[3], confianceinf[3], facecolor='red', alpha=0.1)
+##        p5=plt.plot(NDWI33.index,NDWI33.T.mean(),color='green')
+###        plt.fill_between(NDWI1.index, confiancesup[4], confianceinf[4], facecolor='green', alpha=0.1)
+##        p6=plt.plot(NDWI44.index,NDWI44.T.mean(),color='pink')
+###        plt.fill_between(NDWI1.index, confiancesup[5], confianceinf[5], facecolor='pink', alpha=0.1)
+    plt.ylabel("NDVI")
+    plt.xticks(size='large')
+    plt.yticks(size='large')
+    plt.legend((p1,p3),("Maize_Irr","Maize_Nirr"))
+#    plt.legend((p1[0],p1[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+###        plt.legend((p1[0],p3[0]),("Maize_Irr","Maize_Nirr"))
+###        plt.setp(ax1.get_xticklabels(),visible=True)
+###        plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/NDWI_ADOUR_NORD_SUD/NDWI%s%s.png"% (tuile,date))
+    ax1 = plt.subplot(222)
+    p1=plt.plot(NDWI1.index,NDWI1.T.mean(),color='blue',linestyle="-")
+    plt.fill_between(NDWI1.index, confiancesup[6], confianceinf[6], facecolor='blue', alpha=0.1)
+#    p1=plt.plot(NDWI1.index,NDWI1.T.loc[101],color='blue',linestyle='--')
+    p3=plt.plot(NDWI11.index,NDWI11.T.mean(),color='red',linestyle='-')
+    plt.fill_between(NDWI11.index, confiancesup[8], confianceinf[8], facecolor='red', alpha=0.1)
+#    p4=plt.plot(NDWI11.index,NDWI11.T.loc[193],color='red',linestyle='--')
+    plt.ylabel("NDWI")
+    plt.xticks(size='large')
+    plt.yticks(size='large')
+#    plt.legend((p1[0],p1[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+    ax3=plt.subplot(223)
+    p1=plt.plot(des_vv1.index,des_vv1.T.mean(),color='blue',linestyle="-")
+    plt.fill_between(des_vv1.index, confiancesup[12], confianceinf[12], facecolor='blue', alpha=0.1)
+#    p1=plt.plot(des_vv1.index,des_vv1.T.loc[101],color='blue',linestyle='--')
+    p3=plt.plot(des_vv11.index,des_vv11.T.mean(),color='red',linestyle='-')
+    plt.fill_between(des_vv11.index, confiancesup[14], confianceinf[14], facecolor='red', alpha=0.1)
+#    p4=plt.plot(des_vv11.index,des_vv11.T.loc[193],color='red',linestyle='--')
+    plt.ylabel("VV")
+    plt.xticks(size='large')
+    plt.yticks(size='large')
+#    plt.legend((p1[0],p1[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+    ax4=plt.subplot(224)
+    p1=plt.plot(des_vh1.index,des_vh1.T.mean(),color='blue',linestyle="-")
+    plt.fill_between(des_vh1.index, confiancesup[18], confianceinf[18], facecolor='blue', alpha=0.1)
+#    p1=plt.plot(des_vh1.index,des_vh1.T.loc[101],color='blue',linestyle='--')
+    p3=plt.plot(des_vh11.index,des_vh11.T.mean(),color='red',linestyle='-')
+    plt.fill_between(des_vh11.index, confiancesup[20], confianceinf[20], facecolor='red', alpha=0.1)
+#    p4=plt.plot(des_vh11.index,des_vh11.T.loc[193],color='red',linestyle='--')
+    plt.ylabel("VH")
+    plt.xticks(size='large')
+    plt.yticks(size='large')
+    plt.legend((p1[0],p3[0]),("Maize_Irr","Maize_Nirr"))
+###        p1=plt.plot(asc_userfeature1.index,asc_userfeature1.T.mean(),color='blue')
+    plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/2017_MAIZE_ZONE_OVERLAP_ADOUR.jpg")
+#        plt.fill_between(asc_userfeature1.index, confiancesup[6], confianceinf[6], facecolor='blue', alpha=0.2)
+#        plt.plot(asc_userfeature2.index,asc_userfeature2.T.mean(),color='red',linestyle='--')
+#        plt.fill_between(asc_userfeature1.index, confiancesup[7], confianceinf[7], facecolor='red', alpha=0.2)
+#        plt.plot(asc_userfeature11.index,asc_userfeature11.T.mean(),color='red',linestyle='--')
+#        plt.fill_between(asc_userfeature1.index, confiancesup[8], confianceinf[8], facecolor='blue', alpha=0.2)
+#        plt.plot(asc_userfeature22.index,asc_userfeature22.T.mean(),color='red')
+#        plt.fill_between(asc_userfeature1.index, confiancesup[9], confianceinf[9], facecolor='red', alpha=0.2)
+#        plt.plot(asc_userfeature33.index,asc_userfeature33.T.mean(),color='green')
+#        plt.fill_between(asc_userfeature1.index, confiancesup[10], confianceinf[10], facecolor='green', alpha=0.2)
+#        plt.plot(asc_userfeature44.index,asc_userfeature44.T.mean(),color='pink')
+#        plt.fill_between(asc_userfeature1.index, confiancesup[11], confianceinf[11], facecolor='pink', alpha=0.2)
+#        plt.ylabel("VH/VV")
+#        plt.setp(ax2.get_xticklabels(),visible=False)
+#        ax3 = plt.subplot(313)
+#        plt.bar(globals()["dfSAFR%s"% (tile)].index,globals()["dfSAFR%s"% (tile)].PRELIQ_Q,color='blue',width=1)
+#        plt.ylabel("rainfall (mm)")
+#        plt.setp(ax3.get_xticklabels(),rotation=90)
+#        plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/PLOT_NDVI_VV_VH_BV/NDVI%s%s.png"% (tile,date))
         
 # =============================================================================
-#     GEstion DATA TDJ add nom band + date
-## =============================================================================
-#    list_bd_drop=["ogc_fid",'region', 'labcroirr',"alt_band_0"]
-#    sqlite_df('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/2018_TCJ_S2/learningSamples/Samples_region_1_seed0_learn.sqlite','df2018')
-##    df2018.to_csv('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/2018_TCJ_S2/learningSamples/df2018TCJ.csv')
-#    col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/2018_TCJ_S2/learningSamples/df2018TCJ.csv",'df2018',list_bd_drop)
-##    col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/tmp/TEST_ANALYSE_SIGNAL/DT_MAIZE_TCJ_O.csv",'dfTCJ',drop_band[0:4])
-#    sqlite_df('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/Samples_region_1_seed4_learn.sqlite','dfr14')
-##    dfr14.to_csv('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/dfr14.csv')
-##    list_bd_drop=['ogc_fid', 'region', 'labcroirr']
-##    col_sqlite('/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/R14_VV_VH/learningSamples/dfr14.csv','dfr14',list_bd_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt")
-##    col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/2018_TCJ_S2/learningSamples/Samples_region_1_seed0_learn.sqlite",'df2018',list_bd_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TDJ2018.txt")
-##    tile="2018" 
-#    for p in polarisation:
-#        SAR_process_db(label,dfr14,p)
-#        
-#    for ind in Indice[:-1]:
-#        print (ind)
-#        Optique_Process(label,dfr14,ind)
-#    
-#    for f in Indice[:-1]:
-#        indexdate(globals()["df%s1"% f],-8,f.upper()+"1")
-#        indexdate(globals()["df%s11"% f],-8,f.upper()+"11")
-#
-#
-#    indexdate(dbdfasc_vv1,-8,'VVa1')
-#    indexdate(dbdfasc_vh1,-8,'VHa1')
-#    indexdate(dbdfasc_vv11,-8,'VVa11')
-#    indexdate(dbdfasc_vh11,-8,'VHa11')
-#    
-#    indexdate(dbdfdes_vv1,-8,'VVd1')
-#    indexdate(dbdfdes_vh1,-8,'VHd1')
-#    indexdate(dbdfdes_vv11,-8,'VVd11')
-#    indexdate(dbdfdes_vh11,-8,'VHd11')
-#    
-#    indexdate(dbdfuserfeature1,-8,"VH_VV1")
-#    indexdate(dbdfuserfeature11,-8,"VH_VV11")
-#
-#    VV1=pd.concat([dbdfdes_vv1,dbdfasc_vv1])
-#    indexdate(VV1,-8,"VV1")
-#
-#    VH1=pd.concat([dbdfdes_vh1,dbdfasc_vh1])
-#    indexdate(VH1,-8,"VH1")
-#
-#    VV11=pd.concat([dbdfdes_vv11,dbdfasc_vv11])
-#    indexdate(VV11,-8,"VV11")
-#    
-#    VH11=pd.concat([dbdfdes_vh11,dbdfasc_vh11])
-#    indexdate(VH11,-8,"VH11")
-#    
-#    confianceinf1=[]
-#    confiancesup1=[]
-#    for i in indice[:-1]:
-#        globals()["_%s"% (i)],globals()["b_sup%s"% (i)]=stats.t.interval(0.95,globals()["%s1"%i].shape[1]-1,loc=globals()["%s1"%i].T.mean(),scale=stats.sem(globals()["%s1"%i].T))
-#        confianceinf1.append(globals()["_%s"% (i)])
-#        confiancesup1.append(globals()["b_sup%s"% (i)])
-#    
-#    confianceinf11=[]
-#    confiancesup11=[]
-#    for i in indice[:-1]:
-#        globals()["_%s"% (i)],globals()["b_sup%s"% (i)]=stats.t.interval(0.95,globals()["%s11"%i].shape[1]-1,loc=globals()["%s11"%i].T.mean(),scale=stats.sem(globals()["%s11"%i].T))
-#        confianceinf11.append(globals()["_%s"% (i)])
-#        confiancesup11.append(globals()["b_sup%s"% (i)])
-#    
-#    tab=["VV1","VH1","VV11","VH11","VH_VV1","VH_VV11"]
-#    confianceinfSAR=[]
-#    confiancesupSAR=[]
-#    for i in tab:
-#        globals()["_%s"% (i)],globals()["b_sup%s"% (i)]=stats.t.interval(0.95,globals()["%s"%i].shape[1]-1,loc=globals()["%s"%i].T.mean(),scale=stats.sem(globals()["%s"%i].T))
-#        confianceinfSAR.append(globals()["_%s"% (i)])
-#        confiancesupSAR.append(globals()["b_sup%s"% (i)])
-##        
-##
-#    plt.figure(figsize=(13,10))
+#     pour 2017
+# =============================================================================
+#    plt.figure(figsize=(18,10))
 #    sns.set(style="darkgrid")
 #    sns.set_context('paper')
-#    ax1 = plt.subplot(411)
-#    p1=plt.plot(NDVI1.index,NDVI1.T.mean(),color='blue')
-#    plt.plot(NDVI11.index,NDVI11.T.mean(),color='blue',linestyle='--')
-#    plt.plot(NDVI2.index,NDVI2.T.mean(),color='red',linestyle='--')
-#    plt.plot(NDVI22.index,NDVI22.T.mean(),color='red')
-#    plt.plot(NDVI33.index,NDVI33.T.mean(),color='green')
-#    plt.plot(NDVI44.index,NDVI44.T.mean(),color='pink')
-##    p2=plt.plot(NDVI1.index,NDVI11.T.mean(),color='red',linestyle='--')
-##    plt.fill_between(NDVI1.index, confiancesup1[0], confianceinf1[0], facecolor='blue', alpha=0.2)
-##    plt.fill_between(NDVI11.index, confiancesup11[0], confianceinf11[0], facecolor='red', alpha=0.2)
+#    ax1 = plt.subplot(221)
+#    p1=plt.plot(NDVI1.index,NDVI1.T.loc[12],color='blue',linestyle="-")
+##        plt.fill_between(NDVI1.index, confiancesup[0], confianceinf[0], facecolor='blue', alpha=0.2)
+#    p2=plt.plot(NDVI1.index,NDVI1.T.loc[309],color='blue',linestyle='--')
+###        plt.fill_between(NDWI1.index, confiancesup[1], confianceinf[1], facecolor='red', alpha=0.2)
+#    p3=plt.plot(NDVI11.index,NDVI11.T.loc[113],color='red',linestyle='-')
+##        plt.fill_between(NDWI1.index, confiancesup[2], confianceinf[2], facecolor='red', alpha=0.2)
+#    p4=plt.plot(NDVI11.index,NDVI11.T.loc[277],color='red',linestyle='--')
+#    
+###        plt.fill_between(NDWI1.index, confiancesup[3], confianceinf[3], facecolor='red', alpha=0.2)
+##        p5=plt.plot(NDWI33.index,NDWI33.T.mean(),color='green')
+###        plt.fill_between(NDWI1.index, confiancesup[4], confianceinf[4], facecolor='green', alpha=0.2)
+##        p6=plt.plot(NDWI44.index,NDWI44.T.mean(),color='pink')
+###        plt.fill_between(NDWI1.index, confiancesup[5], confianceinf[5], facecolor='pink', alpha=0.2)
 #    plt.ylabel("NDVI")
 #    plt.xticks(size='large')
 #    plt.yticks(size='large')
-#    plt.setp(ax1.get_xticklabels(), visible=False)
-#    ax2 = plt.subplot(412)
-#    plt.plot(NDVI11.index,NDVI11.T.mean(),color='red',linestyle='--')
-##    plt.plot(VH_VV11.index,VH_VV11.T.mean(),color='red',linestyle='--')
-##    plt.fill_between(NDVI11.index, confiancesupSAR[4], confianceinfSAR[4], facecolor='blue', alpha=0.2)
-##    plt.fill_between(VH_VV11.index, confiancesupSAR[5], confianceinfSAR[5], facecolor='red', alpha=0.2)
-#    plt.ylabel("VH_VV en db")
-#    plt.xticks(size='large')
-#    plt.yticks(size='large')
-#    plt.setp(ax2.get_xticklabels(), visible=False)   
-#    ax3 = plt.subplot(413)
-#    plt.plot(NDVI33.index,NDVI33.T.mean(),color='blue')
-##    plt.plot(VV11.index,VV11.T.mean(),color='red',linestyle='--')
-##    plt.fill_between(VV1.index, confiancesupSAR[0], confianceinfSAR[0], facecolor='blue', alpha=0.2)
-##    plt.fill_between(VV11.index, confiancesupSAR[2], confianceinfSAR[2], facecolor='red', alpha=0.2)
-#    plt.ylabel("VV en db")
-#    plt.setp(ax3.get_xticklabels(), visible=False)    
-#    
-#    plt.plot(NDWI1.index,NDWI1.T.mean(),color="blue")
-#    plt.plot(NDWI1.index,NDWI11.T.mean(),color='red',linestyle='--')
-#    plt.fill_between(NDVI1.index, confiancesup1[1], confianceinf1[1], facecolor='blue', alpha=0.2)
-#    plt.fill_between(NDVI11.index, confiancesup11[1], confianceinf11[1], facecolor='red', alpha=0.2)
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+##        plt.legend((p1[0],p3[0]),("Maize_Irr","Maize_Nirr"))
+##        plt.setp(ax1.get_xticklabels(),visible=True)
+##        plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/NDWI_ADOUR_NORD_SUD/NDWI%s%s.png"% (tuile,date))
+#    ax2 = plt.subplot(222)
+#    p1=plt.plot(NDWI1.index,NDWI1.T.loc[12],color='blue',linestyle="-")
+#    p2=plt.plot(NDWI1.index,NDWI1.T.loc[309],color='blue',linestyle='--')
+#    p3=plt.plot(NDWI11.index,NDWI11.T.loc[113],color='red',linestyle='-')
+#    p4=plt.plot(NDWI11.index,NDWI11.T.loc[277],color='red',linestyle='--')
 #    plt.ylabel("NDWI")
 #    plt.xticks(size='large')
 #    plt.yticks(size='large')
-#    plt.setp(ax2.get_xticklabels(), visible=True)
-    
-    
-#    ax3 = plt.subplot(412)
-#    plt.plot(VV1.index,VV1.T.mean(),color='blue')
-#    plt.plot(VV11.index,VV11.T.mean(),color='red',linestyle='--')
-#    plt.fill_between(VV1.index, confiancesupSAR[0], confianceinfSAR[0], facecolor='blue', alpha=0.2)
-#    plt.fill_between(VV11.index, confiancesupSAR[2], confianceinfSAR[2], facecolor='red', alpha=0.2)
-#    plt.ylabel("VV")
-#    plt.setp(ax3.get_xticklabels(), visible=False)    
-#    ax4 = plt.subplot(413)
-##    plt.plot(VH_VV1.index,VH_VV1.T.mean(),color='blue')
-##    plt.plot(VH_VV11.index,VH_VV11.T.mean(),color='red',linestyle='--')
-##    plt.fill_between(VH_VV1.index, confiancesupSAR[4], confianceinfSAR[4], facecolor='blue', alpha=0.2)
-##    plt.fill_between(VH_VV11.index, confiancesupSAR[5], confianceinfSAR[5], facecolor='red', alpha=0.2)
-##    plt.ylabel("VH_VV")
-##    plt.xticks(size='large')
-##    plt.yticks(size='large')
-##    plt.setp(ax4.get_xticklabels(), visible=False)
-##
-###    plt.setp(ax4.get_xticklabels(), visible=False)
-###    ax5 = plt.subplot(615)
-###    plt.plot(x4,y5,color='blue')
-###    plt.plot(x4, y5bis,color='red',linestyle='--')
-###    plt.ylabel("VH/VV")
-###    plt.setp(ax5.get_xticklabels(),rotation=False)
-##    plt.legend((p1[0],p2[0]),("Irrigué","Non Irrigué"))
-#    ax6 = plt.subplot(414)
-#    plt.bar(dfSAFRTCJ_O.index,dfSAFRTCJ_O.iloc[:,1],color='blue',width=1)
-#    plt.ylabel("pluviométrie en mm")
-#    plt.setp(ax6.get_xticklabels(),rotation=90)
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    ax3=plt.subplot(223)
+#    p1=plt.plot(des_vv1.index,des_vv1.T.loc[12],color='blue',linestyle="-")
+#    p2=plt.plot(des_vv1.index,des_vv1.T.loc[309],color='blue',linestyle='--')
+#    p3=plt.plot(des_vv11.index,des_vv11.T.loc[113],color='red',linestyle='-')
+#    p4=plt.plot(des_vv11.index,des_vv11.T.loc[277],color='red',linestyle='--')
+#    plt.ylabel("VV ")
 #    plt.xticks(size='large')
 #    plt.yticks(size='large')
-#    plt.savefig(d["SAVE"]+"indices.png")
-#    
-#
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    ax4=plt.subplot(224)
+#    p1=plt.plot(des_vh1.index,des_vh1.T.loc[12],color='blue',linestyle="-")
+#    p2=plt.plot(des_vh1.index,des_vh1.T.loc[309],color='blue',linestyle='--')
+#    p3=plt.plot(des_vh11.index,des_vh11.T.loc[113],color='red',linestyle='-')
+#    p4=plt.plot(des_vh11.index,des_vh11.T.loc[277],color='red',linestyle='--')
+#    plt.ylabel("VH")
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/2017_MAIZE_ZONE_OVERLAP_CLASSE.jpg")
+#        
+
+# =============================================================================
+#     Zone sud et NORD dyna tempo
+# =============================================================================
+#    for z in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"):
+#        if '2017' in z and "ADOUR" in z and "NORD_v2"  in z and "SUD" not in z:
+#            tuile=z[:5]
+#            print (tuile)
+#            date="2017_NORD"
+#            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s"%z ,tuile+date,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt")     
+#            for p in polarisation:
+#                print (p)
+#                for i in Label:
+#                    globals()['cropslab%s' % i] = pd.DataFrame( globals()["df%s"% tuile+date ][ globals()["df%s"% tuile+date ].labcroirr==i]).T
+#                    globals()['%s%s' % (p,i)]=[]
+#                    for index,row in globals()['cropslab%s' % i].iterrows():
+#                        if p in index:
+#                            globals()['%s%s' % (p,i)].append (row)
+#                            globals()['df%s%s' %(p,i)]=pd.DataFrame(globals()['%s%s' % (p,i)])
+#                            globals()["df%s%s"% (p,i)].replace(to_replace =0 , value= pd.NaT,inplace=True)
+#                            globals()["dbdf%s%s" %(p ,i)]=10*np.log10(globals()['df%s%s' % (p,i)])
+#            for ind in features:
+#                print (ind)
+#                for i in Label:
+#                    globals()['cropslab%s' % i] = pd.DataFrame(globals()["df%s"% tuile+date ][globals()["df%s"% tuile+date ].labcroirr==i]).T
+#                    globals()['%s%s' %(ind,i)]=[]
+#                    for index,row in globals()['cropslab%s' % i].iterrows():
+#                        if ind in index:
+#                            globals()['%s%s' % (ind,i)].append (row)
+#                            globals()['df%s%s' %(ind,i)]=pd.DataFrame(globals()['%s%s' %(ind,i)])
+#            for f in features:
+#                for i in Label:
+#                    if f in polarisation:
+#                        indexdate(globals()["dbdf%s%s"% (f,i)],-8,'%s%s%s' % (tuile+date,f,i))
+#                    else:
+#                        indexdate(globals()["df%s%s"% (f,i)],-8,'%s%s%s' % (tuile+date,f,i))
+#            confianceinf2017N=[]
+#            confiancesup2017N=[]
+#            for i in features:
+#                for l in Label:
+##                    print ("%s%s%s"%(tuile+date,i,l))
+##                    a="%s%s"%(i,l)
+#                    globals()["_%s%s%s"% (tuile+date,i,l)],globals()["b_sup%s%s%s"% (tuile+date,i,l)]=stats.t.interval(0.95,globals()["%s%s%s"%(tuile+date,i,l)].shape[1]-1,loc=globals()["%s%s%s"%(tuile+date,i,l)].T.mean(),scale=stats.sem(globals()["%s%s%s"%(tuile+date,i,l)].T))
+#                    confianceinf2017N.append(globals()["_%s%s%s"% (tuile+date,i,l)])
+#                    confiancesup2017N.append(globals()["b_sup%s%s%s"% (tuile+date,i,l)])
+##                        
+#        elif "2017" in z and "ADOUR" in z and "NORD" not in z and "SUD_v2" in z: 
+#            tuile=z[:5]
+#            print (tuile)
+#            date="2017_SUD"
+#            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s"%z ,tuile+date,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt")     
+#            for p in polarisation:
+#                print (p)
+#                for i in Label:
+#                    globals()['cropslab%s' % i] = pd.DataFrame( globals()["df%s"% tuile+date ][ globals()["df%s"% tuile+date ].labcroirr==i]).T
+#                    globals()['%s%s' % (p,i)]=[]
+#                    for index,row in globals()['cropslab%s' % i].iterrows():
+#                        if p in index:
+#                            globals()['%s%s' % (p,i)].append (row)
+#                            globals()['df%s%s' %(p,i)]=pd.DataFrame(globals()['%s%s' % (p,i)])
+#                            globals()["df%s%s"% (p,i)].replace(to_replace =0 , value= pd.NaT,inplace=True)
+#                            globals()["dbdf%s%s" %(p ,i)]=10*np.log10(globals()['df%s%s' % (p,i)])
+#            for ind in features:
+#                print (ind)
+#                for i in Label:
+#                    globals()['cropslab%s' % i] = pd.DataFrame(globals()["df%s"% tuile+date ][globals()["df%s"% tuile+date ].labcroirr==i]).T
+#                    globals()['%s%s' %(ind,i)]=[]
+#                    for index,row in globals()['cropslab%s' % i].iterrows():
+#                        if ind in index:
+#                            globals()['%s%s' % (ind,i)].append (row)
+#                            globals()['df%s%s' %(ind,i)]=pd.DataFrame(globals()['%s%s' %(ind,i)])
+#                            
+#            for f in features:
+#                for i in Label:
+#                    if f in polarisation:
+#                        indexdate(globals()["dbdf%s%s"% (f,i)],-8,'%s%s%s' % (tuile+date,f,i))
+#                    else:
+#                        indexdate(globals()["df%s%s"% (f,i)],-8,'%s%s%s' % (tuile+date,f,i))
+#            confianceinf2017S=[]
+#            confiancesup2017S=[]
+#            for i in features:
+#                for l in Label:
+##                    print ("%s%s%s"%(tuile+date,i,l))
+##                    a="%s%s"%(i,l)
+#                    globals()["_%s%s%s"% (tuile+date,i,l)],globals()["b_sup%s%s%s"% (tuile+date,i,l)]=stats.t.interval(0.95,globals()["%s%s%s"%(tuile+date,i,l)].shape[1]-1,loc=globals()["%s%s%s"%(tuile+date,i,l)].T.mean(),scale=stats.sem(globals()["%s%s%s"%(tuile+date,i,l)].T))
+#                    confianceinf2017S.append(globals()["_%s%s%s"% (tuile+date,i,l)])
+#                    confiancesup2017S.append(globals()["b_sup%s%s%s"% (tuile+date,i,l)])
+#        elif "2018" in z and "ADOUR" in z and "NORD_v2" in z and "SUD" not in z: 
+#            tuile=z[:5]
+#            print (tuile)
+#            date="2018_NORD"
+#            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s"%z ,tuile+date,list_drop[0:2],"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt")     
+#            for p in polarisation:
+#                print (p)
+#                for i in Label:
+#                    globals()['cropslab%s' % i] = pd.DataFrame( globals()["df%s"% tuile+date ][ globals()["df%s"% tuile+date ].labcroirr==i]).T
+#                    globals()['%s%s' % (p,i)]=[]
+#                    for index,row in globals()['cropslab%s' % i].iterrows():
+#                        if p in index:
+#                            globals()['%s%s' % (p,i)].append (row)
+#                            globals()['df%s%s' %(p,i)]=pd.DataFrame(globals()['%s%s' % (p,i)])
+#                            globals()["df%s%s"% (p,i)].replace(to_replace =0 , value= pd.NaT,inplace=True)
+#                            globals()["dbdf%s%s" %(p ,i)]=10*np.log10(globals()['df%s%s' % (p,i)])
+#            for ind in features:
+#                print (ind)
+#                for i in Label:
+#                    globals()['cropslab%s' % i] = pd.DataFrame(globals()["df%s"% tuile+date ][globals()["df%s"% tuile+date ].labcroirr==i]).T
+#                    globals()['%s%s' %(ind,i)]=[]
+#                    for index,row in globals()['cropslab%s' % i].iterrows():
+#                        if ind in index:
+#                            globals()['%s%s' % (ind,i)].append (row)
+#                            globals()['df%s%s' %(ind,i)]=pd.DataFrame(globals()['%s%s' %(ind,i)])
+#            for f in features:
+#                for i in Label:
+#                    if f in polarisation:
+#                        indexdate(globals()["dbdf%s%s"% (f,i)],-8,'%s%s%s' % (tuile+date,f,i))
+#                    else:
+#                        indexdate(globals()["df%s%s"% (f,i)],-8,'%s%s%s' % (tuile+date,f,i))
+#            confianceinf2018N=[]
+#            confiancesup2018N=[]
+#            for i in features:
+#                for l in Label:
+##                    print ("%s%s%s"%(tuile+date,i,l))
+##                    a="%s%s"%(i,l)
+#                    globals()["_%s%s%s"% (tuile+date,i,l)],globals()["b_sup%s%s%s"% (tuile+date,i,l)]=stats.t.interval(0.95,globals()["%s%s%s"%(tuile+date,i,l)].shape[1]-1,loc=globals()["%s%s%s"%(tuile+date,i,l)].T.mean(),scale=stats.sem(globals()["%s%s%s"%(tuile+date,i,l)].T))
+#                    confianceinf2018N.append(globals()["_%s%s%s"% (tuile+date,i,l)])
+#                    confiancesup2018N.append(globals()["b_sup%s%s%s"% (tuile+date,i,l)])
+#        elif "2018" in z and "ADOUR" in z and "NORD" not in z and "SUD_v2" in z: 
+#            tuile=z[:5]
+#            date="2018_SUD"
+#            col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/%s" %z, tuile+date ,list_drop[0:2],"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt")
+#            for p in polarisation:
+#                print (p)
+#                for i in Label:
+#                    globals()['cropslab%s' % i] = pd.DataFrame( globals()["df%s"% tuile+date ][ globals()["df%s"% tuile+date ].labcroirr==i]).T
+#                    globals()['%s%s' % (p,i)]=[]
+#                    for index,row in globals()['cropslab%s' % i].iterrows():
+#                        if p in index:
+#                            globals()['%s%s' % (p,i)].append (row)
+#                            globals()['df%s%s' %(p,i)]=pd.DataFrame(globals()['%s%s' % (p,i)])
+#                            globals()["df%s%s"% (p,i)].replace(to_replace =0 , value= pd.NaT,inplace=True)
+#                            globals()["dbdf%s%s" %(p ,i)]=10*np.log10(globals()['df%s%s' % (p,i)])
+#            for ind in features:
+#                print (ind)
+#                for i in Label:
+#                    globals()['cropslab%s' % i] = pd.DataFrame(globals()["df%s"% tuile+date ][globals()["df%s"% tuile+date ].labcroirr==i]).T
+#                    globals()['%s%s' %(ind,i)]=[]
+#                    for index,row in globals()['cropslab%s' % i].iterrows():
+#                        if ind in index:
+#                            globals()['%s%s' % (ind,i)].append (row)
+#                            globals()['df%s%s' %(ind,i)]=pd.DataFrame(globals()['%s%s' %(ind,i)])
+#                            
+#            for f in features:
+#                for i in Label:
+#                    if f in polarisation:
+#                        indexdate(globals()["dbdf%s%s"% (f,i)],-8,'%s%s%s' % (tuile+date,f,i))
+#                    else:
+#                        indexdate(globals()["df%s%s"% (f,i)],-8,'%s%s%s' % (tuile+date,f,i))
+#            confianceinf2018S=[]
+#            confiancesup2018S=[]
+#            for i in features:
+#                for l in Label:
+##                    print ("%s%s%s"%(tuile+date,i,l))
+##                    a="%s%s"%(i,l)
+#                    globals()["_%s%s%s"% (tuile+date,i,l)],globals()["b_sup%s%s%s"% (tuile+date,i,l)]=stats.t.interval(0.95,globals()["%s%s%s"%(tuile+date,i,l)].shape[1]-1,loc=globals()["%s%s%s"%(tuile+date,i,l)].T.mean(),scale=stats.sem(globals()["%s%s%s"%(tuile+date,i,l)].T))
+#                    confianceinf2018S.append(globals()["_%s%s%s"% (tuile+date,i,l)])
+#                    confiancesup2018S.append(globals()["b_sup%s%s%s"% (tuile+date,i,l)])
+# =============================================================================
+# 2017
+# =============================================================================
+#    plt.figure(figsize=(18,10))
 #    sns.set(style="darkgrid")
 #    sns.set_context('paper')
-#    plt.plot(VV1,color='blue')
-#    plt.plot(VVa1,color='red')
-#    plt.xticks(rotation=90)
-#    plt.show()
-###        
+#    ax1 = plt.subplot(221)
+#    p1=plt.plot(ADOUR2017_SUDNDVI1.index,ADOUR2017_SUDNDVI1.T.mean(),color='blue',linestyle="-")
+#    plt.fill_between(ADOUR2017_SUDNDVI1.index, confiancesup2017S[0], confianceinf2017S[0], facecolor='blue', alpha=0.2)
+#    p2=plt.plot(ADOUR2017_NORDNDVI1.index,ADOUR2017_NORDNDVI1.T.mean(),color='blue',linestyle='--')
+#    plt.fill_between(ADOUR2017_NORDNDVI1.index, confiancesup2017N[0], confianceinf2017N[0], facecolor='blue', alpha=0.2)
+#    p3=plt.plot(ADOUR2017_SUDNDVI11.index,ADOUR2017_SUDNDVI11.T.mean(),color='red',linestyle='-')
+#    plt.fill_between(ADOUR2017_SUDNDVI11.index, confiancesup2017S[2], confianceinf2017S[2], facecolor='red', alpha=0.2)
+#    p4=plt.plot(ADOUR2017_NORDNDVI11.index,ADOUR2017_NORDNDVI11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(ADOUR2017_NORDNDVI11.index, confiancesup2017N[2], confianceinf2017N[2], facecolor='red', alpha=0.2)
+#    plt.ylabel("NDVI")
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    ax2 = plt.subplot(222)
+#    p1=plt.plot(ADOUR2017_SUDNDWI1.index,ADOUR2017_SUDNDWI1.T.mean(),color='blue',linestyle="-")
+#    plt.fill_between(ADOUR2017_SUDNDWI1.index, confiancesup2017S[6], confianceinf2017S[6], facecolor='blue', alpha=0.2)
+#    p2=plt.plot(ADOUR2017_NORDNDWI1.index,ADOUR2017_NORDNDWI1.T.mean(),color='blue',linestyle='--')
+#    plt.fill_between(ADOUR2017_SUDNDWI1.index, confiancesup2017N[6], confianceinf2017N[6], facecolor='red', alpha=0.2)
+#    p3=plt.plot(ADOUR2017_SUDNDWI11.index,ADOUR2017_SUDNDWI11.T.mean(),color='red',linestyle='-')
+#    plt.fill_between(ADOUR2017_SUDNDWI1.index, confiancesup2017S[8], confianceinf2017S[8], facecolor='red', alpha=0.2)
+#    p4=plt.plot(ADOUR2017_NORDNDWI11.index,ADOUR2017_NORDNDWI11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(ADOUR2017_SUDNDWI1.index, confiancesup2017N[8], confianceinf2017N[8], facecolor='red', alpha=0.2)
+#    plt.ylabel("NDWI")
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    ax3 = plt.subplot(223)
+#    p1=plt.plot(ADOUR2017_SUDdes_vv1.index,ADOUR2017_SUDdes_vv1.T.mean(),color='blue',linestyle="-")
+#    plt.fill_between(ADOUR2017_SUDdes_vv1.index, confiancesup2017S[12], confianceinf2017S[12], facecolor='blue', alpha=0.2)
+#    p2=plt.plot(ADOUR2017_NORDdes_vv1.index,ADOUR2017_NORDdes_vv1.T.mean(),color='blue',linestyle='--')
+#    plt.fill_between(ADOUR2017_SUDdes_vv1.index, confiancesup2017N[12], confianceinf2017N[12], facecolor='red', alpha=0.2)
+#    p3=plt.plot(ADOUR2017_SUDdes_vv11.index,ADOUR2017_SUDdes_vv11.T.mean(),color='red',linestyle='-')
+#    plt.fill_between(ADOUR2017_SUDdes_vv1.index, confiancesup2017S[14], confianceinf2017S[14], facecolor='red', alpha=0.2)
+#    p4=plt.plot(ADOUR2017_NORDdes_vv11.index,ADOUR2017_NORDdes_vv11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(ADOUR2017_SUDdes_vv1.index, confiancesup2017N[14], confianceinf2017N[14], facecolor='red', alpha=0.2)
+#    plt.ylabel("VV")
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    ax4 = plt.subplot(224)
+#    p1=plt.plot(ADOUR2017_SUDdes_vh1.index,ADOUR2017_SUDdes_vh1.T.mean(),color='blue',linestyle="-")
+#    plt.fill_between(ADOUR2017_SUDdes_vh1.index, confiancesup2017S[18], confianceinf2017S[18], facecolor='blue', alpha=0.2)
+#    p2=plt.plot(ADOUR2017_NORDdes_vh1.index,ADOUR2017_NORDdes_vh1.T.mean(),color='blue',linestyle='--')
+#    plt.fill_between(ADOUR2017_SUDdes_vh1.index, confiancesup2017N[18], confianceinf2017N[18], facecolor='red', alpha=0.2)
+#    p3=plt.plot(ADOUR2017_SUDdes_vh11.index,ADOUR2017_SUDdes_vh11.T.mean(),color='red',linestyle='-')
+#    plt.fill_between(ADOUR2017_SUDdes_vh1.index, confiancesup2017S[20], confianceinf2017S[20], facecolor='red', alpha=0.2)
+#    p4=plt.plot(ADOUR2017_NORDdes_vh11.index,ADOUR2017_NORDdes_vh11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(ADOUR2017_SUDdes_vh1.index, confiancesup2017N[20], confianceinf2017N[20], facecolor='red', alpha=0.2)
+#    plt.ylabel("VH")
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/2017_MAIZE_OVERLAP_zone_intervalle.jpg")
+    
+# =============================================================================
+#2018
+## =============================================================================
+#    plt.figure(figsize=(18,10))
+#    sns.set(style="darkgrid")
+#    sns.set_context('paper')
+#    ax1 = plt.subplot(221)
+#    p1=plt.plot(ADOUR2018_SUDNDVI1.index,ADOUR2018_SUDNDVI1.T.mean(),color='blue',linestyle="-")
+#    plt.fill_between(ADOUR2018_SUDNDVI1.index, confiancesup2018S[0], confianceinf2018S[0], facecolor='blue', alpha=0.2)
+#    p2=plt.plot(ADOUR2018_NORDNDVI1.index,ADOUR2018_NORDNDVI1.T.mean(),color='blue',linestyle='--')
+#    plt.fill_between(ADOUR2018_NORDNDVI1.index, confiancesup2018N[0], confianceinf2018N[0], facecolor='blue', alpha=0.2)
+#    p3=plt.plot(ADOUR2018_SUDNDVI11.index,ADOUR2018_SUDNDVI11.T.mean(),color='red',linestyle='-')
+#    plt.fill_between(ADOUR2018_SUDNDVI11.index, confiancesup2018S[2], confianceinf2018S[2], facecolor='red', alpha=0.2)
+#    p4=plt.plot(ADOUR2018_NORDNDVI11.index,ADOUR2018_NORDNDVI11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(ADOUR2018_NORDNDVI11.index, confiancesup2018N[2], confianceinf2018S[2], facecolor='red', alpha=0.2)
+#    plt.ylabel("NDVI")
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    ax2 = plt.subplot(222)
+#    p1=plt.plot(ADOUR2018_SUDNDWI1.index,ADOUR2018_SUDNDWI1.T.mean(),color='blue',linestyle="-")
+#    plt.fill_between(ADOUR2018_SUDNDWI1.index, confiancesup2018S[6], confianceinf2018S[6], facecolor='red', alpha=0.2)
+#    p2=plt.plot(ADOUR2018_NORDNDWI1.index,ADOUR2018_NORDNDWI1.T.mean(),color='blue',linestyle='--')
+#    plt.fill_between(ADOUR2018_SUDNDWI1.index, confiancesup2018N[6], confianceinf2018N[6], facecolor='red', alpha=0.2)
+#    p3=plt.plot(ADOUR2018_SUDNDWI11.index,ADOUR2018_SUDNDWI11.T.mean(),color='red',linestyle='-')
+#    plt.fill_between(ADOUR2018_SUDNDWI1.index, confiancesup2018S[8], confianceinf2018S[8], facecolor='red', alpha=0.2)
+#    p4=plt.plot(ADOUR2018_NORDNDWI11.index,ADOUR2018_NORDNDWI11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(ADOUR2018_SUDNDWI1.index, confiancesup2018N[8], confianceinf2018N[8], facecolor='red', alpha=0.2)
+#    plt.ylabel("NDWI")
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    ax3 = plt.subplot(223)
+#    p1=plt.plot(ADOUR2018_SUDdes_vv1.index,ADOUR2018_SUDdes_vv1.T.mean(),color='blue',linestyle="-")
+#    plt.fill_between(ADOUR2018_SUDdes_vv1.index, confiancesup2018S[12], confianceinf2018S[12], facecolor='red', alpha=0.2)
+#    p2=plt.plot(ADOUR2018_NORDdes_vv1.index,ADOUR2018_NORDdes_vv1.T.mean(),color='blue',linestyle='--')
+#    plt.fill_between(ADOUR2018_SUDdes_vv1.index, confiancesup2018N[12], confianceinf2018N[12], facecolor='red', alpha=0.2)
+#    p3=plt.plot(ADOUR2018_SUDdes_vv11.index,ADOUR2018_SUDdes_vv11.T.mean(),color='red',linestyle='-')
+#    plt.fill_between(ADOUR2018_SUDdes_vv1.index, confiancesup2018S[14], confianceinf2018S[14], facecolor='red', alpha=0.2)
+#    p4=plt.plot(ADOUR2018_NORDdes_vv11.index,ADOUR2018_NORDdes_vv11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(ADOUR2018_SUDdes_vv1.index, confiancesup2018N[14], confianceinf2018N[14], facecolor='red', alpha=0.2)
+#    plt.ylabel("VV")
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    ax4 = plt.subplot(224)
+#    p1=plt.plot(ADOUR2018_SUDdes_vh1.index,ADOUR2018_SUDdes_vh1.T.mean(),color='blue',linestyle="-")
+#    plt.fill_between(ADOUR2018_SUDdes_vv1.index, confiancesup2018S[18], confianceinf2018S[18], facecolor='red', alpha=0.2)
+#    p2=plt.plot(ADOUR2018_NORDdes_vh1.index,ADOUR2018_NORDdes_vh1.T.mean(),color='blue',linestyle='--')
+#    plt.fill_between(ADOUR2018_SUDdes_vv1.index, confiancesup2018N[18], confianceinf2018N[18], facecolor='red', alpha=0.2)
+#    p3=plt.plot(ADOUR2018_SUDdes_vh11.index,ADOUR2018_SUDdes_vh11.T.mean(),color='red',linestyle='-')
+#    plt.fill_between(ADOUR2018_SUDdes_vv1.index, confiancesup2018S[20], confianceinf2018S[20], facecolor='red', alpha=0.2)
+#    p4=plt.plot(ADOUR2018_NORDdes_vh11.index,ADOUR2018_NORDdes_vh11.T.mean(),color='red',linestyle='--')
+#    plt.fill_between(ADOUR2018_SUDdes_vv1.index, confiancesup2018N[20], confianceinf2018N[20], facecolor='red', alpha=0.2)
+#    plt.ylabel("VH")
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.legend((p1[0],p2[0],p3[0],p4[0]),("Maize_Irr_rain","Maize_Irr_dry","Maize_Nirr_rain","Maize_Nirr_dry"))
+#    plt.savefig(d["SAVE"]+"PLOT_TEMPOREL/2018_MAIZE_OVERLAP_zone_intervalle.jpg")
 #### =============================================================================
 ####        Calcule de la différence entre IRR et NIRR sur VV
 #### =============================================================================
-##    diffvv=VV1.T.mean()-VV11.iloc[:,0:4].T.mean()
-##    plt.plot(diffvv)
-##    diffvv=VV11.T.mean()-VV1.iloc[:,0:4].T.mean()
-#    
-#    
-#    
-#
-#    
+
 ##    
 #    dfnames=pd.read_csv("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",sep=',', header=None) 
 #    df1=dfnames.T

@@ -158,18 +158,22 @@ def plotindicecum(x,champ1,champ2,confiancesup,confianceinf,indice):
     plt.xlabel('Dates interpollees')
     plt.ylabel('Cumul '+ indice+' moyen')
     
+
+    
     
 if __name__ == '__main__':
     list_bd_drop=["region","labcroirr","ogc_fid"]
     list_bd_d=["region","labcroirr","ogc_fid","alt_band_0"]
     list_drop_bv=["labcroirr","ogc_fid","alt_band_0"]
-    list_drop=["labcroirr","ogc_fid"]
+    list_drop=["labcroirr","OGC_FID","alt_band_0"]
+    list_drop_2018=["labcroirr","OGC_FID"]
     tile =["TDJ","TYP","TCJ","ADOUR","TARN","NESTE"]    #nom de fichier avec les stats 
     BV=["ADOUR","TARN","NESTE"]
     #    features=['NDVI','NDWI','NDRE1',"NDRE2",'asc_vv','des_vv','asc_vh','des_vh','des_userfeature1','asc_userfeature1']
     
     features=['NDVI','NDWI','asc_vv','des_vv','asc_vh','des_vh','des_userfeature1','asc_userfeature1']
     
+    """ Fonction pour construire des graphique par BV et pour chaque indice cumulées mensuellement"""
 #    for i in os.listdir( "/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"):
 #        print (r" watershed : {}".format(i))
 #        for j in features:
@@ -224,129 +228,197 @@ if __name__ == '__main__':
 ## =============================================================================
 #    graphique paper cumul
 #  =============================================================================
+
     for bv in os.listdir("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"):
-        print (bv)
-        for j in ["NDVI","NDWI","NDRE1","des_userfeature1","des_vv","des_vh"]:
-            if "2017" in bv:
-                print ('bv')
-                if "NESTE" in bv:
+        if "TARN" in bv and "NORD" not in bv and "SUD" not in bv: 
+            print (bv)
+            for j in ["NDVI","NDWI","NDRE","des_userfeature1","des_vv","des_vh"]:
+                if "2017" in bv:
                     z=bv[:5]
-#                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr',j,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",'2017')
-#                    globals()["df_mean_%s"%j].columns=["Maize","Soybean","Sorghum"]
-#                    globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
-#                    globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
-#                    globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
-#                    globals()["_%s%s"% (z,j)].index=["Maize","Soybean","Sorghum"]
-#                    globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
-#                    globals()["b_sup%s%s"% (z,j)].index=["Maize","Soybean","Sorghum"]
+                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",'2017')
+                    globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+                    globals()["df_mean_2017_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
+                    globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_2017_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_2017_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_2017_%s%s"%(z,j)].T))
+                    globals()["_2017_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
+                    globals()["_2017_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+                    globals()["b_sup_2017_%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
+                    globals()["b_sup_2017_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
                 else:
-                    if bv[:5] == "ADOUR":
-                        z=bv[:5]
-                        calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt",'2017')
-                        globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-                        globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
-                        globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
-                        globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
-                        globals()["_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-                        globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
-                        globals()["b_sup%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-            
-#            else:
-#                 if "NESTE" in bv:
-#                    z=bv[:5]
-###                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
-###                    globals()["df_mean_%s"%j].columns=["Maize","Soybean","Sorghum","Sunflower"]
-###                    globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
-###                    globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
-###                    globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
-###                    globals()["_%s%s"% (z,j)].index=["Maize","Soybean","Sorghum","Sunflower"]
-###                    globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
-###                    globals()["b_sup%s%s"% (z,j)].index=["Maize","Soybean","Sorghum","Sunflower"]
-#                 else:
-#                    z=bv[:5]
-#                    if bv[:5] =="ADOUR":
-#                        z=bv[:5]
-#                        calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
-#                        globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-#                        globals()["df_mean_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
-#                        globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_%s%s"%(z,j)].T))
-#                        globals()["_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
-#                        globals()["_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-#                        globals()["b_sup%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
-#                        globals()["b_sup%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
-
-    fig, ax = plt.subplots(figsize=(20, 7))
-    sns.set(style="darkgrid")
-    sns.set_context('paper')
-    ax1=plt.subplot(231)
-    plt.title("Watershed : Adour")
-    p1=plt.plot(df_mean_ADOURNDVI.index,df_mean_ADOURNDVI["Maize_Irr"]/1000,color='blue')
-    p2=plt.plot(df_mean_ADOURNDVI.index,df_mean_ADOURNDVI["Maize_Nirr"]/1000,color='red')
-    plt.fill_between(df_mean_ADOURNDVI.index, b_supADOURNDVI.T["Maize_Irr"]/1000, _ADOURNDVI.T["Maize_Irr"]/1000, facecolor='blue', alpha=0.2)
-    plt.fill_between(df_mean_ADOURNDVI.index,  b_supADOURNDVI.T["Maize_Nirr"]/1000, _ADOURNDVI.T["Maize_Nirr"]/1000, facecolor='red', alpha=0.2)
-    plt.legend((p1[0],p2[0]),("Irr","Nirr"))
-    plt.xticks(size='large')
-    plt.yticks(size='large')
-    plt.ylabel('Cumul %s moyen'%"NDVI")
-    plt.setp(ax1.get_xticklabels(),visible=False)
-    ax2=plt.subplot(232)
-    plt.title("Watershed : Adour")
-    p1=plt.plot(df_mean_ADOURNDWI.index,df_mean_ADOURNDWI["Maize_Irr"]/1000,color='blue')
-    p2=plt.plot(df_mean_ADOURNDWI.index,df_mean_ADOURNDWI["Maize_Nirr"]/1000,color='red')
-    plt.fill_between(df_mean_ADOURNDWI.index, b_supADOURNDWI.T["Maize_Irr"]/1000, _ADOURNDWI.T["Maize_Irr"]/1000, facecolor='blue', alpha=0.2)
-    plt.fill_between(df_mean_ADOURNDWI.index,  b_supADOURNDWI.T["Maize_Nirr"]/1000, _ADOURNDWI.T["Maize_Nirr"]/1000, facecolor='red', alpha=0.2)
-    plt.xticks(size='large')
-    plt.yticks(size='large')
-    plt.ylabel('Cumul %s moyen'%"NDWI")
-    plt.setp(ax2.get_xticklabels(),visible=False)  
-    ax3=plt.subplot(233)
-    plt.title("Watershed : Adour")
-    p1=plt.plot(df_mean_ADOURNDRE1.index,df_mean_ADOURNDRE1["Maize_Irr"],color='blue')
-    p2=plt.plot(df_mean_ADOURNDRE1.index,df_mean_ADOURNDRE1["Maize_Nirr"],color='red')
-    plt.fill_between(df_mean_ADOURNDRE1.index, b_supADOURNDRE1.T["Maize_Irr"], _ADOURNDRE1.T["Maize_Irr"], facecolor='blue', alpha=0.2)
-    plt.fill_between(df_mean_ADOURNDRE1.index,  b_supADOURNDRE1.T["Maize_Nirr"], _ADOURNDRE1.T["Maize_Nirr"], facecolor='red', alpha=0.2)
-    plt.xticks(size='large')
-    plt.yticks(size='large')
-    plt.ylabel('Cumul %s moyen'%"NDRE")
-    plt.setp(ax3.get_xticklabels(),visible=False) 
-    ax4=plt.subplot(234)
-    plt.title("Watershed : Adour")
-    p1=plt.plot(df_mean_ADOURdes_vv.index,df_mean_ADOURdes_vv["Maize_Irr"],color='blue')
-    p2=plt.plot(df_mean_ADOURdes_vv.index,df_mean_ADOURdes_vv["Maize_Nirr"],color='red')
-    plt.fill_between(df_mean_ADOURdes_vv.index, b_supADOURdes_vv.T["Maize_Irr"], _ADOURdes_vv.T["Maize_Irr"], facecolor='blue', alpha=0.2)
-    plt.fill_between(df_mean_ADOURdes_vv.index,  b_supADOURdes_vv.T["Maize_Nirr"], _ADOURdes_vv.T["Maize_Nirr"], facecolor='red', alpha=0.2)
-    plt.xticks(size='large')
-    plt.yticks(size='large')
-    plt.ylabel('Cumul %s moyen'%"VV sigma0")
-    plt.xlabel('Dates interpollees')
-    plt.legend((p1[0],p2[0]),("Irr","Nirr"))
-    plt.setp(ax4.get_xticklabels(),visible=True, rotation=45)
-    ax5=plt.subplot(235)
-    plt.title("Watershed : Adour")
-    p1=plt.plot(df_mean_ADOURdes_vh.index,df_mean_ADOURdes_vh["Maize_Irr"],color='blue')
-    p2=plt.plot(df_mean_ADOURdes_vh.index,df_mean_ADOURdes_vh["Maize_Nirr"],color='red')
-    plt.fill_between(df_mean_ADOURdes_vh.index, b_supADOURdes_vh.T["Maize_Irr"], _ADOURdes_vh.T["Maize_Irr"], facecolor='blue', alpha=0.2)
-    plt.fill_between(df_mean_ADOURdes_vh.index,  b_supADOURdes_vh.T["Maize_Nirr"], _ADOURdes_vh.T["Maize_Nirr"], facecolor='red', alpha=0.2)
-    plt.xticks(size='large')
-    plt.yticks(size='large')
-    plt.ylabel('Cumul %s moyen'%"VH sigma0")
-    plt.xlabel('Dates interpollees')
-    plt.setp(ax5.get_xticklabels(),visible=True, rotation=45) 
-    ax6=plt.subplot(236)
-    plt.title("Watershed : Adour")
-    p1=plt.plot(df_mean_ADOURdes_userfeature1.index,df_mean_ADOURdes_userfeature1["Maize_Irr"],color='blue')
-    p2=plt.plot(df_mean_ADOURdes_userfeature1.index,df_mean_ADOURdes_userfeature1["Maize_Nirr"],color='red')
-    plt.fill_between(df_mean_ADOURdes_userfeature1.index, b_supADOURdes_userfeature1.T["Maize_Irr"], _ADOURdes_userfeature1.T["Maize_Irr"], facecolor='blue', alpha=0.2)
-    plt.fill_between(df_mean_ADOURdes_userfeature1.index,  b_supADOURdes_userfeature1.T["Maize_Nirr"], _ADOURdes_userfeature1.T["Maize_Nirr"], facecolor='red', alpha=0.2)
-    plt.xticks(size='large')
-    plt.yticks(size='large')
-    plt.ylabel('Cumul %s moyen'%"VH/VV sigma0")
-    plt.xlabel('Dates interpollees')
-    plt.setp(ax6.get_xticklabels(),visible=True,rotation=45) 
-
-    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_CUMUL_temporelle/ADOUR_BV_MAIZE_2017.png")
+                    z=bv[:5]
+                    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),'dfbv','labcroirr' ,j,list_bd_drop[1:],"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
+                    globals()["df_mean_%s"%j].columns=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+                    globals()["df_mean_2018_%s%s"%(z,j)]=globals()["df_mean_%s"%j]
+                    globals()["_%s%s"% (z,j)],globals()["b_sup%s%s"% (z,j)]=stats.t.interval(0.95,globals()["df_mean_2018_%s%s"%(z,j)].shape[1]-1,loc= globals()["df_mean_2018_%s%s"%(z,j)].T,scale=stats.sem(globals()["df_mean_2018_%s%s"%(z,j)].T))
+                    globals()["_2018_%s%s"% (z,j)]=pd.DataFrame( globals()["_%s%s"% (z,j)])
+                    globals()["_2018_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+                    globals()["b_sup_2018_%s%s"% (z,j)]=pd.DataFrame( globals()["b_sup%s%s"% (z,j)])
+                    globals()["b_sup_2018_%s%s"% (z,j)].index=["Maize_Irr","Soybean_Irr","Maize_Nirr","Soybean_Nirr","Sorghum","Sunflower"]
+                    
+                    
+#    for y in ["2018","2017"]:
+#        fig, ax = plt.subplots(figsize=(20, 7))
+#        sns.set(style="darkgrid")
+#        sns.set_context('paper')
+#        ax1=plt.subplot(231)
+#        plt.title("Watershed : Adour")
+#        p1=plt.plot(globals()["df_mean_%s_ADOURNDVI"%y].index,globals()["df_mean_%s_ADOURNDVI"%y]["Maize_Irr"]/1000,color='blue')
+#        p2=plt.plot(globals()["df_mean_%s_ADOURNDVI"%y].index,globals()["df_mean_%s_ADOURNDVI"%y]["Maize_Nirr"]/1000,color='red')
+#        plt.fill_between(globals()["df_mean_%s_ADOURNDVI"%y].index, globals()["b_sup_%s_ADOURNDVI"%y].T["Maize_Irr"]/1000, globals()["_%s_ADOURNDVI"%y].T["Maize_Irr"]/1000, facecolor='blue', alpha=0.2)
+#        plt.fill_between(globals()["df_mean_%s_ADOURNDVI"%y].index, globals()["b_sup_%s_ADOURNDVI"%y].T["Maize_Nirr"]/1000, globals()["_%s_ADOURNDVI"%y].T["Maize_Nirr"]/1000, facecolor='red', alpha=0.2)
+#        plt.legend((p1[0],p2[0]),("Irr","Nirr"))
+#        plt.xticks(size='large')
+#        plt.yticks(size='large')
+#        plt.ylabel('Cumul %s moyen'%"NDVI")
+#        plt.setp(ax1.get_xticklabels(),visible=False)
+#        ax2=plt.subplot(232)
+#        plt.title("Watershed : Adour")
+#        p1=plt.plot(globals()["df_mean_%s_ADOURNDWI"%y].index,globals()["df_mean_%s_ADOURNDWI"%y]["Maize_Irr"]/1000,color='blue')
+#        p2=plt.plot(globals()["df_mean_%s_ADOURNDWI"%y].index,globals()["df_mean_%s_ADOURNDWI"%y]["Maize_Nirr"]/1000,color='red')
+#        plt.fill_between(globals()["df_mean_%s_ADOURNDWI"%y].index, globals()["b_sup_%s_ADOURNDWI"%y].T["Maize_Irr"]/1000, globals()["_%s_ADOURNDWI"%y].T["Maize_Irr"]/1000, facecolor='blue', alpha=0.2)
+#        plt.fill_between(globals()["df_mean_%s_ADOURNDWI"%y].index, globals()["b_sup_%s_ADOURNDWI"%y].T["Maize_Nirr"]/1000, globals()["_%s_ADOURNDWI"%y].T["Maize_Nirr"]/1000, facecolor='red', alpha=0.2)
+#        plt.xticks(size='large')
+#        plt.yticks(size='large')
+#        plt.ylabel('Cumul %s moyen'%"NDWI")
+#        plt.setp(ax2.get_xticklabels(),visible=False)  
+#        ax3=plt.subplot(233)
+#        plt.title("Watershed : Adour")
+#        p1=plt.plot(globals()["df_mean_%s_ADOURNDRE"%y].index,globals()["df_mean_%s_ADOURNDRE"%y]["Maize_Irr"],color='blue')
+#        p2=plt.plot(globals()["df_mean_%s_ADOURNDRE"%y].index,globals()["df_mean_%s_ADOURNDRE"%y]["Maize_Nirr"],color='red')
+#        plt.fill_between(globals()["df_mean_%s_ADOURNDRE"%y].index, globals()["b_sup_%s_ADOURNDRE"%y].T["Maize_Irr"], globals()["_%s_ADOURNDRE"%y].T["Maize_Irr"], facecolor='blue', alpha=0.2)
+#        plt.fill_between(globals()["df_mean_%s_ADOURNDRE"%y].index,  globals()["b_sup_%s_ADOURNDRE"%y].T["Maize_Nirr"], globals()["_%s_ADOURNDRE"%y].T["Maize_Nirr"], facecolor='red', alpha=0.2)
+#        plt.xticks(size='large')
+#        plt.yticks(size='large')
+#        plt.ylabel('Cumul %s moyen'%"NDRE")
+#        plt.setp(ax3.get_xticklabels(),visible=False) 
+#        ax4=plt.subplot(234)
+#        plt.title("Watershed : Adour")
+#        p1=plt.plot(globals()["df_mean_%s_ADOURdes_vv"%y].index,globals()["df_mean_%s_ADOURdes_vv"%y]["Maize_Irr"],color='blue')
+#        p2=plt.plot(globals()["df_mean_%s_ADOURdes_vv"%y].index,globals()["df_mean_%s_ADOURdes_vv"%y]["Maize_Nirr"],color='red')
+#        plt.fill_between(globals()["df_mean_%s_ADOURdes_vv"%y].index, globals()["b_sup_%s_ADOURdes_vv"%y].T["Maize_Irr"], globals()["_%s_ADOURdes_vv"%y].T["Maize_Irr"], facecolor='blue', alpha=0.2)
+#        plt.fill_between(globals()["df_mean_%s_ADOURdes_vv"%y].index,  globals()["b_sup_%s_ADOURdes_vv"%y].T["Maize_Nirr"], globals()["_%s_ADOURdes_vv"%y].T["Maize_Nirr"], facecolor='red', alpha=0.2)
+#        plt.xticks(size='large')
+#        plt.yticks(size='large')
+#        plt.ylabel('Cumul %s moyen'%"VV sigma0")
+#        plt.xlabel('Dates interpollees')
+#        plt.legend((p1[0],p2[0]),("Irr","Nirr"))
+#        plt.setp(ax4.get_xticklabels(),visible=True, rotation=45)
+#        ax5=plt.subplot(235)
+#        plt.title("Watershed : Adour")
+#        p1=plt.plot(globals()["df_mean_%s_ADOURdes_vh"%y].index,globals()["df_mean_%s_ADOURdes_vh"%y]["Maize_Irr"],color='blue')
+#        p2=plt.plot(globals()["df_mean_%s_ADOURdes_vh"%y].index,globals()["df_mean_%s_ADOURdes_vh"%y]["Maize_Nirr"],color='red')
+#        plt.fill_between(globals()["df_mean_%s_ADOURdes_vh"%y].index, globals()["b_sup_%s_ADOURdes_vh"%y].T["Maize_Irr"], globals()["_%s_ADOURdes_vh"%y].T["Maize_Irr"], facecolor='blue', alpha=0.2)
+#        plt.fill_between(globals()["df_mean_%s_ADOURdes_vh"%y].index,  globals()["b_sup_%s_ADOURdes_vh"%y].T["Maize_Nirr"], globals()["_%s_ADOURdes_vh"%y].T["Maize_Nirr"], facecolor='red', alpha=0.2)
+#        plt.xticks(size='large')
+#        plt.yticks(size='large')
+#        plt.ylabel('Cumul %s moyen'%"VH sigma0")
+#        plt.xlabel('Dates interpollees')
+#        plt.setp(ax5.get_xticklabels(),visible=True, rotation=45) 
+#        ax6=plt.subplot(236)
+#        plt.title("Watershed : Adour")
+#        p1=plt.plot(globals()["df_mean_%s_ADOURdes_userfeature1"%y].index,globals()["df_mean_%s_ADOURdes_userfeature1"%y]["Maize_Irr"],color='blue')
+#        p2=plt.plot(globals()["df_mean_%s_ADOURdes_userfeature1"%y].index,globals()["df_mean_%s_ADOURdes_userfeature1"%y]["Maize_Nirr"],color='red')
+#        plt.fill_between(globals()["df_mean_%s_ADOURdes_userfeature1"%y].index,globals()["b_sup_%s_ADOURdes_userfeature1"%y].T["Maize_Irr"], globals()["_%s_ADOURdes_userfeature1"%y].T["Maize_Irr"], facecolor='blue', alpha=0.2)
+#        plt.fill_between(globals()["df_mean_%s_ADOURdes_userfeature1"%y].index,  globals()["b_sup_%s_ADOURdes_userfeature1"%y].T["Maize_Nirr"], globals()["_%s_ADOURdes_userfeature1"%y].T["Maize_Nirr"], facecolor='red', alpha=0.2)
+#        plt.xticks(size='large')
+#        plt.yticks(size='large')
+#        plt.ylabel('Cumul %s moyen'%"VH/VV sigma0")
+#        plt.xlabel('Dates interpollees')
+#        plt.setp(ax6.get_xticklabels(),visible=True,rotation=45) 
+#    
+#        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_CUMUL_temporelle/ADOUR_BV_MAIZE_"+y+".png")
     
-             
+# =============================================================================
+# TARN
+# =============================================================================
+    for y in ["2018","2017"]:
+        fig, ax = plt.subplots(figsize=(20, 7))
+        sns.set(style="darkgrid")
+        sns.set_context('paper')
+        ax1=plt.subplot(231)
+        plt.title("Watershed : TARN_")
+        p1=plt.plot(globals()["df_mean_%s_TARN_NDVI"%y].index,globals()["df_mean_%s_TARN_NDVI"%y]["Maize_Irr"]/1000,color='blue')
+        p2=plt.plot(globals()["df_mean_%s_TARN_NDVI"%y].index,globals()["df_mean_%s_TARN_NDVI"%y]["Maize_Nirr"]/1000,color='red')
+        plt.fill_between(globals()["df_mean_%s_TARN_NDVI"%y].index, globals()["b_sup_%s_TARN_NDVI"%y].T["Maize_Irr"]/1000, globals()["_%s_TARN_NDVI"%y].T["Maize_Irr"]/1000, facecolor='blue', alpha=0.2)
+        plt.fill_between(globals()["df_mean_%s_TARN_NDVI"%y].index, globals()["b_sup_%s_TARN_NDVI"%y].T["Maize_Nirr"]/1000, globals()["_%s_TARN_NDVI"%y].T["Maize_Nirr"]/1000, facecolor='red', alpha=0.2)
+        plt.legend((p1[0],p2[0]),("Irr","Nirr"))
+        plt.xticks(size='large')
+        plt.yticks(size='large')
+        plt.ylabel('Cumul %s moyen'%"NDVI")
+        plt.setp(ax1.get_xticklabels(),visible=False)
+        ax2=plt.subplot(232)
+        plt.title("Watershed : TARN_")
+        p1=plt.plot(globals()["df_mean_%s_TARN_NDWI"%y].index,globals()["df_mean_%s_TARN_NDWI"%y]["Maize_Irr"]/1000,color='blue')
+        p2=plt.plot(globals()["df_mean_%s_TARN_NDWI"%y].index,globals()["df_mean_%s_TARN_NDWI"%y]["Maize_Nirr"]/1000,color='red')
+        plt.fill_between(globals()["df_mean_%s_TARN_NDWI"%y].index, globals()["b_sup_%s_TARN_NDWI"%y].T["Maize_Irr"]/1000, globals()["_%s_TARN_NDWI"%y].T["Maize_Irr"]/1000, facecolor='blue', alpha=0.2)
+        plt.fill_between(globals()["df_mean_%s_TARN_NDWI"%y].index, globals()["b_sup_%s_TARN_NDWI"%y].T["Maize_Nirr"]/1000, globals()["_%s_TARN_NDWI"%y].T["Maize_Nirr"]/1000, facecolor='red', alpha=0.2)
+        plt.xticks(size='large')
+        plt.yticks(size='large')
+        plt.ylabel('Cumul %s moyen'%"NDWI")
+        plt.setp(ax2.get_xticklabels(),visible=False)  
+        ax3=plt.subplot(233)
+        plt.title("Watershed : TARN_")
+        p1=plt.plot(globals()["df_mean_%s_TARN_NDRE"%y].index,globals()["df_mean_%s_TARN_NDRE"%y]["Maize_Irr"],color='blue')
+        p2=plt.plot(globals()["df_mean_%s_TARN_NDRE"%y].index,globals()["df_mean_%s_TARN_NDRE"%y]["Maize_Nirr"],color='red')
+        plt.fill_between(globals()["df_mean_%s_TARN_NDRE"%y].index, globals()["b_sup_%s_TARN_NDRE"%y].T["Maize_Irr"], globals()["_%s_TARN_NDRE"%y].T["Maize_Irr"], facecolor='blue', alpha=0.2)
+        plt.fill_between(globals()["df_mean_%s_TARN_NDRE"%y].index,  globals()["b_sup_%s_TARN_NDRE"%y].T["Maize_Nirr"], globals()["_%s_TARN_NDRE"%y].T["Maize_Nirr"], facecolor='red', alpha=0.2)
+        plt.xticks(size='large')
+        plt.yticks(size='large')
+        plt.ylabel('Cumul %s moyen'%"NDRE")
+        plt.setp(ax3.get_xticklabels(),visible=False) 
+        ax4=plt.subplot(234)
+        plt.title("Watershed : TARN_")
+        p1=plt.plot(globals()["df_mean_%s_TARN_des_vv"%y].index,globals()["df_mean_%s_TARN_des_vv"%y]["Maize_Irr"],color='blue')
+        p2=plt.plot(globals()["df_mean_%s_TARN_des_vv"%y].index,globals()["df_mean_%s_TARN_des_vv"%y]["Maize_Nirr"],color='red')
+        plt.fill_between(globals()["df_mean_%s_TARN_des_vv"%y].index, globals()["b_sup_%s_TARN_des_vv"%y].T["Maize_Irr"], globals()["_%s_TARN_des_vv"%y].T["Maize_Irr"], facecolor='blue', alpha=0.2)
+        plt.fill_between(globals()["df_mean_%s_TARN_des_vv"%y].index,  globals()["b_sup_%s_TARN_des_vv"%y].T["Maize_Nirr"], globals()["_%s_TARN_des_vv"%y].T["Maize_Nirr"], facecolor='red', alpha=0.2)
+        plt.xticks(size='large')
+        plt.yticks(size='large')
+        plt.ylabel('Cumul %s moyen'%"VV sigma0")
+        plt.xlabel('Dates interpolées')
+        plt.legend((p1[0],p2[0]),("Irr","Nirr"))
+        plt.setp(ax4.get_xticklabels(),visible=True, rotation=45)
+        ax5=plt.subplot(235)
+        plt.title("Watershed : TARN_")
+        p1=plt.plot(globals()["df_mean_%s_TARN_des_vh"%y].index,globals()["df_mean_%s_TARN_des_vh"%y]["Maize_Irr"],color='blue')
+        p2=plt.plot(globals()["df_mean_%s_TARN_des_vh"%y].index,globals()["df_mean_%s_TARN_des_vh"%y]["Maize_Nirr"],color='red')
+        plt.fill_between(globals()["df_mean_%s_TARN_des_vh"%y].index, globals()["b_sup_%s_TARN_des_vh"%y].T["Maize_Irr"], globals()["_%s_TARN_des_vh"%y].T["Maize_Irr"], facecolor='blue', alpha=0.2)
+        plt.fill_between(globals()["df_mean_%s_TARN_des_vh"%y].index,  globals()["b_sup_%s_TARN_des_vh"%y].T["Maize_Nirr"], globals()["_%s_TARN_des_vh"%y].T["Maize_Nirr"], facecolor='red', alpha=0.2)
+        plt.xticks(size='large')
+        plt.yticks(size='large')
+        plt.ylabel('Cumul %s moyen'%"VH sigma0")
+        plt.xlabel('Dates interpolées')
+        plt.setp(ax5.get_xticklabels(),visible=True, rotation=45) 
+        ax6=plt.subplot(236)
+        plt.title("Watershed : TARN_")
+        p1=plt.plot(globals()["df_mean_%s_TARN_des_userfeature1"%y].index,globals()["df_mean_%s_TARN_des_userfeature1"%y]["Maize_Irr"],color='blue')
+        p2=plt.plot(globals()["df_mean_%s_TARN_des_userfeature1"%y].index,globals()["df_mean_%s_TARN_des_userfeature1"%y]["Maize_Nirr"],color='red')
+        plt.fill_between(globals()["df_mean_%s_TARN_des_userfeature1"%y].index,globals()["b_sup_%s_TARN_des_userfeature1"%y].T["Maize_Irr"], globals()["_%s_TARN_des_userfeature1"%y].T["Maize_Irr"], facecolor='blue', alpha=0.2)
+        plt.fill_between(globals()["df_mean_%s_TARN_des_userfeature1"%y].index,  globals()["b_sup_%s_TARN_des_userfeature1"%y].T["Maize_Nirr"], globals()["_%s_TARN_des_userfeature1"%y].T["Maize_Nirr"], facecolor='red', alpha=0.2)
+        plt.xticks(size='large')
+        plt.yticks(size='large')
+        plt.ylabel('Cumul %s moyen'%"VH/VV sigma0")
+        plt.xlabel('Dates interpolées')
+        plt.setp(ax6.get_xticklabels(),visible=True,rotation=45) 
+    
+        plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_CUMUL_temporelle/TARN_BV_MAIZE_"+y+".png")
+
+#    fig, ax = plt.subplots(figsize=(20, 7))
+#    sns.set(style="darkgrid")
+#    sns.set_context('paper')
+##    ax1=plt.subplot(231)
+#    plt.title("Watershed : Adour")
+#    p1=plt.plot(df_mean_ADOURNDWI.index,df_mean_ADOURNDWI["Maize_Irr"]/1000,color='blue')
+#    p2=plt.plot(df_mean_ADOURNDWI.index,ADOUR2018_SUD["Maize_Nirr"]/1000,color='red')
+#    plt.fill_between(df_mean_ADOURNDWI.index, b_supADOURNDWI.T["Maize_Irr"]/1000, _ADOURNDWI.T["Maize_Irr"]/1000, facecolor='blue', alpha=0.2)
+#    plt.fill_between(df_mean_ADOURNDWI.index, b_supADOUR2018SUD.T["Maize_Nirr"]/1000, _ADOUR2018SUD.T["Maize_Nirr"]/1000, facecolor='red', alpha=0.2)
+#    plt.legend((p1[0],p2[0]),("Irr","Nirr"))
+#    plt.xticks(size='large')
+#    plt.yticks(size='large')
+#    plt.ylabel('Cumul %s moyen'%"NDWI")
+#    plt.setp(ax1.get_xticklabels(),visible=True)
+#    plt.savefig("/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/PLOT/PLOT_CUMUL_temporelle/ADOUR_BV_MAIZE_NDWI_2017_SUD_NORD.png")
+
+
 
 # =============================================================================
 #     Cumul de l'humidité du sol (SM)
@@ -369,14 +441,16 @@ if __name__ == '__main__':
 #        sql=sqlite3.connect("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/STAT_POLY/STAT_CLASSIF/"+str(i)+"_S1_S2"+"/learningSamples/Samples_region_1_seed0_learn.sqlite")
 #        df=pd.read_sql_query("SELECT * FROM output", sql)
 #        df=df.groupby("originfid").mean()
-
-
-#    sql=sqlite3.connect("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv))
-#    df=pd.read_sql_query("SELECT * FROM output", sql)
-#    df=df.groupby("originfid").mean()
-#    if 'band' in df.columns[6] :
-#        globals()["df%s"%"x"]=col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+str(bv),"x",list_drop_bv,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_SAR.txt")
-#        label = globals()["df%s"%"x"]["labcroirr"]
+#
+# =============================================================================
+# Test de sqlite 
+# =============================================================================
+    sql=sqlite3.connect("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+z)
+    df=pd.read_sql_query("SELECT * FROM output", sql)
+    df=df.groupby("originfid").mean()
+    if 'band' in df.columns[6] :
+        globals()["df%s"%"x"]=col_sqlite("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/"+z,"x",list_drop[0:2],"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt")
+        label = globals()["df%s"%"x"]["labcroirr"]
 #        globals()["%s"%"x"]=globals()["df%s"%"x"].astype(float)
 #        print("NDVI")
 #        if 'NDVI' not in ['NDVI', 'NDWI','SM','asc_vv','des_vv','asc_vh','des_vh','asc_userfeature1','des_userfeature1']:
@@ -400,8 +474,8 @@ if __name__ == '__main__':
 #        globals()["df_%s"%'NDVI']=globals()["df_%s"%'NDVI'].astype(float)
 #        globals()["df_mean_%s"%'NDVI']=globals()["df_%s"%'NDVI'].groupby('labcroirr').mean().T 
 #        globals()["df_mean_%s"%'NDVI'].index=pd.to_datetime(globals()["df_mean_%s"%'NDVI'].index,format="%Y%m%d")
-    
+#    
 #    calcumul_index_saison("/datalocal/vboxshare/THESE/CLASSIFICATION/TRAITEMENT/ANALYSE_SIGNAL_SAR/DATA_SQLITE/ADOUR_Samples_2018.sqlite",'dfbv','labcroirr' ,"NDWI",list_drop,"/datalocal/vboxshare/THESE/CLASSIFICATION/RESULT/list_features_TYN2018.txt",'2018')
 #
-#    plt.plot(df_mean_NDWI.index,df_mean_NDWI[1.0])
+##    plt.plot(df_mean_NDWI.index,df_mean_NDWI[1.0])
 #    plt.plot(df_mean_NDWI.index,df_mean_NDWI[11.0])
